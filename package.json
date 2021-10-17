@@ -1,0 +1,30 @@
+{
+  "name": "cse-416-sporadic-api",
+  "version": "1.0.0",
+  "description": "Sporadic API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacksonludwig/CSE-416-Sporadic-API.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jacksonludwig/CSE-416-Sporadic-API/issues"
+  },
+  "homepage": "https://github.com/jacksonludwig/CSE-416-Sporadic-API#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "2.4.1"
+  }
+}
