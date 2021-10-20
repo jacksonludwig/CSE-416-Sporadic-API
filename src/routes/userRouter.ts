@@ -54,7 +54,6 @@ router.post("/", async (req: Request, res: Response) => {
     await DbClient.insertOne("users", {
       username: username,
       email: email,
-      password: password,
       cognitoId: cognitoId,
       lastLogin: new Date().toISOString(),
     });
