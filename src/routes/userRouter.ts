@@ -8,7 +8,7 @@ import DbClient from "../utils/DbClient";
 
 const router = express.Router();
 
-const userPostValidation = Joi.object({
+const createUserSchema = Joi.object({
   username: Joi.string().alphanum().min(3).max(40).required(),
   password: Joi.string().min(7).max(50).required(),
   email: Joi.string().email().required(),
@@ -26,7 +26,7 @@ export const cognitoClient = new CognitoIdentityProviderClient({
 
 router.post("/", async (req: Request, res: Response) => {
   try {
-    await userPostValidation.validateAsync(req.body);
+    await createUserSchema.validateAsync(req.body);
   } catch (err) {
     return res.sendStatus(404);
   }
