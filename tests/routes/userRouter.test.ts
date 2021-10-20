@@ -1,8 +1,10 @@
 import request from "supertest";
 import app from "../../src/index";
 import { UserPostData, cognitoClient } from "../../src/routes/userRouter";
+import DbClient from "../../src/utils/DbClient";
 
 jest.mock("@aws-sdk/client-cognito-identity-provider");
+jest.mock("../../src/utils/DbClient");
 
 describe(`userRouter unit tests`, () => {
   let mockRequest: UserPostData;
@@ -23,6 +25,7 @@ describe(`userRouter unit tests`, () => {
     };
 
     cognitoClient.send = jest.fn().mockResolvedValueOnce(mockSendResponse);
+    DbClient.insertOne = jest.fn().mockResolvedValueOnce(null);
   });
 
   test(`Should send 404 if schema validation fails`, async () => {

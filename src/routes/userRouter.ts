@@ -1,10 +1,10 @@
 import express, { Request, Response } from "express";
-import { validateToken } from "../middleware/auth";
 import Joi from "joi";
 import {
   CognitoIdentityProviderClient,
   SignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
+import DbClient from "../utils/DbClient";
 
 const router = express.Router();
 
@@ -50,6 +50,13 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     const response = await cognitoClient.send(command);
     cognitoId = response.UserSub;
+
+    await DbClient.insertOne("users", {
+      username: username,
+      email: email,
+      password: password,
+      lastLogin: new Date().toISOString(),
+    });
   } catch (err) {
     return res.sendStatus(500);
   }

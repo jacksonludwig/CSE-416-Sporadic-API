@@ -1,13 +1,11 @@
-import { Db, MongoClient, Filter, FindOptions } from "mongodb";
+import { Db, MongoClient, Filter, FindOptions, Document } from "mongodb";
 
 class DbClient {
   private cachedDb: Db | null = null;
   private client: MongoClient | null = null;
 
   private async connect(): Promise<Db> {
-    if (this.cachedDb && this.client) {
-      return Promise.resolve(this.cachedDb);
-    }
+    if (this.cachedDb && this.client) return Promise.resolve(this.cachedDb);
 
     this.client = await MongoClient.connect(process.env.MONGO_URI || "");
     this.cachedDb = this.client.db();
@@ -32,6 +30,20 @@ class DbClient {
       totalItems: await cursor.count(),
       items: await cursor.skip(skip).limit(limit).toArray(),
     };
+  }
+
+  /**
+   * Inserts a document
+   *
+   * @param collection The collection to update
+   * @param document The document to insert
+   */
+  public async insertOne(collection: string, document: Document): Promise<void> {
+    const db = await this.connect();
+
+    const result = await db.collection(collection).insertOne(document);
+
+    if (!result.acknowledged) throw new Error(`${document} could not be written to ${collection}.`);
   }
 }
 
