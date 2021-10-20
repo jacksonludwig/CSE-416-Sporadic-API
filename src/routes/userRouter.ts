@@ -4,7 +4,7 @@ import {
   CognitoIdentityProviderClient,
   SignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
-import DbClient from "../utils/DbClient";
+import UserModel from "../models/User";
 
 const router = express.Router();
 
@@ -49,14 +49,10 @@ router.post("/", async (req: Request, res: Response) => {
 
   try {
     const response = await cognitoClient.send(command);
-    cognitoId = response.UserSub;
+    cognitoId = response.UserSub as string;
 
-    await DbClient.insertOne("users", {
-      username: username,
-      email: email,
-      cognitoId: cognitoId,
-      lastLogin: new Date().toISOString(),
-    });
+    const user = new UserModel({ username: username, email: email, cognitoId: cognitoId });
+    await user.save();
   } catch (err) {
     return res.sendStatus(500);
   }
