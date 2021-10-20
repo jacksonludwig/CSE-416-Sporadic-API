@@ -1,5 +1,5 @@
 import request from "supertest";
-import app from "../../src/index";
+import app from "../../src/app";
 import { UserPostData, cognitoClient } from "../../src/routes/userRouter";
 import DbClient from "../../src/utils/DbClient";
 
