@@ -55,6 +55,7 @@ router.post("/", async (req: Request, res: Response) => {
       username: username,
       email: email,
       password: password,
+      cognitoId: cognitoId,
       lastLogin: new Date().toISOString(),
     });
   } catch (err) {
