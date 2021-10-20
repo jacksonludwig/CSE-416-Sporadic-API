@@ -6,6 +6,7 @@
 export default {
   // All imported modules in your tests should be mocked automatically
   // automock: false,
+  preset: "ts-jest",
 
   // Stop running tests after `n` failures
   // bail: 0,
@@ -20,7 +21,7 @@ export default {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  collectCoverageFrom: ["src/**/*.js"],
+  collectCoverageFrom: ["src/**/*.[jt]s"],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
