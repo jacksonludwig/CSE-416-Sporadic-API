@@ -9,6 +9,8 @@ app.use(cors(), express.json());
 
 app.use("/users", userRouter);
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}.`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Listening on port ${PORT}.`);
+// });
+
+export default app;
