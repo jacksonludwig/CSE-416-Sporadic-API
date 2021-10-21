@@ -51,26 +51,25 @@ router.post("/", async (req: Request, res: Response) => {
     Password: password,
   });
 
-  let cognitoId: string | undefined;
+  let userId: string | undefined;
 
   try {
     const response = await cognitoClient.send(signUpCommand);
-    cognitoId = response.UserSub as string;
 
     const user = new UserModel({
       username: username,
       email: email,
-      cognitoId: cognitoId,
+      cognitoId: response.UserSub as string,
       lastLogin: new Date(),
     });
 
-    await user.save();
+    userId = await user.save();
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
   }
 
-  res.status(200).send({ cognitoId });
+  res.status(200).send({ userId });
 });
 
 export default router;

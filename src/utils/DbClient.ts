@@ -52,12 +52,14 @@ class DbClient {
    * @param collection The collection to update
    * @param document The document to insert
    */
-  public async insertOne(collection: string, document: Document): Promise<void> {
+  public async insertOne(collection: string, document: Document): Promise<string> {
     const db = await this.connect();
 
     const result = await db.collection(collection).insertOne(document);
 
     if (!result.acknowledged) throw new Error(`${document} could not be written to ${collection}.`);
+
+    return result.insertedId.toString();
   }
 }
 
