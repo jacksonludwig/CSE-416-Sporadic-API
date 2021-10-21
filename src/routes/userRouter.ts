@@ -24,7 +24,6 @@ export const cognitoClient = new CognitoIdentityProviderClient({
   region: "us-east-1",
 });
 
-// TODO: check to see if there is already a user
 router.post("/", async (req: Request, res: Response) => {
   try {
     await createUserSchema.validateAsync(req.body);
@@ -34,6 +33,11 @@ router.post("/", async (req: Request, res: Response) => {
   }
 
   const { username, email, password } = req.body as UserPostData;
+
+  if (await UserModel.retrieveByUsername(username)) {
+    console.error(`${username} already exists`);
+    return res.sendStatus(404);
+  }
 
   const signUpCommand = new SignUpCommand({
     ClientId: process.env.COGNITO_APP_CLIENT_ID,

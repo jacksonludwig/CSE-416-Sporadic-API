@@ -72,11 +72,11 @@ export default class UserModel {
   }
 
   /**
-   * Returns user with the given ID. Note that it returns the type, not a model.
+   * Returns user with the given username.
    */
-  public static async retrieveByCognitoId(cognitoId: string): Promise<User | null> {
-    const user = await DbClient.findOne<User>(COLLECTION, { cognitoId: cognitoId }, {});
+  public static async retrieveByUsername(username: string): Promise<UserModel | null> {
+    const user = await DbClient.findOne<User>(COLLECTION, { username: username }, {});
 
-    return user;
+    return user ? new UserModel(user) : null;
   }
 }
