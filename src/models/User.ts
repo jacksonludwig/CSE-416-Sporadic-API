@@ -56,7 +56,7 @@ export default class UserModel {
   }
 
   public async save(): Promise<void> {
-    DbClient.insertOne(COLLECTION, {
+    return DbClient.insertOne(COLLECTION, {
       username: this.username,
       email: this.email,
       cognitoId: this.cognitoId,
@@ -69,5 +69,14 @@ export default class UserModel {
       notifications: this.notifications,
       lastLogin: this.lastLogin,
     });
+  }
+
+  /**
+   * Returns user with the given ID. Note that it returns the type, not a model.
+   */
+  public static async retrieveByCognitoId(cognitoId: string): Promise<User | null> {
+    const user = await DbClient.findOne<User>(COLLECTION, { cognitoId: cognitoId }, {});
+
+    return user;
   }
 }
