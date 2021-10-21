@@ -24,6 +24,7 @@ export const cognitoClient = new CognitoIdentityProviderClient({
   region: "us-east-1",
 });
 
+// TODO: check to see if there is already a user
 router.post("/", async (req: Request, res: Response) => {
   try {
     await createUserSchema.validateAsync(req.body);
