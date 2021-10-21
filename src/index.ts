@@ -1,13 +1,6 @@
-import express from "express";
-import cors from "cors";
-import userRouter from "./routes/userRouter";
+import app from "./app";
 
 const PORT = process.env.PORT || 5000;
-const app = express();
-
-app.use(cors(), express.json());
-
-app.use("/users", userRouter);
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}.`);

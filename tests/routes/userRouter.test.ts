@@ -1,0 +1,68 @@
+import request from "supertest";
+import app from "../../src/app";
+import { UserPostData, cognitoClient } from "../../src/routes/userRouter";
+import UserModel from "../../src/models/User";
+
+jest.mock("@aws-sdk/client-cognito-identity-provider");
+
+describe(`userRouter unit tests`, () => {
+  describe(`create user route test`, () => {
+    let mockRequest: UserPostData;
+
+    const mockSendResponse = {
+      $metadata: {
+        httpStatusCode: 200,
+      },
+      UserConfirmed: false,
+      UserSub: "kdlaid2j-d8-2ff-elm-fu8m",
+    };
+
+    beforeEach(() => {
+      mockRequest = {
+        username: "john1",
+        email: "john1@gmail.com",
+        password: "password123",
+      };
+
+      cognitoClient.send = jest.fn().mockResolvedValueOnce(mockSendResponse);
+      UserModel.prototype.save = jest.fn().mockResolvedValueOnce(null);
+      UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(null);
+    });
+
+    test(`Should send 400 if schema validation fails`, async () => {
+      mockRequest.username = "";
+
+      const response = await request(app).post("/users/").send(mockRequest);
+
+      expect(response.statusCode).toBe(400);
+    });
+
+    test(`Should send 400 if username already exists`, async () => {
+      UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce({});
+
+      const response = await request(app).post("/users/").send(mockRequest);
+
+      expect(response.statusCode).toBe(400);
+    });
+
+    test(`Should send 200 with cognito id if all succeeds`, async () => {
+      const response = await request(app).post("/users/").send(mockRequest);
+
+      expect(response.statusCode).toBe(200);
+      expect(UserModel.retrieveByUsername).toHaveBeenCalled();
+      expect(UserModel.prototype.save).toHaveBeenCalled();
+      expect(response.body).toStrictEqual({
+        cognitoId: mockSendResponse.UserSub,
+      });
+    });
+
+    test(`Should send 500 if congito fails`, async () => {
+      const mockErr = new Error("this is a mock error");
+      cognitoClient.send = jest.fn().mockRejectedValueOnce(mockErr);
+      const response = await request(app).post("/users/").send(mockRequest);
+
+      expect(response.statusCode).toBe(500);
+      expect(UserModel.retrieveByUsername).toHaveBeenCalled();
+    });
+  });
+});
