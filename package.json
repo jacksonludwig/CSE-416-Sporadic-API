@@ -4,7 +4,7 @@
   "description": "Sporadic API",
   "main": "index.js",
   "scripts": {
-    "start": "node -r dotenv/config dist/index.js",
+    "start": "node -r dotenv/config dist/src/index.js",
     "build": "tsc",
     "test": "jest"
   },

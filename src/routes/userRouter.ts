@@ -29,14 +29,14 @@ router.post("/", async (req: Request, res: Response) => {
     await createUserSchema.validateAsync(req.body);
   } catch (err) {
     console.error(err);
-    return res.sendStatus(404);
+    return res.sendStatus(400);
   }
 
   const { username, email, password } = req.body as UserPostData;
 
   if (await UserModel.retrieveByUsername(username)) {
     console.error(`${username} already exists`);
-    return res.sendStatus(404);
+    return res.sendStatus(400);
   }
 
   const signUpCommand = new SignUpCommand({

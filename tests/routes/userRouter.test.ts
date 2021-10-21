@@ -29,20 +29,20 @@ describe(`userRouter unit tests`, () => {
       UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(null);
     });
 
-    test(`Should send 404 if schema validation fails`, async () => {
+    test(`Should send 400 if schema validation fails`, async () => {
       mockRequest.username = "";
 
       const response = await request(app).post("/users/").send(mockRequest);
 
-      expect(response.statusCode).toBe(404);
+      expect(response.statusCode).toBe(400);
     });
 
-    test(`Should send 404 if username already exists`, async () => {
+    test(`Should send 400 if username already exists`, async () => {
       UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce({});
 
       const response = await request(app).post("/users/").send(mockRequest);
 
-      expect(response.statusCode).toBe(404);
+      expect(response.statusCode).toBe(400);
     });
 
     test(`Should send 200 with cognito id if all succeeds`, async () => {
