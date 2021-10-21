@@ -26,6 +26,8 @@ describe(`userRouter unit tests`, () => {
 
     cognitoClient.send = jest.fn().mockResolvedValueOnce(mockSendResponse);
     DbClient.insertOne = jest.fn().mockResolvedValueOnce(null);
+
+    jest.spyOn(console, "error").mockImplementationOnce(() => null);
   });
 
   test(`Should send 404 if schema validation fails`, async () => {
