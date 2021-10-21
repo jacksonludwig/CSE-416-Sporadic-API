@@ -1,6 +1,29 @@
-import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
+import axios from "axios";
+import { Request, Response, NextFunction } from "express";
 
-export function validateToken(req: Request, res: Response, next: NextFunction) {
-  console.log("looks good wow");
-  next();
-}
+const COGNITO_URL = `https://cognito-idp.${process.env.COGNITO_REGION}.amazonaws.com/${process.env.COGNITO_POOL_ID}/.well-known/jwks.json`;
+
+export const validateToken = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const accessToken = req.headers?.authorization?.split(" ")[1];
+
+    const result = await axios.post(
+      COGNITO_URL,
+      {
+        AccessToken: accessToken,
+      },
+      {
+        headers: {
+          "Content-Type": "application/x-amz-json-1.1",
+          "X-Amz-Target": "AWSCognitoIdentityProviderService.GetUser",
+        },
+      },
+    );
+
+    console.log(result);
+
+    next();
+  } catch (error) {
+    return res.sendStatus(401);
+  }
+};

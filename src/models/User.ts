@@ -79,4 +79,13 @@ export default class UserModel {
 
     return user ? new UserModel(user) : null;
   }
+
+  /**
+   * Returns user with the given id.
+   */
+  public static async retrieveById(_id: string): Promise<UserModel | null> {
+    const user = await DbClient.findOne<User>(COLLECTION, { _id: _id }, {});
+
+    return user ? new UserModel(user) : null;
+  }
 }
