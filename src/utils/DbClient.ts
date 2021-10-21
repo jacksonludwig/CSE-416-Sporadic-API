@@ -33,6 +33,20 @@ class DbClient {
   }
 
   /**
+   * Perform a find operation on a mongo collection.
+   */
+  public async findOne<T>(
+    collection: string,
+    filter: Filter<T> = {},
+    options: FindOptions,
+  ): Promise<T | null> {
+    const db = await this.connect();
+    const document = db.collection<T>(collection).findOne<T>(filter, options);
+
+    return document;
+  }
+
+  /**
    * Inserts a document
    *
    * @param collection The collection to update

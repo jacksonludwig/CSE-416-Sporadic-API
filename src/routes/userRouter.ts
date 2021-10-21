@@ -53,7 +53,13 @@ router.post("/", async (req: Request, res: Response) => {
     const response = await cognitoClient.send(signUpCommand);
     cognitoId = response.UserSub as string;
 
-    const user = new UserModel({ username: username, email: email, cognitoId: cognitoId });
+    const user = new UserModel({
+      username: username,
+      email: email,
+      cognitoId: cognitoId,
+      lastLogin: new Date(),
+    });
+
     await user.save();
   } catch (err) {
     console.error(err);
