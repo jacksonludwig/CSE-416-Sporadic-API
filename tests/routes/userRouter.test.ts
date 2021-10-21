@@ -4,8 +4,6 @@ import { UserPostData, cognitoClient } from "../../src/routes/userRouter";
 import UserModel from "../../src/models/User";
 
 jest.mock("@aws-sdk/client-cognito-identity-provider");
-jest.mock("../../src/utils/DbClient");
-jest.mock("../../src/models/User");
 
 describe(`userRouter unit tests`, () => {
   describe(`create user route test`, () => {
@@ -33,6 +31,14 @@ describe(`userRouter unit tests`, () => {
 
     test(`Should send 404 if schema validation fails`, async () => {
       mockRequest.username = "";
+
+      const response = await request(app).post("/users/").send(mockRequest);
+
+      expect(response.statusCode).toBe(404);
+    });
+
+    test(`Should send 404 if username already exists`, async () => {
+      UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce({});
 
       const response = await request(app).post("/users/").send(mockRequest);
 
