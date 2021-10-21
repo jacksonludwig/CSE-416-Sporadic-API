@@ -8,6 +8,7 @@ jest.mock("@aws-sdk/client-cognito-identity-provider");
 describe(`userRouter unit tests`, () => {
   describe(`create user route test`, () => {
     let mockRequest: UserPostData;
+    let mockObjectId: string;
 
     const mockSendResponse = {
       $metadata: {
@@ -24,8 +25,10 @@ describe(`userRouter unit tests`, () => {
         password: "password123",
       };
 
+      mockObjectId = "6171a986cd40f34535c91e8d";
+
       cognitoClient.send = jest.fn().mockResolvedValueOnce(mockSendResponse);
-      UserModel.prototype.save = jest.fn().mockResolvedValueOnce(null);
+      UserModel.prototype.save = jest.fn().mockResolvedValueOnce(mockObjectId);
       UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(null);
     });
 
@@ -52,7 +55,7 @@ describe(`userRouter unit tests`, () => {
       expect(UserModel.retrieveByUsername).toHaveBeenCalled();
       expect(UserModel.prototype.save).toHaveBeenCalled();
       expect(response.body).toStrictEqual({
-        cognitoId: mockSendResponse.UserSub,
+        userId: mockObjectId,
       });
     });
 

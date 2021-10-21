@@ -55,7 +55,7 @@ export default class UserModel {
     this.notifications = user.notifications;
   }
 
-  public async save(): Promise<void> {
+  public async save(): Promise<string> {
     return DbClient.insertOne(COLLECTION, {
       username: this.username,
       email: this.email,
