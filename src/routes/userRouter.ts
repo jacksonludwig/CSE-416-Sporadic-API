@@ -28,12 +28,13 @@ router.post("/", async (req: Request, res: Response) => {
   try {
     await createUserSchema.validateAsync(req.body);
   } catch (err) {
+    console.error(err);
     return res.sendStatus(404);
   }
 
   const { username, email, password } = req.body as UserPostData;
 
-  const command = new SignUpCommand({
+  const signUpCommand = new SignUpCommand({
     ClientId: process.env.COGNITO_APP_CLIENT_ID,
     UserAttributes: [
       {
@@ -48,12 +49,13 @@ router.post("/", async (req: Request, res: Response) => {
   let cognitoId: string | undefined;
 
   try {
-    const response = await cognitoClient.send(command);
+    const response = await cognitoClient.send(signUpCommand);
     cognitoId = response.UserSub as string;
 
     const user = new UserModel({ username: username, email: email, cognitoId: cognitoId });
     await user.save();
   } catch (err) {
+    console.error(err);
     return res.sendStatus(500);
   }
 
