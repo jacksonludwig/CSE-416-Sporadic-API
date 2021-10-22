@@ -59,7 +59,7 @@ describe(`userRouter unit tests`, () => {
       expect(UserModel.retrieveByUsername).toHaveBeenCalled();
       expect(UserModel.prototype.save).toHaveBeenCalled();
       expect(response.body).toStrictEqual({
-        userId: mockObjectId,
+        _id: mockObjectId,
       });
     });
 

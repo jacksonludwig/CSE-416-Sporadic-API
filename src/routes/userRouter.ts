@@ -81,7 +81,7 @@ router.post("/", async (req: Request, res: Response) => {
     return res.sendStatus(500);
   }
 
-  res.status(200).send({ userId });
+  res.status(200).send({ _id: userId });
 });
 
 export default router;
