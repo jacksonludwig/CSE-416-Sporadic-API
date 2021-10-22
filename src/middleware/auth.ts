@@ -10,7 +10,7 @@ export const validateToken = async (req: Request, res: Response, next: NextFunct
     const result = await verifyCognitoToken(
       process.env.COGNITO_REGION || "",
       process.env.COGNITO_POOL_ID || "",
-      token || "",
+      token,
       process.env.COGNITO_APP_CLIENT_ID || "",
     );
 
