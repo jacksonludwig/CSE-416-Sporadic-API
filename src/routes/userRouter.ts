@@ -5,6 +5,7 @@ import {
   SignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import UserModel from "../models/User";
+import { validateToken } from "../middleware/auth";
 
 const router = express.Router();
 
@@ -22,6 +23,17 @@ export type UserPostData = {
 
 export const cognitoClient = new CognitoIdentityProviderClient({
   region: "us-east-1",
+});
+
+router.get("/:id", validateToken, async (req: Request, res: Response) => {
+  try {
+    const user = await UserModel.retrieveById(req.params.id);
+
+    return user ? res.status(200).send(user.toJSON()) : res.sendStatus(400);
+  } catch (err) {
+    console.error(err);
+    return res.sendStatus(500);
+  }
 });
 
 router.post("/", async (req: Request, res: Response) => {
