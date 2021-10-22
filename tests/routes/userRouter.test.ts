@@ -1,8 +1,9 @@
 import request from "supertest";
 import app from "../../src/app";
-import { CreateUserPost, cognitoClient, ConfirmEmailPost } from "../../src/routes/userRouter";
-import UserModel, { User } from "../../src/models/User";
 import { validateToken } from "../../src/middleware/auth";
+import UserModel, { User } from "../../src/models/User";
+import { CreateUserPost } from "../../src/routes/controllers/createUser";
+import { cognitoClient, ConfirmEmailPost } from "../../src/routes/userRouter";
 
 jest.mock("@aws-sdk/client-cognito-identity-provider");
 jest.mock("../../src/middleware/auth", () => ({
