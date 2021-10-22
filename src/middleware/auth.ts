@@ -5,6 +5,8 @@ export const validateToken = async (req: Request, res: Response, next: NextFunct
   try {
     const token = req.headers?.authorization?.split(" ")[1]; // token should be "Bearer: <token>"
 
+    if (!token) throw new Error("missing authorization header");
+
     const result = await verifyCognitoToken(
       process.env.COGNITO_REGION || "",
       process.env.COGNITO_POOL_ID || "",
@@ -15,7 +17,8 @@ export const validateToken = async (req: Request, res: Response, next: NextFunct
     console.log(result);
 
     next();
-  } catch (error) {
+  } catch (err) {
+    console.error(err);
     return res.sendStatus(401);
   }
 };

@@ -71,6 +71,22 @@ export default class UserModel {
     });
   }
 
+  public toJSON(): User {
+    return {
+      username: this.username,
+      email: this.email,
+      cognitoId: this.cognitoId,
+      _id: this._id,
+      awards: this.awards,
+      isGloballyBanned: this.isGloballyBanned,
+      profilePicture: this.profilePicture,
+      subscriptions: this.subscriptions,
+      friends: this.friends,
+      notifications: this.notifications,
+      lastLogin: this.lastLogin,
+    };
+  }
+
   /**
    * Returns user with the given username.
    */
