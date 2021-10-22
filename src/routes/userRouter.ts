@@ -5,6 +5,7 @@ import {
   SignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import UserModel from "../models/User";
+import { validateToken } from "../middleware/auth";
 
 const router = express.Router();
 
