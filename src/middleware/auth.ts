@@ -11,7 +11,7 @@ export const validateToken = async (req: Request, res: Response, next: NextFunct
       process.env.COGNITO_REGION || "",
       process.env.COGNITO_POOL_ID || "",
       token,
-      process.env.COGNITO_APP_CLIENT_ID || "",
+      process.env.COGNITO_WEB_CLIENT_ID || "",
     );
 
     next();
