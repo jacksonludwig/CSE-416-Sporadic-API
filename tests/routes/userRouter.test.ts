@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../../src/app";
-import { UserPostData, cognitoClient } from "../../src/routes/userRouter";
+import { CreateUserPost, cognitoClient, ConfirmEmailPost } from "../../src/routes/userRouter";
 import UserModel, { User } from "../../src/models/User";
 import { validateToken } from "../../src/middleware/auth";
 
@@ -11,7 +11,7 @@ jest.mock("../../src/middleware/auth", () => ({
 
 describe(`userRouter unit tests`, () => {
   describe(`create user route test`, () => {
-    let mockRequest: UserPostData;
+    let mockRequest: CreateUserPost;
     let mockObjectId: string;
 
     const mockSendResponse = {
@@ -105,6 +105,52 @@ describe(`userRouter unit tests`, () => {
       const response = await request(app).get("/users/exampleuserid");
 
       expect(validateToken).toHaveBeenCalled();
+      expect(response.statusCode).toBe(400);
+    });
+  });
+
+  describe(`confirm user email tests`, () => {
+    let mockUser: User;
+    let mockRequest: ConfirmEmailPost;
+
+    beforeEach(() => {
+      cognitoClient.send = jest.fn().mockResolvedValueOnce(null);
+      mockUser = {
+        username: "testuser",
+        email: "email@email.com",
+        cognitoId: "asdkjskdjfas",
+      };
+      mockRequest = {
+        confirmCode: "abc123",
+      };
+      UserModel.retrieveById = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
+    });
+
+    test(`Should return 204 if all succeeds`, async () => {
+      const response = await request(app).post("/users/someuserid/confirm").send(mockRequest);
+
+      expect(response.statusCode).toBe(204);
+      expect(cognitoClient.send).toHaveBeenCalled();
+    });
+
+    test(`Should return 500 if cognito fails`, async () => {
+      cognitoClient.send = jest.fn().mockRejectedValueOnce(new Error("mock err"));
+      const response = await request(app).post("/users/someuserid/confirm").send(mockRequest);
+
+      expect(response.statusCode).toBe(500);
+    });
+
+    test(`Should return 400 if user lookup fails`, async () => {
+      UserModel.retrieveById = jest.fn().mockResolvedValueOnce(null);
+      const response = await request(app).post("/users/someuserid/confirm").send(mockRequest);
+
+      expect(response.statusCode).toBe(400);
+    });
+
+    test(`Should return 400 if schema validation fails`, async () => {
+      mockRequest.confirmCode = "*)(^*";
+      const response = await request(app).post("/users/someuserid/confirm").send(mockRequest);
+
       expect(response.statusCode).toBe(400);
     });
   });

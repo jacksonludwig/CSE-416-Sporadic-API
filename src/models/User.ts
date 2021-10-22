@@ -87,6 +87,10 @@ export default class UserModel {
     };
   }
 
+  public getUsername(): User["username"] {
+    return this.username;
+  }
+
   /**
    * Returns user with the given username.
    */

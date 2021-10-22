@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import Joi from "joi";
 import {
   CognitoIdentityProviderClient,
+  ConfirmSignUpCommand,
   SignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
 import UserModel from "../models/User";
@@ -15,10 +16,18 @@ const createUserSchema = Joi.object({
   email: Joi.string().email().required(),
 });
 
-export type UserPostData = {
+const confirmEmailSchema = Joi.object({
+  confirmCode: Joi.string().alphanum().min(3).max(15).required(),
+});
+
+export type CreateUserPost = {
   username: string;
   email: string;
   password: string;
+};
+
+export type ConfirmEmailPost = {
+  confirmCode: string;
 };
 
 export const cognitoClient = new CognitoIdentityProviderClient({
@@ -36,6 +45,37 @@ router.get("/:id", validateToken, async (req: Request, res: Response) => {
   }
 });
 
+router.post("/:id/confirm", async (req: Request, res: Response) => {
+  try {
+    await confirmEmailSchema.validateAsync(req.body);
+  } catch (err) {
+    console.error(err);
+    return res.sendStatus(400);
+  }
+
+  const { confirmCode } = req.body as ConfirmEmailPost;
+
+  try {
+    const user = await UserModel.retrieveById(req.params.id);
+
+    if (!user) return res.sendStatus(400);
+
+    const confirmEmailCommand = new ConfirmSignUpCommand({
+      ClientId: process.env.COGNITO_APP_CLIENT_ID,
+      Username: user.getUsername(),
+      ConfirmationCode: confirmCode,
+    });
+
+    // TODO handle <500 errors from cognito
+    await cognitoClient.send(confirmEmailCommand);
+
+    return res.sendStatus(204);
+  } catch (err) {
+    console.error(err);
+    return res.sendStatus(500);
+  }
+});
+
 router.post("/", async (req: Request, res: Response) => {
   try {
     await createUserSchema.validateAsync(req.body);
@@ -44,7 +84,7 @@ router.post("/", async (req: Request, res: Response) => {
     return res.sendStatus(400);
   }
 
-  const { username, email, password } = req.body as UserPostData;
+  const { username, email, password } = req.body as CreateUserPost;
 
   if (await UserModel.retrieveByUsername(username)) {
     console.error(`${username} already exists`);
