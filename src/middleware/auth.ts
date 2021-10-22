@@ -3,14 +3,14 @@ import { verifyCognitoToken } from "cognito-jwt-verify";
 
 export const validateToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.headers?.authorization?.split(" ")[1]; // token should be "Bearer: <token>"
+    const auth = req.headers?.Authorization;
 
-    if (!token) return res.sendStatus(401);
+    if (!auth) return res.sendStatus(401);
 
     await verifyCognitoToken(
       process.env.COGNITO_REGION || "",
       process.env.COGNITO_POOL_ID || "",
-      token,
+      (auth as string).split(" ")[1],
       process.env.COGNITO_APP_CLIENT_ID || "",
     );
 

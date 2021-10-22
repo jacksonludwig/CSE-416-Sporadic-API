@@ -16,7 +16,7 @@ describe(`auth unit tests`, () => {
   beforeEach(() => {
     mockRequest = {
       headers: {
-        authorization: "Bearer e28d89b5-8b54-49b9-aaaa-dd1855e4a4ff",
+        Authorization: "Bearer e28d89b5-8b54-49b9-aaaa-dd1855e4a4ff",
       },
     };
 
