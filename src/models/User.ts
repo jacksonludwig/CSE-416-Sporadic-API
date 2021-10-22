@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import DbClient from "../utils/DbClient";
 
 const COLLECTION = "users";
@@ -104,7 +105,7 @@ export default class UserModel {
    * Returns user with the given id.
    */
   public static async retrieveById(_id: string): Promise<UserModel | null> {
-    const user = await DbClient.findOne<User>(COLLECTION, { _id: _id }, {});
+    const user = await DbClient.findOne<User>(COLLECTION, { _id: new ObjectId(_id) }, {});
 
     return user ? new UserModel(user) : null;
   }
