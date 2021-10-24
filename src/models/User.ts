@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import DbClient from "../utils/DbClient";
 
 const COLLECTION = "users";
