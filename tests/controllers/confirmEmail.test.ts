@@ -20,7 +20,7 @@ describe(`confirm user email tests`, () => {
     mockRequest = {
       confirmCode: "abc123",
     };
-    UserModel.retrieveById = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
+    UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
   });
 
   test(`Should return 204 if all succeeds`, async () => {
@@ -38,7 +38,7 @@ describe(`confirm user email tests`, () => {
   });
 
   test(`Should return 400 if user lookup fails`, async () => {
-    UserModel.retrieveById = jest.fn().mockResolvedValueOnce(null);
+    UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(null);
     const response = await request(app).post("/users/someuserid/confirm").send(mockRequest);
 
     expect(response.statusCode).toBe(400);
