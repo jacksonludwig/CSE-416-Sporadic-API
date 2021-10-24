@@ -1,7 +1,7 @@
 import { SignUpCommand } from "@aws-sdk/client-cognito-identity-provider";
 import Joi from "joi";
-import UserModel from "../../models/User";
-import { cognitoClient } from "../userRouter";
+import UserModel from "../models/User";
+import { cognitoClient } from "../routes/userRouter";
 import { Request, Response } from "express";
 
 const createUserSchema = Joi.object({
