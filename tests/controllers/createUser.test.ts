@@ -48,15 +48,12 @@ describe(`create user route test`, () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test(`Should send 200 with cognito id if all succeeds`, async () => {
+  test(`Should send 204 if all succeeds`, async () => {
     const response = await request(app).post("/users/").send(mockRequest);
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(204);
     expect(UserModel.retrieveByUsername).toHaveBeenCalled();
     expect(UserModel.prototype.save).toHaveBeenCalled();
-    expect(response.body).toStrictEqual({
-      _id: mockObjectId,
-    });
   });
 
   test(`Should send 500 if congito fails`, async () => {

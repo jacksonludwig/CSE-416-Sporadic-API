@@ -2,7 +2,7 @@ import { CognitoIdentityProviderClient } from "@aws-sdk/client-cognito-identity-
 import express from "express";
 import confirmEmail from "../controllers/confirmEmail";
 import createUser from "../controllers/createUser";
-import retrieveById from "../controllers/retrieveUserById";
+import retrieveByUsername from "../controllers/retrieveUserByUsername";
 import { validateToken } from "../middleware/auth";
 
 const router = express.Router();
@@ -13,8 +13,8 @@ export const cognitoClient = new CognitoIdentityProviderClient({
 
 router.post("/", createUser);
 
-router.get("/:id", validateToken, retrieveById);
+router.get("/:username", validateToken, retrieveByUsername);
 
-router.post("/:id/confirm", confirmEmail);
+router.post("/:username/confirm", confirmEmail);
 
 export default router;

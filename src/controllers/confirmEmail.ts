@@ -23,7 +23,7 @@ const confirmEmail = async (req: Request, res: Response) => {
   const { confirmCode } = req.body as ConfirmEmailPost;
 
   try {
-    const user = await UserModel.retrieveById(req.params.id);
+    const user = await UserModel.retrieveByUsername(req.params.username);
 
     if (!user) return res.sendStatus(400);
 

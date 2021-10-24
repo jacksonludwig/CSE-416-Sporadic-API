@@ -43,8 +43,6 @@ const createUser = async (req: Request, res: Response) => {
     Password: password,
   });
 
-  let userId: string | undefined;
-
   try {
     const response = await cognitoClient.send(signUpCommand);
 
@@ -55,13 +53,13 @@ const createUser = async (req: Request, res: Response) => {
       lastLogin: new Date(),
     });
 
-    userId = await user.save();
+    await user.save();
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
   }
 
-  res.status(200).send({ _id: userId });
+  res.sendStatus(204);
 };
 
 export default createUser;
