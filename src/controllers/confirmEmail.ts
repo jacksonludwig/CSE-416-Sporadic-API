@@ -33,8 +33,18 @@ const confirmEmail = async (req: Request, res: Response) => {
       ConfirmationCode: confirmCode,
     });
 
-    // TODO handle <500 errors from cognito
-    await cognitoClient.send(confirmEmailCommand);
+    // Cognito can send back an error that may not be 500,
+    // this must be propagated to our handler.
+    try {
+      await cognitoClient.send(confirmEmailCommand);
+    } catch (err) {
+      if (err && err.$metadata && err.$metadata.httpStatusCode < 500)
+        return res.status(err.$metadata.httpStatusCode).send({
+          name: err.name,
+          message: err.message,
+        });
+      throw err;
+    }
 
     return res.sendStatus(204);
   } catch (err) {
