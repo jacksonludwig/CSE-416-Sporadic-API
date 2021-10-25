@@ -4,7 +4,9 @@ import { validateToken } from "../../src/middleware/auth";
 jest.mock("cognito-jwt-verify", () => ({
   verifyCognitoToken: jest
     .fn()
-    .mockResolvedValueOnce("success")
+    .mockResolvedValueOnce({
+      ["cognito:username"]: "john1",
+    })
     .mockRejectedValueOnce(new Error("mock Err")),
 }));
 
@@ -22,6 +24,9 @@ describe(`auth unit tests`, () => {
 
     mockResponse = {
       sendStatus: jest.fn(),
+      locals: {
+        authenticatedUser: "john1",
+      },
     };
 
     nextFunction = jest.fn().mockResolvedValueOnce(null);

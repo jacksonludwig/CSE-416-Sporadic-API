@@ -26,11 +26,6 @@ const createUser = async (req: Request, res: Response) => {
 
   const { username, email, password } = req.body as CreateUserPost;
 
-  if (await UserModel.retrieveByUsername(username)) {
-    console.error(`${username} already exists`);
-    return res.sendStatus(400);
-  }
-
   const signUpCommand = new SignUpCommand({
     ClientId: process.env.COGNITO_APP_CLIENT_ID,
     UserAttributes: [
@@ -44,6 +39,11 @@ const createUser = async (req: Request, res: Response) => {
   });
 
   try {
+    if (await UserModel.retrieveByUsername(username)) {
+      console.error(`${username} already exists`);
+      return res.sendStatus(400);
+    }
+
     const response = await cognitoClient.send(signUpCommand);
 
     const user = new UserModel({
@@ -59,7 +59,7 @@ const createUser = async (req: Request, res: Response) => {
     return res.sendStatus(500);
   }
 
-  res.sendStatus(204);
+  return res.sendStatus(204);
 };
 
 export default createUser;
