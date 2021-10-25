@@ -2,8 +2,8 @@ import express from "express";
 import { validateToken } from "../middleware/auth";
 import createPlatform from "../controllers/createPlatform";
 
-const router = express.Router();
+const platformRouter = express.Router();
 
-router.post("/", validateToken, createPlatform);
+platformRouter.post("/", validateToken, createPlatform);
 
-export default router;
+export default platformRouter;

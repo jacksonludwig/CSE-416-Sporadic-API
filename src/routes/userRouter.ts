@@ -5,16 +5,16 @@ import createUser from "../controllers/createUser";
 import retrieveByUsername from "../controllers/retrieveUserByUsername";
 import { validateToken } from "../middleware/auth";
 
-const router = express.Router();
+const userRouter = express.Router();
 
 export const cognitoClient = new CognitoIdentityProviderClient({
   region: "us-east-1",
 });
 
-router.post("/", createUser);
+userRouter.post("/", createUser);
 
-router.get("/:username", validateToken, retrieveByUsername);
+userRouter.post("/:username/confirm", confirmEmail);
 
-router.post("/:username/confirm", confirmEmail);
+userRouter.get("/:username", validateToken, retrieveByUsername);
 
-export default router;
+export default userRouter;
