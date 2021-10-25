@@ -9,6 +9,13 @@ jest.mock("@aws-sdk/client-cognito-identity-provider");
 describe(`confirm user email tests`, () => {
   let mockUser: User;
   let mockRequest: ConfirmEmailPost;
+  let mockCognitoError: {
+    $metadata: {
+      httpStatusCode: number;
+    };
+    name: string;
+    message: string;
+  };
 
   beforeEach(() => {
     cognitoClient.send = jest.fn().mockResolvedValueOnce(null);
@@ -20,6 +27,13 @@ describe(`confirm user email tests`, () => {
     mockRequest = {
       confirmCode: "abc123",
     };
+    mockCognitoError = {
+      $metadata: {
+        httpStatusCode: 200,
+      },
+      name: "success",
+      message: "success",
+    };
     UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
   });
 
@@ -30,11 +44,20 @@ describe(`confirm user email tests`, () => {
     expect(cognitoClient.send).toHaveBeenCalled();
   });
 
-  test(`Should return 500 if cognito fails`, async () => {
-    cognitoClient.send = jest.fn().mockRejectedValueOnce(new Error("mock err"));
+  test(`Should return 500 if cognito fails with 500`, async () => {
+    mockCognitoError.$metadata.httpStatusCode = 500;
+    cognitoClient.send = jest.fn().mockRejectedValueOnce(mockCognitoError);
     const response = await request(app).post("/users/someuserid/confirm").send(mockRequest);
 
     expect(response.statusCode).toBe(500);
+  });
+
+  test(`Should return 400 if cognito fails with 400`, async () => {
+    mockCognitoError.$metadata.httpStatusCode = 400;
+    cognitoClient.send = jest.fn().mockRejectedValueOnce(mockCognitoError);
+    const response = await request(app).post("/users/someuserid/confirm").send(mockRequest);
+
+    expect(response.statusCode).toBe(400);
   });
 
   test(`Should return 400 if user lookup fails`, async () => {
