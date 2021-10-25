@@ -12,7 +12,8 @@
     "outDir": "dist",
     "paths": {
       "*": ["./node_modules/*", "./src/types/*"]
-    }
+    },
+    "useUnknownInCatchVariables": false
   },
   "include": ["./**/*.ts"],
   "exclude": ["./node_modules/**/*"]
