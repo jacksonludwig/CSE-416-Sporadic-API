@@ -18,7 +18,9 @@ describe(`confirm user email tests`, () => {
   };
 
   beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementationOnce(() => null);
     cognitoClient.send = jest.fn().mockResolvedValueOnce(null);
+
     mockUser = {
       username: "testuser",
       email: "email@email.com",
@@ -34,6 +36,7 @@ describe(`confirm user email tests`, () => {
       name: "success",
       message: "success",
     };
+
     UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
   });
 

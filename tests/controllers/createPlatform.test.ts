@@ -18,6 +18,8 @@ describe(`create platform test`, () => {
   let mockTitle: string;
 
   beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementationOnce(() => null);
+
     mockTitle = "mocktitle";
 
     mockPlatform = {

@@ -11,11 +11,14 @@ jest.mock("../../src/middleware/auth", () => ({
 describe(`get user by username route test`, () => {
   let mockUser: User;
   beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementationOnce(() => null);
+
     mockUser = {
       username: "testuser",
       email: "email@email.com",
       cognitoId: "asdkjskdjfas",
     };
+
     UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
   });
 

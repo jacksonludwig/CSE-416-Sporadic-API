@@ -16,6 +16,8 @@ describe(`auth unit tests`, () => {
   let nextFunction: NextFunction;
 
   beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementationOnce(() => null);
+
     mockRequest = {
       headers: {
         authorization: "Bearer e28d89b5-8b54-49b9-aaaa-dd1855e4a4ff",

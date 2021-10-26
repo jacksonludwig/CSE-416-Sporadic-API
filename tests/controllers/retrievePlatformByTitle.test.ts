@@ -10,10 +10,13 @@ jest.mock("../../src/middleware/auth", () => ({
 describe(`get user by username route test`, () => {
   let mockPlatform: Platform;
   beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementationOnce(() => null);
+
     mockPlatform = {
       title: "testtitle",
       owner: "john1",
     };
+
     PlatformModel.retrieveByTitle = jest
       .fn()
       .mockResolvedValueOnce(new PlatformModel(mockPlatform));

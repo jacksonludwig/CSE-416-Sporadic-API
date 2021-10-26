@@ -19,6 +19,8 @@ describe(`create user route test`, () => {
   };
 
   beforeEach(() => {
+    jest.spyOn(console, "error").mockImplementationOnce(() => null);
+
     mockRequest = {
       username: "john1",
       email: "john1@gmail.com",
