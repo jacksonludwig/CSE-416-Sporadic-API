@@ -1,5 +1,6 @@
 import request from "supertest";
 import app from "../../src/app";
+import { CreatePlatformPost } from "../../src/controllers/createPlatform";
 import PlatformModel, { Platform } from "../../src/models/Platform";
 
 const username = "john1";
@@ -13,11 +14,19 @@ jest.mock("../../src/middleware/auth", () => ({
 
 describe(`create platform test`, () => {
   let mockPlatform: Platform;
+  let mockRequest: CreatePlatformPost;
+  let mockTitle: string;
 
   beforeEach(() => {
+    mockTitle = "mocktitle";
+
     mockPlatform = {
-      title: "mocktitle",
+      title: mockTitle,
       owner: username,
+    };
+
+    mockRequest = {
+      title: mockTitle,
     };
 
     PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(null);
@@ -25,6 +34,41 @@ describe(`create platform test`, () => {
   });
 
   test(`Should create platform on success`, async () => {
+    const response = await request(app).post("/platforms/").send(mockRequest);
 
+    expect(PlatformModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.title);
+    expect(PlatformModel.prototype.save).toHaveBeenCalled();
+    expect(response.statusCode).toBe(204);
+  });
+
+  test(`Should give 400 error if platform already exists`, async () => {
+    PlatformModel.retrieveByTitle = jest
+      .fn()
+      .mockResolvedValueOnce(new PlatformModel(mockPlatform));
+    const response = await request(app).post("/platforms/").send(mockRequest);
+
+    expect(PlatformModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.title);
+    expect(response.statusCode).toBe(400);
+  });
+
+  test(`Should give 400 error if schema validation fails`, async () => {
+    mockRequest.title = "";
+    const response = await request(app).post("/platforms/").send(mockRequest);
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  test(`Should give 500 error if retrieve fails`, async () => {
+    PlatformModel.retrieveByTitle = jest.fn().mockRejectedValueOnce(new Error("mock err"));
+    const response = await request(app).post("/platforms/").send(mockRequest);
+
+    expect(response.statusCode).toBe(500);
+  });
+
+  test(`Should give 500 error if save fails`, async () => {
+    PlatformModel.prototype.save = jest.fn().mockRejectedValueOnce(new Error("mock err"));
+    const response = await request(app).post("/platforms/").send(mockRequest);
+
+    expect(response.statusCode).toBe(500);
   });
 });
