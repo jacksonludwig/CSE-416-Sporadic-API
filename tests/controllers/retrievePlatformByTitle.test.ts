@@ -14,6 +14,7 @@ describe(`get user by username route test`, () => {
 
     mockPlatform = {
       title: "testtitle",
+      description: "description example",
       owner: "john1",
     };
 

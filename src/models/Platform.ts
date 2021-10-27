@@ -5,6 +5,7 @@ const COLLECTION = "platforms";
 export type Platform = {
   title: string;
   owner: string;
+  description: string;
   bannedUsers?: string[];
   subscribers?: string[];
   moderators?: string[];
@@ -15,6 +16,7 @@ export type Platform = {
 export default class PlatformModel {
   private title: Platform["title"];
   private owner: Platform["owner"];
+  private description: Platform["description"];
   private bannedUsers: Platform["bannedUsers"];
   private _id: Platform["_id"];
   private subscribers: Platform["subscribers"];
@@ -25,6 +27,7 @@ export default class PlatformModel {
     this._id = platform._id;
     this.title = platform.title;
     this.owner = platform.owner;
+    this.description = platform.description;
     this.subscribers = platform.subscribers;
     this.moderators = platform.moderators;
     this.quizzes = platform.quizzes;
@@ -36,6 +39,7 @@ export default class PlatformModel {
       _id: this._id,
       title: this.title,
       owner: this.owner,
+      description: this.description,
       subscribers: this.subscribers,
       moderators: this.moderators,
       quizzes: this.quizzes,
@@ -48,6 +52,7 @@ export default class PlatformModel {
       _id: this._id,
       title: this.title,
       owner: this.owner,
+      description: this.description,
       subscribers: this.subscribers,
       moderators: this.moderators,
       quizzes: this.quizzes,
