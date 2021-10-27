@@ -16,19 +16,23 @@ describe(`create platform test`, () => {
   let mockPlatform: Platform;
   let mockRequest: CreatePlatformPost;
   let mockTitle: string;
+  let mockDescription: string;
 
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
 
     mockTitle = "mocktitle";
+    mockDescription = "This is a mock description";
 
     mockPlatform = {
       title: mockTitle,
+      description: mockDescription,
       owner: username,
     };
 
     mockRequest = {
       title: mockTitle,
+      description: mockDescription,
     };
 
     PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(null);
