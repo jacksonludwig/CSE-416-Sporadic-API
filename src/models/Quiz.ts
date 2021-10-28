@@ -1,0 +1,100 @@
+
+import internal from "stream";
+import DbClient from "../utils/DbClient";
+
+const COLLECTION = "quizzes";
+
+export type Answer = {
+    text: string;
+    isCorrect: boolean;
+}
+export type Question = {
+    body: string;
+    answers: Answer[];
+}
+export type Score = {
+    user: string;
+    score: number;
+    timeSubmitted: Date;
+}
+export type Comment = {
+    user: string;
+    text: string;
+    date: Date;
+}
+export type Quiz = {
+  title: string;
+  platform: string;
+  isTimed: boolean;
+  timeLimit: number;
+  upvotes: number;
+  downvotes: number;
+  questions?: Question[];
+  scores?: Score[];
+  comments?: Comment[];
+  _id?: string;
+};
+
+export default class QuizModel {
+  private title: Quiz["title"];
+  private platform: Quiz["platform"];
+  private isTimed: Quiz["isTimed"];
+  private timeLimit: Quiz["timeLimit"];
+  private upvotes: Quiz["upvotes"];
+  private downvotes: Quiz["downvotes"];
+  private questions: Quiz["questions"];
+  private scores: Quiz["scores"];
+  private comments: Quiz["comments"];
+  private _id: Quiz["_id"];
+
+  constructor(quiz: Quiz) {
+    this._id = quiz._id;
+    this.title = quiz.title;
+    this.platform = quiz.platform;
+    this.isTimed = quiz.isTimed;
+    this.timeLimit = quiz.timeLimit;
+    this.upvotes = quiz.upvotes;
+    this.downvotes = quiz.downvotes;
+    this.questions = quiz.questions;
+    this.scores = quiz.scores;
+    this.comments = quiz.comments;
+  }
+
+  public async save(): Promise<string> {
+    return DbClient.insertOne(COLLECTION, {
+      _id: this._id,
+      title: this.title,
+      platform: this.platform,
+      isTimed: this.isTimed,
+      timeLimit: this.timeLimit,
+      upvotes: this.upvotes,
+      downvotes: this.downvotes,
+      questions: this.questions,
+      scores: this.scores,
+      comments: this.comments
+    });
+  }
+
+  public toJSON(): Quiz {
+    return {
+        title: this.title,
+        platform: this.platform,
+        isTimed: this.isTimed,
+        timeLimit: this.timeLimit,
+        upvotes: this.upvotes,
+        downvotes: this.downvotes,
+        questions: this.questions,
+        scores: this.scores,
+        comments: this.comments,
+        _id: this._id,
+    };
+  }
+
+  /**
+   * Returns quiz with the given title.
+   */
+  public static async retrieveByTitle(platform: string, quizTitle: string): Promise<QuizModel | null> {
+    const quiz = await DbClient.findOne<Quiz>(COLLECTION, { title: quizTitle, platform: platform}, {});
+    return quiz ? new QuizModel(quiz) : null;
+  }
+}
