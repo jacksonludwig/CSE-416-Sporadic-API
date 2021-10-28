@@ -7,7 +7,7 @@ type Token = {
 
 export const validateToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.headers?.authorization?.split(" ")[1]; // token should be "Bearer: <token>"
+    const token = req.headers?.authorization?.split(" ")[1]; // token should be "Bearer <token>"
 
     if (!token) return res.sendStatus(401);
 
