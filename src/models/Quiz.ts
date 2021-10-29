@@ -97,4 +97,13 @@ export default class QuizModel {
     const quiz = await DbClient.findOne<Quiz>(COLLECTION, { title: quizTitle, platform: platform}, {});
     return quiz ? new QuizModel(quiz) : null;
   }
+  /**
+   * 
+   * Returns all quizzes within a platform
+   */
+  public static async retrieveByPlatform(platform: string): Promise<Quiz[] | null> {
+    const quizzes = await DbClient.find<Quiz>(COLLECTION, { platform: platform}, {});
+    return quizzes.items;
+  }
+  
 }

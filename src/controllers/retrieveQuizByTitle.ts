@@ -3,7 +3,7 @@ import QuizModel from "../models/Quiz";
 
 const retrieveQuizByTitle = async (req: Request, res: Response) => {
     try {
-      const quiz = await QuizModel.retrieveByTitle(req.params.platformTitle, req.params.quizTitle);
+      const quiz = await QuizModel.retrieveByTitle(req.params.platform, req.params.quizTitle);
   
       return quiz ? res.status(200).send(quiz.toJSON()) : res.sendStatus(400);
     } catch (err) {
