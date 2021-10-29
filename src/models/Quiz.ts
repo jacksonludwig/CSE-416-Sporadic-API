@@ -1,26 +1,33 @@
-import internal from "stream";
 import DbClient from "../utils/DbClient";
 
 const COLLECTION = "quizzes";
+
+export type QuizFilter = {
+  platform?: string;
+};
 
 export type Answer = {
   text: string;
   isCorrect: boolean;
 };
+
 export type Question = {
   body: string;
   answers: Answer[];
 };
+
 export type Score = {
   user: string;
   score: number;
   timeSubmitted: Date;
 };
+
 export type Comment = {
   user: string;
   text: string;
   date: Date;
 };
+
 export type Quiz = {
   title: string;
   platform: string;
@@ -108,12 +115,17 @@ export default class QuizModel {
     );
     return quiz ? new QuizModel(quiz) : null;
   }
+
   /**
-   *
-   * Returns all quizzes within a platform
+   * Retrieve all quizzes matching the given parameters.
    */
-  public static async retrieveByPlatform(platform: string): Promise<Quiz[] | null> {
-    const quizzes = await DbClient.find<Quiz>(COLLECTION, { platform: platform }, {});
-    return quizzes.items;
+  public static async retrieveAll(
+    filter: QuizFilter = {},
+  ): Promise<{ totalItems: number; items: Quiz[] }> {
+    const quizFilter: QuizFilter = {};
+
+    if (filter.platform) quizFilter.platform = filter.platform;
+
+    return await DbClient.find<Quiz>(COLLECTION, quizFilter, {});
   }
 }

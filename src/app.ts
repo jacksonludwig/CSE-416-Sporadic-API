@@ -9,6 +9,6 @@ app.use(cors(), express.json());
 
 app.use("/users", userRouter);
 app.use("/platforms", platformRouter);
-app.use("/quiz", quizRouter);
+app.use("/quizzes", quizRouter);
 
 export default app;
