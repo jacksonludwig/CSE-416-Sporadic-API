@@ -6,7 +6,7 @@ const retrieveQuizzes = async (req: Request, res: Response) => {
     const quizzes = await QuizModel.retrieveAll({
       platform: req.query.platform as string | undefined,
     });
-    return quizzes ? res.status(200).send(JSON.stringify(quizzes)) : res.sendStatus(400);
+    return res.status(200).send(quizzes);
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
