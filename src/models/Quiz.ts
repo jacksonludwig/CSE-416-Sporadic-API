@@ -1,27 +1,26 @@
-
 import internal from "stream";
 import DbClient from "../utils/DbClient";
 
 const COLLECTION = "quizzes";
 
 export type Answer = {
-    text: string;
-    isCorrect: boolean;
-}
+  text: string;
+  isCorrect: boolean;
+};
 export type Question = {
-    body: string;
-    answers: Answer[];
-}
+  body: string;
+  answers: Answer[];
+};
 export type Score = {
-    user: string;
-    score: number;
-    timeSubmitted: Date;
-}
+  user: string;
+  score: number;
+  timeSubmitted: Date;
+};
 export type Comment = {
-    user: string;
-    text: string;
-    date: Date;
-}
+  user: string;
+  text: string;
+  date: Date;
+};
 export type Quiz = {
   title: string;
   platform: string;
@@ -29,6 +28,7 @@ export type Quiz = {
   timeLimit: number;
   upvotes: number;
   downvotes: number;
+  description: string;
   questions?: Question[];
   scores?: Score[];
   comments?: Comment[];
@@ -42,6 +42,7 @@ export default class QuizModel {
   private timeLimit: Quiz["timeLimit"];
   private upvotes: Quiz["upvotes"];
   private downvotes: Quiz["downvotes"];
+  private description: Quiz["description"];
   private questions: Quiz["questions"];
   private scores: Quiz["scores"];
   private comments: Quiz["comments"];
@@ -55,6 +56,7 @@ export default class QuizModel {
     this.timeLimit = quiz.timeLimit;
     this.upvotes = quiz.upvotes;
     this.downvotes = quiz.downvotes;
+    this.description = quiz.description;
     this.questions = quiz.questions;
     this.scores = quiz.scores;
     this.comments = quiz.comments;
@@ -69,41 +71,49 @@ export default class QuizModel {
       timeLimit: this.timeLimit,
       upvotes: this.upvotes,
       downvotes: this.downvotes,
+      description: this.description,
       questions: this.questions,
       scores: this.scores,
-      comments: this.comments
+      comments: this.comments,
     });
   }
 
   public toJSON(): Quiz {
     return {
-        title: this.title,
-        platform: this.platform,
-        isTimed: this.isTimed,
-        timeLimit: this.timeLimit,
-        upvotes: this.upvotes,
-        downvotes: this.downvotes,
-        questions: this.questions,
-        scores: this.scores,
-        comments: this.comments,
-        _id: this._id,
+      title: this.title,
+      platform: this.platform,
+      isTimed: this.isTimed,
+      timeLimit: this.timeLimit,
+      upvotes: this.upvotes,
+      downvotes: this.downvotes,
+      description: this.description,
+      questions: this.questions,
+      scores: this.scores,
+      comments: this.comments,
+      _id: this._id,
     };
   }
 
   /**
    * Returns quiz with the given title.
    */
-  public static async retrieveByTitle(platform: string, quizTitle: string): Promise<QuizModel | null> {
-    const quiz = await DbClient.findOne<Quiz>(COLLECTION, { title: quizTitle, platform: platform}, {});
+  public static async retrieveByTitle(
+    platform: string,
+    quizTitle: string,
+  ): Promise<QuizModel | null> {
+    const quiz = await DbClient.findOne<Quiz>(
+      COLLECTION,
+      { title: quizTitle, platform: platform },
+      {},
+    );
     return quiz ? new QuizModel(quiz) : null;
   }
   /**
-   * 
+   *
    * Returns all quizzes within a platform
    */
   public static async retrieveByPlatform(platform: string): Promise<Quiz[] | null> {
-    const quizzes = await DbClient.find<Quiz>(COLLECTION, { platform: platform}, {});
+    const quizzes = await DbClient.find<Quiz>(COLLECTION, { platform: platform }, {});
     return quizzes.items;
   }
-  
 }
