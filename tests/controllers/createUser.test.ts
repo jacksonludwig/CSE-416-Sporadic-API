@@ -50,6 +50,17 @@ describe(`create user route test`, () => {
     expect(response.statusCode).toBe(400);
   });
 
+  test(`Should send response from cognito if it fails with <500 error `, async () => {
+    const mockErrResponse = mockSendResponse;
+    const responseCode = 401;
+    mockErrResponse.$metadata.httpStatusCode = responseCode;
+    cognitoClient.send = jest.fn().mockRejectedValueOnce(mockErrResponse);
+
+    const response = await request(app).post("/users/").send(mockRequest);
+
+    expect(response.statusCode).toBe(responseCode);
+  });
+
   test(`Should send 204 if all succeeds`, async () => {
     const response = await request(app).post("/users/").send(mockRequest);
 
