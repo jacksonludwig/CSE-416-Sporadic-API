@@ -1,4 +1,4 @@
-import { SignUpCommand } from "@aws-sdk/client-cognito-identity-provider";
+import { SignUpCommand, SignUpCommandOutput } from "@aws-sdk/client-cognito-identity-provider";
 import Joi from "joi";
 import UserModel from "../models/User";
 import { cognitoClient } from "../routes/userRouter";
@@ -44,7 +44,20 @@ const createUser = async (req: Request, res: Response) => {
       return res.sendStatus(400);
     }
 
-    const response = await cognitoClient.send(signUpCommand);
+    let response: SignUpCommandOutput;
+
+    // Cognito can send back an error that may not be 500,
+    // this must be propagated to our handler.
+    try {
+      response = await cognitoClient.send(signUpCommand);
+    } catch (err) {
+      if (err && err.$metadata && err.$metadata.httpStatusCode < 500)
+        return res.status(err.$metadata.httpStatusCode).send({
+          name: err.name,
+          message: err.message,
+        });
+      throw err;
+    }
 
     const user = new UserModel({
       username: username,
