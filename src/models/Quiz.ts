@@ -58,7 +58,7 @@ export default class QuizModel {
   constructor(quiz: Quiz) {
     this._id = quiz._id;
     this.title = quiz.title;
-    this.platform = quiz.platform;
+    this.platform = quiz.platform.toLowerCase();
     this.isTimed = quiz.isTimed;
     this.timeLimit = quiz.timeLimit;
     this.upvotes = quiz.upvotes;
