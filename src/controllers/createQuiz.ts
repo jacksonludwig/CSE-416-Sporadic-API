@@ -69,7 +69,7 @@ const createQuiz = async (req: Request, res: Response) => {
   } = req.body as CreateQuizPost;
 
   try {
-    if (await QuizModel.retrieveByTitle(platform, title)) {
+    if (await QuizModel.retrieveByTitle(platform.toLowerCase(), title)) {
       console.error(`${title} already exists`);
       return res.sendStatus(400);
     }

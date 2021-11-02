@@ -25,7 +25,7 @@ export default class PlatformModel {
 
   constructor(platform: Platform) {
     this._id = platform._id;
-    this.title = platform.title;
+    this.title = platform.title.toLowerCase();
     this.owner = platform.owner;
     this.description = platform.description;
     this.subscribers = platform.subscribers;
