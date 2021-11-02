@@ -4,7 +4,7 @@ import QuizModel from "../models/Quiz";
 const retrieveQuizzes = async (req: Request, res: Response) => {
   try {
     const quizzes = await QuizModel.retrieveAll({
-      platform: (req.query.platform as string | undefined)?.toLowerCase(),
+      platform: req.query.platform as string | undefined,
     });
     return res.status(200).send(quizzes);
   } catch (err) {

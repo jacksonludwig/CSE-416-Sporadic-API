@@ -25,7 +25,7 @@ const createPlatform = async (req: Request, res: Response) => {
   const { title, description, moderators } = req.body as CreatePlatformPost;
 
   try {
-    if (await PlatformModel.retrieveByTitle(title.toLowerCase())) {
+    if (await PlatformModel.retrieveByTitle(title)) {
       console.error(`${title} already exists`);
       return res.sendStatus(400);
     }
