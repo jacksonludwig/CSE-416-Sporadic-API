@@ -17,7 +17,7 @@ describe(`get all quizzes route`, () => {
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
     mockTitle = "mocktitle";
-    mockPlatform = "mockPlatform";
+    mockPlatform = "mockPlatform".toLowerCase();
 
     mockQueryParams = {
       platform: mockPlatform,

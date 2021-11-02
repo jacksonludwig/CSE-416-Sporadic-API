@@ -23,7 +23,7 @@ describe(`create quiz test`, () => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
 
     mockTitle = "mocktitle";
-    mockPlatform = "mockPlatform";
+    mockPlatform = "mockPlatform".toLowerCase();
 
     mockQuiz = {
       title: mockTitle,

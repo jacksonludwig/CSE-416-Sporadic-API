@@ -15,7 +15,7 @@ describe(`get quiz by title/platform route test`, () => {
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
     mockTitle = "mocktitle";
-    mockPlatform = "mockPlatform";
+    mockPlatform = "mockPlatform".toLowerCase();
 
     mockQuiz = {
       title: mockTitle,
