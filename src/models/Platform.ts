@@ -64,7 +64,11 @@ export default class PlatformModel {
    * Returns platform with the given title.
    */
   public static async retrieveByTitle(title: string): Promise<PlatformModel | null> {
-    const platform = await DbClient.findOne<Platform>(COLLECTION, { title: title }, {});
+    const platform = await DbClient.findOne<Platform>(
+      COLLECTION,
+      { title: title.toLowerCase() },
+      {},
+    );
 
     return platform ? new PlatformModel(platform) : null;
   }

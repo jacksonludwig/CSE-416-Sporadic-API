@@ -110,7 +110,7 @@ export default class QuizModel {
   ): Promise<QuizModel | null> {
     const quiz = await DbClient.findOne<Quiz>(
       COLLECTION,
-      { title: quizTitle, platform: platform },
+      { title: quizTitle, platform: platform.toLowerCase() },
       {},
     );
     return quiz ? new QuizModel(quiz) : null;
@@ -124,7 +124,7 @@ export default class QuizModel {
   ): Promise<{ totalItems: number; items: Quiz[] }> {
     const quizFilter: QuizFilter = {};
 
-    if (filter.platform) quizFilter.platform = filter.platform;
+    if (filter.platform) quizFilter.platform = filter.platform.toLowerCase();
 
     return await DbClient.find<Quiz>(COLLECTION, quizFilter, {});
   }
