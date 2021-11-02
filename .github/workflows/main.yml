@@ -6,9 +6,9 @@ name: Run tests
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [ master, BUILD_1, BUILD_2, BUILD_3, BUILD_4, BUILD_5, BUILD_6, BUILD_7 ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, BUILD_1, BUILD_2, BUILD_3, BUILD_4, BUILD_5, BUILD_6, BUILD_7 ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
