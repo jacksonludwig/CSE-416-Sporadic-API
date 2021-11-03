@@ -1,4 +1,4 @@
-import { Db, MongoClient, Filter, FindOptions, Document } from "mongodb";
+import { Db, MongoClient, Filter, FindOptions, Document, MatchKeysAndValues } from "mongodb";
 
 class DbClient {
   private cachedDb: Db | null = null;
@@ -60,6 +60,24 @@ class DbClient {
     if (!result.acknowledged) throw new Error(`${document} could not be written to ${collection}.`);
 
     return result.insertedId.toString();
+  }
+
+  /**
+   * Updates a document.
+   * Currently does not accept options.
+   *
+   * @param collection The collection to update
+   * @param filter Field(s) to filter by
+   * @param updates Keys and values to update
+   */
+  public async updateOne<T>(collection: string, filter: Filter<T>, updates: MatchKeysAndValues<T>) {
+    const db = await this.connect();
+
+    const result = await db
+      .collection<T>(collection)
+      .updateOne(filter, { $set: updates }, { upsert: false });
+
+    if (!result.acknowledged) throw new Error(`updates could not be written to ${collection}.`);
   }
 }
 

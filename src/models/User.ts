@@ -26,6 +26,7 @@ export type User = {
   subscriptions?: string[];
   friends?: string[];
   notifications?: Notification[];
+  quizzesTaken?: string[];
 };
 
 export default class UserModel {
@@ -40,6 +41,7 @@ export default class UserModel {
   private subscriptions: User["subscriptions"];
   private friends: User["friends"];
   private notifications: User["notifications"];
+  private quizzesTaken: User["quizzesTaken"];
 
   constructor(user: User) {
     this.email = user.email;
@@ -53,6 +55,7 @@ export default class UserModel {
     this.subscriptions = user.subscriptions;
     this.friends = user.friends;
     this.notifications = user.notifications;
+    this.quizzesTaken = user.quizzesTaken;
   }
 
   public async save(): Promise<string> {
@@ -68,6 +71,7 @@ export default class UserModel {
       friends: this.friends,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
+      quizzesTaken: this.quizzesTaken,
     });
   }
 
@@ -84,11 +88,20 @@ export default class UserModel {
       friends: this.friends,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
+      quizzesTaken: this.quizzesTaken,
     };
   }
 
   public getUsername(): User["username"] {
     return this.username;
+  }
+
+  public getQuizzesTaken(): User["quizzesTaken"] {
+    return this.quizzesTaken;
+  }
+
+  public addTakenQuiz(_id: string) {
+    this.quizzesTaken?.push(_id);
   }
 
   /**
@@ -98,5 +111,25 @@ export default class UserModel {
     const user = await DbClient.findOne<User>(COLLECTION, { username: username }, {});
 
     return user ? new UserModel(user) : null;
+  }
+
+  /**
+   * Update mutable fields of the user in the database.
+   */
+  public async update(): Promise<void> {
+    await DbClient.updateOne<User>(
+      COLLECTION,
+      { username: this.username },
+      {
+        awards: this.awards,
+        isGloballyBanned: this.isGloballyBanned,
+        profilePicture: this.profilePicture,
+        subscriptions: this.subscriptions,
+        friends: this.friends,
+        notifications: this.notifications,
+        lastLogin: this.lastLogin,
+        quizzesTaken: this.quizzesTaken,
+      },
+    );
   }
 }

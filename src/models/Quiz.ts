@@ -8,12 +8,12 @@ export type QuizFilter = {
 
 export type Answer = {
   text: string;
-  isCorrect: boolean;
 };
 
 export type Question = {
   body: string;
   answers: Answer[];
+  correctAnswer: number;
 };
 
 export type Score = {
@@ -99,6 +99,14 @@ export default class QuizModel {
       comments: this.comments,
       _id: this._id,
     };
+  }
+
+  public getQuestions(): Quiz["questions"] {
+    return this.questions;
+  }
+
+  public getId(): Quiz["_id"] {
+    return this._id;
   }
 
   /**
