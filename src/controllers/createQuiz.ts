@@ -82,7 +82,7 @@ const createQuiz = async (req: Request, res: Response) => {
       upvotes: upvotes,
       downvotes: downvotes,
       description: description,
-      questions: questions,
+      questions: questions || [],
       scores: scores,
       comments: comments,
     });

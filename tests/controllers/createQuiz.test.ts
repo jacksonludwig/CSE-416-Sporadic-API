@@ -33,7 +33,7 @@ describe(`create quiz test`, () => {
       upvotes: 2,
       downvotes: 3,
       description: "some description",
-    };
+    } as Quiz;
 
     mockRequest = {
       title: mockTitle,
