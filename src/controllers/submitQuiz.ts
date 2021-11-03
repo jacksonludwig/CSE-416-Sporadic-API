@@ -11,7 +11,7 @@ const submitQuizSchema = Joi.object({
 });
 
 export type SubmitQuizPost = {
-  submittedAnswers: number[];
+  answers: number[];
 };
 
 const submitQuiz = async (req: Request, res: Response) => {
@@ -22,14 +22,14 @@ const submitQuiz = async (req: Request, res: Response) => {
     return res.sendStatus(400);
   }
 
-  const { submittedAnswers } = req.body as SubmitQuizPost;
+  const { answers } = req.body as SubmitQuizPost;
 
   // TODO Check if the user took too long to submit
 
   try {
     const quiz = await QuizModel.retrieveByTitle(req.params.platform, req.params.quizTitle);
 
-    if (!quiz || quiz.getQuestions()?.length !== submittedAnswers.length)
+    if (!quiz || !quiz["questions"] || quiz["questions"].length !== answers.length)
       return res.sendStatus(400);
 
     const user = await UserModel.retrieveByUsername(res.locals.authenticatedUser);
@@ -38,16 +38,16 @@ const submitQuiz = async (req: Request, res: Response) => {
 
     const quizId = quiz.getId() as string;
 
-    if (user.getQuizzesTaken()?.includes(quizId)) return res.sendStatus(400);
+    if (user.quizzesTaken.includes(quizId)) return res.sendStatus(400);
 
-    user.addTakenQuiz(quizId);
-    user.update();
+    user.quizzesTaken.push(quizId);
+    await user.update();
 
     const correctAnswers = quiz.getQuestions()?.map((q) => q.correctAnswer);
 
     // TODO Use this to save user score in quiz and update their total for the platform
     const totalCorrect = correctAnswers?.reduce((prev, curr, index) => {
-      return submittedAnswers[index] === curr ? prev + 1 : prev;
+      return answers[index] === curr ? prev + 1 : prev;
     }, 0);
 
     return res.status(200).send({ correctAnswers: correctAnswers });

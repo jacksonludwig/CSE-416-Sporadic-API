@@ -17,7 +17,7 @@ describe(`get user by username route test`, () => {
       username: "testuser",
       email: "email@email.com",
       cognitoId: "asdkjskdjfas",
-    };
+    } as User;
 
     UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
   });

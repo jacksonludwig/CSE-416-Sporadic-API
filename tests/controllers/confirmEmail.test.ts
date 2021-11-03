@@ -25,7 +25,7 @@ describe(`confirm user email tests`, () => {
       username: "testuser",
       email: "email@email.com",
       cognitoId: "asdkjskdjfas",
-    };
+    } as User;
     mockRequest = {
       confirmCode: "abc123",
     };

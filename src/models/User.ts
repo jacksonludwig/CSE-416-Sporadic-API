@@ -23,10 +23,10 @@ export type User = {
   isGloballyBanned?: boolean;
   lastLogin?: Date;
   profilePicture?: string;
-  subscriptions?: string[];
-  friends?: string[];
-  notifications?: Notification[];
-  quizzesTaken?: string[];
+  subscriptions: string[];
+  friends: string[];
+  notifications: Notification[];
+  quizzesTaken: string[];
 };
 
 export default class UserModel {
@@ -41,7 +41,7 @@ export default class UserModel {
   private subscriptions: User["subscriptions"];
   private friends: User["friends"];
   private notifications: User["notifications"];
-  private quizzesTaken: User["quizzesTaken"];
+  public quizzesTaken: User["quizzesTaken"];
 
   constructor(user: User) {
     this.email = user.email;
@@ -94,14 +94,6 @@ export default class UserModel {
 
   public getUsername(): User["username"] {
     return this.username;
-  }
-
-  public getQuizzesTaken(): User["quizzesTaken"] {
-    return this.quizzesTaken;
-  }
-
-  public addTakenQuiz(_id: string) {
-    this.quizzesTaken?.push(_id);
   }
 
   /**
