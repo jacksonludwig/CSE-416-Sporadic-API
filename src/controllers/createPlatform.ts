@@ -33,7 +33,10 @@ const createPlatform = async (req: Request, res: Response) => {
     const platform = new PlatformModel({
       title: title,
       description: description,
-      moderators: moderators,
+      moderators: moderators || [],
+      bannedUsers: [],
+      subscribers: [],
+      quizzes: [],
       owner: res.locals.authenticatedUser,
     });
 

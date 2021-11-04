@@ -6,10 +6,10 @@ export type Platform = {
   title: string;
   owner: string;
   description: string;
-  bannedUsers?: string[];
-  subscribers?: string[];
-  moderators?: string[];
-  quizzes?: string[];
+  bannedUsers: string[];
+  subscribers: string[];
+  moderators: string[];
+  quizzes: string[];
   _id?: string;
 };
 
@@ -19,9 +19,9 @@ export default class PlatformModel {
   private description: Platform["description"];
   private bannedUsers: Platform["bannedUsers"];
   private _id: Platform["_id"];
-  private subscribers: Platform["subscribers"];
   private moderators: Platform["moderators"];
   private quizzes: Platform["quizzes"];
+  public subscribers: Platform["subscribers"];
 
   constructor(platform: Platform) {
     this._id = platform._id;
@@ -71,5 +71,22 @@ export default class PlatformModel {
     );
 
     return platform ? new PlatformModel(platform) : null;
+  }
+
+  /**
+   * Update mutable fields of the platform in the database.
+   */
+  public async update(): Promise<void> {
+    await DbClient.updateOne<Platform>(
+      COLLECTION,
+      { title: this.title },
+      {
+        description: this.description,
+        subscribers: this.subscribers,
+        moderators: this.moderators,
+        quizzes: this.quizzes,
+        bannedUsers: this.bannedUsers,
+      },
+    );
   }
 }

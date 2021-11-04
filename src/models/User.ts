@@ -38,9 +38,9 @@ export default class UserModel {
   private isGloballyBanned: User["isGloballyBanned"];
   private lastLogin: User["lastLogin"];
   private profilePicture: User["profilePicture"];
-  private subscriptions: User["subscriptions"];
   private friends: User["friends"];
   private notifications: User["notifications"];
+  public subscriptions: User["subscriptions"];
   public quizzesTaken: User["quizzesTaken"];
 
   constructor(user: User) {
