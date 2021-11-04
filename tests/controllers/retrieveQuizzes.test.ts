@@ -31,7 +31,7 @@ describe(`get all quizzes route`, () => {
       upvotes: 2,
       downvotes: 3,
       description: "some description",
-    };
+    } as Quiz;
 
     mockResponse = { totalItems: 1, items: [mockQuiz] };
 

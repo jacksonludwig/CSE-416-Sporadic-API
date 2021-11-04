@@ -8,12 +8,12 @@ export type QuizFilter = {
 
 export type Answer = {
   text: string;
-  isCorrect: boolean;
 };
 
 export type Question = {
   body: string;
   answers: Answer[];
+  correctAnswer: number;
 };
 
 export type Score = {
@@ -36,7 +36,7 @@ export type Quiz = {
   upvotes: number;
   downvotes: number;
   description: string;
-  questions?: Question[];
+  questions: Question[];
   scores?: Score[];
   comments?: Comment[];
   _id?: string;
@@ -50,10 +50,10 @@ export default class QuizModel {
   private upvotes: Quiz["upvotes"];
   private downvotes: Quiz["downvotes"];
   private description: Quiz["description"];
-  private questions: Quiz["questions"];
   private scores: Quiz["scores"];
   private comments: Quiz["comments"];
   private _id: Quiz["_id"];
+  public questions: Quiz["questions"];
 
   constructor(quiz: Quiz) {
     this._id = quiz._id;
@@ -99,6 +99,10 @@ export default class QuizModel {
       comments: this.comments,
       _id: this._id,
     };
+  }
+
+  public getId(): Quiz["_id"] {
+    return this._id;
   }
 
   /**

@@ -64,6 +64,10 @@ const createUser = async (req: Request, res: Response) => {
       email: email,
       cognitoId: response.UserSub as string,
       lastLogin: new Date(),
+      subscriptions: [],
+      friends: [],
+      notifications: [],
+      quizzesTaken: [],
     });
 
     await user.save();

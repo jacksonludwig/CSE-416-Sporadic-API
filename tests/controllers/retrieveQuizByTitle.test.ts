@@ -25,7 +25,7 @@ describe(`get quiz by title/platform route test`, () => {
       upvotes: 2,
       downvotes: 3,
       description: "some description",
-    };
+    } as Quiz;
 
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));
   });
