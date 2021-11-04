@@ -20,6 +20,8 @@ const subscribeUserToPlatform = async (req: Request, res: Response) => {
 
     platform.subscribers.push(username);
     await platform.update();
+
+    return res.sendStatus(204);
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);

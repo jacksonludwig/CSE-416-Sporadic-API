@@ -20,6 +20,8 @@ const unsubscribeUserFromPlatform = async (req: Request, res: Response) => {
 
     platform.subscribers = platform.subscribers.filter((u) => u !== username);
     await platform.update();
+
+    return res.sendStatus(204);
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
