@@ -48,7 +48,9 @@ const submitQuiz = async (req: Request, res: Response) => {
       return answers[index] === curr ? prev + 1 : prev;
     }, 0);
 
-    return res.status(200).send({ correctAnswers: quiz.correctAnswers });
+    return res
+      .status(200)
+      .send({ correctAnswers: quiz.correctAnswers, totalCorrect: totalCorrect });
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);

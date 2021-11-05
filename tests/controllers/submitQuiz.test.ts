@@ -23,7 +23,7 @@ describe(`submit quiz route tests`, () => {
     mockPlatform = "mockPlatform".toLowerCase();
     mockQuizId = "exampleid";
 
-    mockAnswers = { answers: [1, 3] };
+    mockAnswers = { answers: [0, 1] };
 
     mockQuiz = {
       title: mockTitle,
@@ -67,7 +67,7 @@ describe(`submit quiz route tests`, () => {
 
     expect(validateToken).toHaveBeenCalled();
     expect(response.statusCode).toBe(200);
-    expect(response.body).toStrictEqual({ correctAnswers: [0, 1] });
+    expect(response.body).toStrictEqual({ correctAnswers: [0, 1], totalCorrect: 2 });
   });
 
   test(`Should send back 500 if lookup of quiz fails`, async () => {
