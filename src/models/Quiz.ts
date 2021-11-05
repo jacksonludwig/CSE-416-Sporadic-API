@@ -6,14 +6,9 @@ export type QuizFilter = {
   platform?: string;
 };
 
-export type Answer = {
-  text: string;
-};
-
 export type Question = {
   body: string;
-  answers: Answer[];
-  correctAnswer: number;
+  answers: string[];
 };
 
 export type Score = {
@@ -31,21 +26,20 @@ export type Comment = {
 export type Quiz = {
   title: string;
   platform: string;
-  isTimed: boolean;
   timeLimit: number;
   upvotes: number;
   downvotes: number;
   description: string;
   questions: Question[];
-  scores?: Score[];
-  comments?: Comment[];
+  correctAnswers: number[];
+  scores: Score[];
+  comments: Comment[];
   _id?: string;
 };
 
 export default class QuizModel {
   private title: Quiz["title"];
   private platform: Quiz["platform"];
-  private isTimed: Quiz["isTimed"];
   private timeLimit: Quiz["timeLimit"];
   private upvotes: Quiz["upvotes"];
   private downvotes: Quiz["downvotes"];
@@ -54,17 +48,18 @@ export default class QuizModel {
   private comments: Quiz["comments"];
   private _id: Quiz["_id"];
   public questions: Quiz["questions"];
+  public correctAnswers: Quiz["correctAnswers"];
 
   constructor(quiz: Quiz) {
     this._id = quiz._id;
     this.title = quiz.title;
     this.platform = quiz.platform.toLowerCase();
-    this.isTimed = quiz.isTimed;
     this.timeLimit = quiz.timeLimit;
     this.upvotes = quiz.upvotes;
     this.downvotes = quiz.downvotes;
     this.description = quiz.description;
     this.questions = quiz.questions;
+    this.correctAnswers = quiz.correctAnswers;
     this.scores = quiz.scores;
     this.comments = quiz.comments;
   }
@@ -74,22 +69,32 @@ export default class QuizModel {
       _id: this._id,
       title: this.title,
       platform: this.platform,
-      isTimed: this.isTimed,
       timeLimit: this.timeLimit,
       upvotes: this.upvotes,
       downvotes: this.downvotes,
       description: this.description,
       questions: this.questions,
+      correctAnswers: this.correctAnswers,
       scores: this.scores,
       comments: this.comments,
     });
   }
 
-  public toJSON(): Quiz {
+  public toJSON(): {
+    title: string;
+    platform: string;
+    timeLimit: number;
+    upvotes: number;
+    downvotes: number;
+    description: string;
+    questions: Question[];
+    scores: Score[];
+    comments: Comment[];
+    _id?: string;
+  } {
     return {
       title: this.title,
       platform: this.platform,
-      isTimed: this.isTimed,
       timeLimit: this.timeLimit,
       upvotes: this.upvotes,
       downvotes: this.downvotes,

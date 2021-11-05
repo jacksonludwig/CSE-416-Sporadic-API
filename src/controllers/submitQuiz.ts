@@ -43,14 +43,14 @@ const submitQuiz = async (req: Request, res: Response) => {
     user.quizzesTaken.push(quizId);
     await user.update();
 
-    const correctAnswers = quiz.questions.map((q) => q.correctAnswer);
-
     // TODO Use this to save user score in quiz and update their total for the platform
-    const totalCorrect = correctAnswers?.reduce((prev, curr, index) => {
+    const totalCorrect = quiz.correctAnswers.reduce((prev, curr, index) => {
       return answers[index] === curr ? prev + 1 : prev;
     }, 0);
 
-    return res.status(200).send({ correctAnswers: correctAnswers });
+    return res
+      .status(200)
+      .send({ correctAnswers: quiz.correctAnswers, totalCorrect: totalCorrect });
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);

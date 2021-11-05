@@ -26,7 +26,6 @@ describe(`get all quizzes route`, () => {
     mockQuiz = {
       title: mockTitle,
       platform: mockPlatform,
-      isTimed: false,
       timeLimit: 5,
       upvotes: 2,
       downvotes: 3,

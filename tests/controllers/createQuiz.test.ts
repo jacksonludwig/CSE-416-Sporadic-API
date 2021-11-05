@@ -28,7 +28,6 @@ describe(`create quiz test`, () => {
     mockQuiz = {
       title: mockTitle,
       platform: mockPlatform,
-      isTimed: false,
       timeLimit: 5,
       upvotes: 2,
       downvotes: 3,
@@ -38,12 +37,9 @@ describe(`create quiz test`, () => {
     mockRequest = {
       title: mockTitle,
       platform: mockPlatform,
-      isTimed: false,
       timeLimit: 5,
-      upvotes: 2,
-      downvotes: 3,
       description: "some description",
-    };
+    } as CreateQuizPost;
 
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(null);
     QuizModel.prototype.save = jest.fn().mockResolvedValueOnce(null);
