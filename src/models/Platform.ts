@@ -20,7 +20,7 @@ export default class PlatformModel {
   private bannedUsers: Platform["bannedUsers"];
   private _id: Platform["_id"];
   private moderators: Platform["moderators"];
-  private quizzes: Platform["quizzes"];
+  public quizzes: Platform["quizzes"];
   public subscribers: Platform["subscribers"];
 
   constructor(platform: Platform) {
