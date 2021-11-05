@@ -3,22 +3,17 @@ import Joi from "joi";
 import QuizModel from "../models/Quiz";
 import { Question } from "../models/Quiz";
 
-const answerSchema = Joi.object({
-  text: Joi.string().alphanum().min(1).max(100).required(),
-  isCorrect: Joi.boolean().required(),
-});
-
-const questionSchema = Joi.object({
-  body: Joi.string().alphanum().min(1).max(500).required(),
-  answers: Joi.array().items(answerSchema),
-});
-
 const createQuizSchema = Joi.object({
   title: Joi.string().alphanum().min(1).max(75).required(),
   platform: Joi.string().alphanum().min(1).max(100).required(),
   timeLimit: Joi.number().required(),
   description: Joi.string().min(1).max(500).required(),
-  questions: Joi.array().items(questionSchema),
+  questions: Joi.array().items(
+    Joi.object({
+      body: Joi.string().min(1).max(500),
+      answers: Joi.array().items(Joi.string().min(1).max(500)),
+    }),
+  ),
   correctAnswers: Joi.array().items(Joi.number().min(1).max(50)),
 });
 
