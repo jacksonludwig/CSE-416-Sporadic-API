@@ -28,7 +28,6 @@ describe(`submit quiz route tests`, () => {
     mockQuiz = {
       title: mockTitle,
       platform: mockPlatform,
-      isTimed: false,
       timeLimit: 5,
       upvotes: 2,
       downvotes: 3,
@@ -37,15 +36,16 @@ describe(`submit quiz route tests`, () => {
       questions: [
         {
           body: "this is a question",
-          answers: [{ text: "0" }, { text: "1" }, { text: "2" }, { text: "3" }],
-          correctAnswer: 1,
+          answers: ["0", "1", "2", "3"],
         },
         {
           body: "this is another question",
-          answers: [{ text: "0" }, { text: "1" }, { text: "2" }, { text: "3" }],
-          correctAnswer: 0,
+          answers: ["0", "1", "2", "3"],
         },
       ],
+      correctAnswers: [0, 1],
+      scores: [],
+      comments: [],
     };
 
     mockUser = {
@@ -67,7 +67,7 @@ describe(`submit quiz route tests`, () => {
 
     expect(validateToken).toHaveBeenCalled();
     expect(response.statusCode).toBe(200);
-    expect(response.body).toStrictEqual({ correctAnswers: [1, 0] });
+    expect(response.body).toStrictEqual({ correctAnswers: [0, 1] });
   });
 
   test(`Should send back 500 if lookup of quiz fails`, async () => {

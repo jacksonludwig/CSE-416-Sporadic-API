@@ -20,7 +20,6 @@ describe(`get quiz by title/platform route test`, () => {
     mockQuiz = {
       title: mockTitle,
       platform: mockPlatform,
-      isTimed: false,
       timeLimit: 5,
       upvotes: 2,
       downvotes: 3,
