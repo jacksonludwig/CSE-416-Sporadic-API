@@ -6,6 +6,11 @@ jest.mock("cognito-jwt-verify", () => ({
     .fn()
     .mockResolvedValueOnce({
       ["cognito:username"]: "john1",
+      email_verified: true,
+    })
+    .mockResolvedValueOnce({
+      ["cognito:username"]: "john1",
+      email_verified: false,
     })
     .mockRejectedValueOnce(new Error("mock Err")),
 }));
@@ -41,6 +46,13 @@ describe(`auth unit tests`, () => {
   });
 
   test(`Should send 401 if verifying token fails`, async () => {
+    await validateToken(mockRequest as Request, mockResponse as Response, nextFunction);
+
+    expect(nextFunction).toHaveBeenCalledTimes(0);
+    expect(mockResponse.sendStatus).toHaveBeenCalledWith(401);
+  });
+
+  test(`Should send 401 if user's email is unverified`, async () => {
     await validateToken(mockRequest as Request, mockResponse as Response, nextFunction);
 
     expect(nextFunction).toHaveBeenCalledTimes(0);
