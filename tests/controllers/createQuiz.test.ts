@@ -28,7 +28,7 @@ describe(`create quiz test`, () => {
 
     mockPlatformObj = {
       title: mockPlatform,
-      owner: "user",
+      owner: username,
       description: "descript",
       subscribers: [],
       moderators: [],
@@ -52,7 +52,21 @@ describe(`create quiz test`, () => {
     PlatformModel.prototype.update = jest.fn().mockResolvedValueOnce(null);
   });
 
-  test(`Should create quiz on success`, async () => {
+  test(`Should create quiz on success if user is owner`, async () => {
+    const response = await request(app).post("/quizzes/").send(mockRequest);
+
+    expect(PlatformModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.platformTitle);
+    expect(QuizModel.prototype.save).toHaveBeenCalled();
+    expect(response.statusCode).toBe(204);
+  });
+
+  test(`Should create quiz on success if user is moderator`, async () => {
+    mockPlatformObj.owner = "somerandomowner";
+    mockPlatformObj.moderators.push(username);
+    PlatformModel.retrieveByTitle = jest
+      .fn()
+      .mockResolvedValueOnce(new PlatformModel(mockPlatformObj));
+
     const response = await request(app).post("/quizzes/").send(mockRequest);
 
     expect(PlatformModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.platformTitle);
@@ -78,6 +92,18 @@ describe(`create quiz test`, () => {
 
     expect(PlatformModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.platformTitle);
     expect(response.statusCode).toBe(400);
+  });
+
+  test(`Should give 403 error if user is not platform owner or moderator`, async () => {
+    mockPlatformObj.owner = "somerandomowner";
+    PlatformModel.retrieveByTitle = jest
+      .fn()
+      .mockResolvedValueOnce(new PlatformModel(mockPlatformObj));
+
+    const response = await request(app).post("/quizzes/").send(mockRequest);
+
+    expect(PlatformModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.platformTitle);
+    expect(response.statusCode).toBe(403);
   });
 
   test(`Should give 400 error if schema validation fails`, async () => {

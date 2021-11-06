@@ -19,7 +19,7 @@ export default class PlatformModel {
   private description: Platform["description"];
   private bannedUsers: Platform["bannedUsers"];
   private _id: Platform["_id"];
-  private moderators: Platform["moderators"];
+  public moderators: Platform["moderators"];
   public quizzes: Platform["quizzes"];
   public subscribers: Platform["subscribers"];
 
@@ -32,6 +32,10 @@ export default class PlatformModel {
     this.moderators = platform.moderators;
     this.quizzes = platform.quizzes;
     this.bannedUsers = platform.bannedUsers;
+  }
+
+  public getOwner(): Platform["owner"] {
+    return this.owner;
   }
 
   public async save(): Promise<string> {
