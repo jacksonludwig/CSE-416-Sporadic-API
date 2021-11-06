@@ -1,25 +1,28 @@
 import { Request, Response } from "express";
 import Joi from "joi";
+import PlatformModel from "../models/Platform";
 import QuizModel from "../models/Quiz";
 import { Question } from "../models/Quiz";
 
 const createQuizSchema = Joi.object({
-  title: Joi.string().alphanum().min(1).max(75).required(),
-  platform: Joi.string().alphanum().min(1).max(100).required(),
+  quizTitle: Joi.string().alphanum().min(1).max(75).required(),
+  platformTitle: Joi.string().alphanum().min(1).max(100).required(),
   timeLimit: Joi.number().required(),
   description: Joi.string().min(1).max(500).required(),
-  questions: Joi.array().items(
-    Joi.object({
-      body: Joi.string().min(1).max(500),
-      answers: Joi.array().items(Joi.string().min(1).max(500)),
-    }),
-  ),
-  correctAnswers: Joi.array().items(Joi.number().min(1).max(50)),
+  questions: Joi.array()
+    .items(
+      Joi.object({
+        body: Joi.string().min(1).max(500).required(),
+        answers: Joi.array().items(Joi.string().min(1).max(500)).required(),
+      }).required(),
+    )
+    .required(),
+  correctAnswers: Joi.array().items(Joi.number().min(0).max(50)).required(),
 });
 
 export type CreateQuizPost = {
-  title: string;
-  platform: string;
+  quizTitle: string;
+  platformTitle: string;
   timeLimit: number;
   description: string;
   questions: Question[];
@@ -34,18 +37,25 @@ const createQuiz = async (req: Request, res: Response) => {
     return res.sendStatus(400);
   }
 
-  const { platform, title, timeLimit, description, questions, correctAnswers } =
+  const { platformTitle, quizTitle, timeLimit, description, questions, correctAnswers } =
     req.body as CreateQuizPost;
 
   try {
-    if (await QuizModel.retrieveByTitle(platform, title)) {
-      console.error(`${title} already exists`);
+    const platform = await PlatformModel.retrieveByTitle(platformTitle);
+
+    if (!platform) {
+      console.error(`${platformTitle} does not exist`);
+      return res.sendStatus(400);
+    }
+
+    if (platform.quizzes.includes(quizTitle)) {
+      console.error(`${platformTitle} already includes ${quizTitle}`);
       return res.sendStatus(400);
     }
 
     const quiz = new QuizModel({
-      title: title,
-      platform: platform,
+      title: quizTitle,
+      platform: platformTitle,
       timeLimit: timeLimit,
       upvotes: 0,
       downvotes: 0,
@@ -57,12 +67,15 @@ const createQuiz = async (req: Request, res: Response) => {
     });
 
     await quiz.save();
+
+    platform.quizzes.push(quiz.title);
+    await platform.update();
+
+    return res.sendStatus(204);
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
   }
-
-  return res.sendStatus(204);
 };
 
 export default createQuiz;

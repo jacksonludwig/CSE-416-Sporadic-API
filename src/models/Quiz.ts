@@ -38,7 +38,6 @@ export type Quiz = {
 };
 
 export default class QuizModel {
-  private title: Quiz["title"];
   private platform: Quiz["platform"];
   private timeLimit: Quiz["timeLimit"];
   private upvotes: Quiz["upvotes"];
@@ -47,6 +46,7 @@ export default class QuizModel {
   private scores: Quiz["scores"];
   private comments: Quiz["comments"];
   private _id: Quiz["_id"];
+  public title: Quiz["title"];
   public questions: Quiz["questions"];
   public correctAnswers: Quiz["correctAnswers"];
 
@@ -108,6 +108,10 @@ export default class QuizModel {
 
   public getId(): Quiz["_id"] {
     return this._id;
+  }
+
+  public getPlatform(): Quiz["platform"] {
+    return this.platform;
   }
 
   /**
