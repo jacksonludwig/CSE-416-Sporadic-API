@@ -40,6 +40,8 @@ const createQuiz = async (req: Request, res: Response) => {
   const { platformTitle, quizTitle, timeLimit, description, questions, correctAnswers } =
     req.body as CreateQuizPost;
 
+  const username = res.locals.authenticatedUser;
+
   try {
     const platform = await PlatformModel.retrieveByTitle(platformTitle);
 
@@ -51,6 +53,11 @@ const createQuiz = async (req: Request, res: Response) => {
     if (platform.quizzes.includes(quizTitle)) {
       console.error(`${platformTitle} already includes ${quizTitle}`);
       return res.sendStatus(400);
+    }
+
+    if (platform.getOwner() !== username && !platform.moderators.includes(username)) {
+      console.error(`${username} not an owner or moderator of ${platformTitle}`);
+      return res.sendStatus(403);
     }
 
     const quiz = new QuizModel({
