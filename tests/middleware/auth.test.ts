@@ -56,7 +56,7 @@ describe(`auth unit tests`, () => {
     await validateToken(mockRequest as Request, mockResponse as Response, nextFunction);
 
     expect(nextFunction).toHaveBeenCalledTimes(0);
-    expect(mockResponse.sendStatus).toHaveBeenCalledWith(401);
+    expect(mockResponse.sendStatus).toHaveBeenCalledWith(403);
   });
 
   test(`Should send 401 if no token exists`, async () => {
