@@ -11,6 +11,8 @@ const user: User = {
   subscriptions: [],
   friends: [],
   notifications: [],
+  awards: [],
+  profilePicture: "https://imageurl.png",
 };
 
 export default user;

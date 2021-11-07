@@ -19,8 +19,8 @@ export type User = {
   username: string;
   cognitoId: string;
   _id?: string;
-  awards?: Award[];
-  isGloballyBanned?: boolean;
+  awards: Award[];
+  isGloballyBanned: boolean;
   lastLogin?: Date;
   profilePicture?: string;
   subscriptions: string[];
