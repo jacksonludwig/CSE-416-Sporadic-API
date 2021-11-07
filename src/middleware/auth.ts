@@ -23,7 +23,7 @@ export const validateToken = async (req: Request, res: Response, next: NextFunct
 
     if (!decodedToken.email_verified) {
       console.error(`${username} has an unverified email address`);
-      return res.sendStatus(401);
+      return res.sendStatus(403); // 403 - Unauthorized 
     }
 
     // Save the user for use in protected routes to authorize certain actions.
