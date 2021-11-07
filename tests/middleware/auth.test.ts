@@ -45,18 +45,18 @@ describe(`auth unit tests`, () => {
     expect(nextFunction).toHaveBeenCalled();
   });
 
+  test(`Should send 403 if user's email is unverified`, async () => {
+    await validateToken(mockRequest as Request, mockResponse as Response, nextFunction);
+
+    expect(nextFunction).toHaveBeenCalledTimes(0);
+    expect(mockResponse.sendStatus).toHaveBeenCalledWith(403);
+  });
+
   test(`Should send 401 if verifying token fails`, async () => {
     await validateToken(mockRequest as Request, mockResponse as Response, nextFunction);
 
     expect(nextFunction).toHaveBeenCalledTimes(0);
     expect(mockResponse.sendStatus).toHaveBeenCalledWith(401);
-  });
-
-  test(`Should send 401 if user's email is unverified`, async () => {
-    await validateToken(mockRequest as Request, mockResponse as Response, nextFunction);
-
-    expect(nextFunction).toHaveBeenCalledTimes(0);
-    expect(mockResponse.sendStatus).toHaveBeenCalledWith(403);
   });
 
   test(`Should send 401 if no token exists`, async () => {
