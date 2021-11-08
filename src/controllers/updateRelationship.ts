@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import Joi from "joi";
 import UserModel from "../models/User";
 
-enum Action {
+export enum Action {
   Add = "add",
   Remove = "remove",
 }
