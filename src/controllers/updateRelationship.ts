@@ -47,16 +47,31 @@ const updateRelationship = async (req: Request, res: Response) => {
         console.error(`${username} already has ${targetUsername} as friend`);
         return res.sendStatus(400);
       }
+
+      targetUser.notifications.push({
+        title: "User added you to their friends list",
+        body: `${username} has made you their friend`,
+        hasBeenViewed: false,
+      });
+
       user.friends.push(targetUsername);
     } else {
       if (!userHasFriend) {
         console.error(`${username} does not have ${targetUsername} as friend`);
         return res.sendStatus(400);
       }
+
+      targetUser.notifications.push({
+        title: "User has removed you from their friends list",
+        body: `${username} is no longer your friend`,
+        hasBeenViewed: false,
+      });
+
       user.friends = user.friends.filter((f) => f !== targetUsername);
     }
 
     await user.update();
+    await targetUser.update();
 
     return res.sendStatus(204);
   } catch (err) {

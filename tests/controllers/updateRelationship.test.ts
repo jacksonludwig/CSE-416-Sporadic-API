@@ -36,7 +36,7 @@ describe(`subscribe user tests`, () => {
       .mockResolvedValueOnce(mockUserModel)
       .mockResolvedValueOnce(mockTargetUserModel);
 
-    UserModel.prototype.update = jest.fn().mockResolvedValueOnce(null);
+    UserModel.prototype.update = jest.fn().mockResolvedValue(null);
   });
 
   test(`Should send back 204 on success when adding`, async () => {
