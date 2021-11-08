@@ -6,11 +6,12 @@ import submitQuiz from "../controllers/submitQuiz";
 import { validateToken } from "../middleware/auth";
 
 const quizRouter = express.Router();
+quizRouter.use(validateToken);
 
-quizRouter.post("/", validateToken, createQuiz);
-quizRouter.post("/:platform/:quizTitle/submit", validateToken, submitQuiz);
+quizRouter.post("/", createQuiz);
+quizRouter.post("/:platform/:quizTitle/submit", submitQuiz);
 
 quizRouter.get("/", validateToken, retrieveQuizzes);
-quizRouter.get("/:platform/:quizTitle", validateToken, retrieveQuizByTitle);
+quizRouter.get("/:platform/:quizTitle", retrieveQuizByTitle);
 
 export default quizRouter;
