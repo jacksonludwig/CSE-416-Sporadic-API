@@ -12,6 +12,7 @@ type Award = {
 type Notification = {
   title: string;
   body: string;
+  hasBeenViewed: boolean;
 };
 
 export type User = {
@@ -38,8 +39,8 @@ export default class UserModel {
   private isGloballyBanned: User["isGloballyBanned"];
   private lastLogin: User["lastLogin"];
   private profilePicture: User["profilePicture"];
-  private friends: User["friends"];
-  private notifications: User["notifications"];
+  public notifications: User["notifications"];
+  public friends: User["friends"];
   public subscriptions: User["subscriptions"];
   public quizzesTaken: User["quizzesTaken"];
 
