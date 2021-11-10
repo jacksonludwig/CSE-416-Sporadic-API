@@ -28,7 +28,7 @@ describe(`submit quiz route tests`, () => {
   });
 
   beforeEach(() => {
-    // jest.spyOn(console, "error").mockImplementationOnce(() => null);
+    jest.spyOn(console, "error").mockImplementationOnce(() => null);
     mockTitle = "mocktitle";
     mockPlatform = "mockPlatform".toLowerCase();
 
