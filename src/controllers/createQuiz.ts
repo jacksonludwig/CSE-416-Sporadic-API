@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Joi from "joi";
 import PlatformModel from "../models/Platform";
-import QuizModel, { Score } from "../models/Quiz";
+import QuizModel from "../models/Quiz";
 import { Question } from "../models/Quiz";
 
 const createQuizSchema = Joi.object({

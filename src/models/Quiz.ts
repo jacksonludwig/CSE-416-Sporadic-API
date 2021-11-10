@@ -147,6 +147,17 @@ export default class QuizModel {
   }
 
   /**
+   * Deletes the quiz from the database.
+   */
+  public async delete(): Promise<void> {
+    await DbClient.deleteOne<Quiz>(
+      COLLECTION,
+      { title: this.title, platform: this.platform.toLowerCase() },
+      {},
+    );
+  }
+
+  /**
    * Retrieve all quizzes matching the given parameters.
    */
   public static async retrieveAll(
