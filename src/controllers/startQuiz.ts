@@ -30,7 +30,7 @@ const startQuiz = async (req: Request, res: Response) => {
 
     await quiz.update();
 
-    return res.sendStatus(204);
+    return res.status(200).send(quiz.toJSONWithQuestions());
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);

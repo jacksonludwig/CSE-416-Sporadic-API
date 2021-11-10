@@ -39,12 +39,15 @@ describe(`start quiz route tests`, () => {
     QuizModel.prototype.update = jest.fn().mockResolvedValueOnce(null);
   });
 
-  test(`Should send back 204 on success`, async () => {
+  test(`Should send back 200 and quiz object on success`, async () => {
+    const quizModel = new QuizModel(mockQuiz);
+    QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(quizModel);
     const response = await request(app).post(`/quizzes/${mockPlatform}/${mockQuiz.title}/start`);
 
     expect(mockQuiz.scores.length).toBe(1);
     expect(validateToken).toHaveBeenCalled();
-    expect(response.statusCode).toBe(204);
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toStrictEqual(quizModel.toJSONWithQuestions());
   });
 
   test(`Should send back 500 if lookup of quiz fails`, async () => {

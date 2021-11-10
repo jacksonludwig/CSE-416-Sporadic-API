@@ -24,6 +24,17 @@ export type Comment = {
   date: Date;
 };
 
+type QuizJSON = {
+  title: Quiz["title"];
+  platform: Quiz["platform"];
+  timeLimit: Quiz["timeLimit"];
+  upvotes: Quiz["upvotes"];
+  downvotes: Quiz["downvotes"];
+  description: Quiz["description"];
+  comments: Quiz["comments"];
+  _id?: string;
+};
+
 export type Quiz = {
   title: string;
   platform: string;
@@ -81,18 +92,7 @@ export default class QuizModel {
     });
   }
 
-  public toJSON(): {
-    title: Quiz["title"];
-    platform: Quiz["platform"];
-    timeLimit: Quiz["timeLimit"];
-    upvotes: Quiz["upvotes"];
-    downvotes: Quiz["downvotes"];
-    description: Quiz["description"];
-    questions: Quiz["questions"];
-    scores: Quiz["scores"];
-    comments: Quiz["comments"];
-    _id?: Quiz["_id"];
-  } {
+  public toJSON(): QuizJSON {
     return {
       title: this.title,
       platform: this.platform,
@@ -100,10 +100,22 @@ export default class QuizModel {
       upvotes: this.upvotes,
       downvotes: this.downvotes,
       description: this.description,
-      questions: this.questions,
-      scores: this.scores,
       comments: this.comments,
-      _id: this._id,
+      _id: this._id?.toString(),
+    };
+  }
+
+  public toJSONWithQuestions(): QuizJSON & { questions: Quiz["questions"] } {
+    return {
+      title: this.title,
+      platform: this.platform,
+      timeLimit: this.timeLimit,
+      upvotes: this.upvotes,
+      downvotes: this.downvotes,
+      description: this.description,
+      comments: this.comments,
+      questions: this.questions,
+      _id: this._id?.toString(),
     };
   }
 
