@@ -69,7 +69,6 @@ const createUser = async (req: Request, res: Response) => {
       subscriptions: [],
       friends: [],
       notifications: [],
-      quizzesTaken: [],
     });
 
     await user.save();

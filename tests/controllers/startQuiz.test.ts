@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import request from "supertest";
 import app from "../../src/app";
 import { validateToken } from "../../src/middleware/auth";
@@ -33,7 +32,6 @@ describe(`start quiz route tests`, () => {
       username: globalMockUser.username,
       email: "email@email.com",
       cognitoId: "asdkjskdjfas",
-      quizzesTaken: [] as ObjectId[],
     } as User;
 
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));

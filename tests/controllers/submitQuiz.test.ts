@@ -44,7 +44,6 @@ describe(`submit quiz route tests`, () => {
       username: "testuser",
       email: "email@email.com",
       cognitoId: "asdkjskdjfas",
-      quizzesTaken: [] as ObjectId[],
     } as User;
 
     mockQuiz.scores[0] = {
