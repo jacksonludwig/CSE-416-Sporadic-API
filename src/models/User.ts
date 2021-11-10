@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import DbClient from "../utils/DbClient";
 
 const COLLECTION = "users";
@@ -19,7 +20,7 @@ export type User = {
   email: string;
   username: string;
   cognitoId: string;
-  _id?: string;
+  _id?: ObjectId;
   awards: Award[];
   isGloballyBanned: boolean;
   lastLogin?: Date;
@@ -27,7 +28,7 @@ export type User = {
   subscriptions: string[];
   friends: string[];
   notifications: Notification[];
-  quizzesTaken: string[];
+  quizzesTaken: ObjectId[];
 };
 
 export default class UserModel {

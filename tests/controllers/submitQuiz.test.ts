@@ -1,9 +1,11 @@
+import { ObjectId } from "mongodb";
 import request from "supertest";
 import app from "../../src/app";
 import { SubmitQuizPost } from "../../src/controllers/submitQuiz";
 import { validateToken } from "../../src/middleware/auth";
 import QuizModel, { Quiz } from "../../src/models/Quiz";
 import UserModel, { User } from "../../src/models/User";
+import globalMockQuiz from "../mocks/mockQuiz";
 
 jest.mock("../../src/middleware/auth", () => ({
   validateToken: jest.fn((req, res, next) => next()),
@@ -15,13 +17,11 @@ describe(`submit quiz route tests`, () => {
   let mockPlatform: string;
   let mockAnswers: SubmitQuizPost;
   let mockUser: User;
-  let mockQuizId: string;
 
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
     mockTitle = "mocktitle";
     mockPlatform = "mockPlatform".toLowerCase();
-    mockQuizId = "exampleid";
 
     mockAnswers = { answers: [0, 1] };
 
@@ -32,7 +32,7 @@ describe(`submit quiz route tests`, () => {
       upvotes: 2,
       downvotes: 3,
       description: "some description",
-      _id: mockQuizId,
+      _id: globalMockQuiz._id,
       questions: [
         {
           body: "this is a question",
@@ -52,7 +52,7 @@ describe(`submit quiz route tests`, () => {
       username: "testuser",
       email: "email@email.com",
       cognitoId: "asdkjskdjfas",
-      quizzesTaken: [] as string[],
+      quizzesTaken: [] as ObjectId[],
     } as User;
 
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));
@@ -102,7 +102,7 @@ describe(`submit quiz route tests`, () => {
   });
 
   test(`Should send back 400 if user took quiz already`, async () => {
-    mockUser.quizzesTaken.push(mockQuizId);
+    mockUser.quizzesTaken.push(mockQuiz._id as ObjectId);
     const response = await request(app)
       .post(`/quizzes/${mockPlatform}/${mockQuiz.title}/submit`)
       .send({ answers: mockAnswers.answers });

@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { Quiz } from "../../src/models/Quiz";
 
 const quiz: Quiz = {
@@ -7,7 +8,7 @@ const quiz: Quiz = {
   upvotes: 2,
   downvotes: 3,
   description: "this is a quiz where you get to take movies and stuff",
-  _id: "6175e73f27e5d5655ea5805f",
+  _id: new ObjectId("6175e73f27e5d5655ea5805f"),
   questions: [
     {
       body: "this is a question, the answer is the first choice",

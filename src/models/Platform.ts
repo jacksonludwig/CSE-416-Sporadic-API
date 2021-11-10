@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import DbClient from "../utils/DbClient";
 
 const COLLECTION = "platforms";
@@ -10,7 +11,7 @@ export type Platform = {
   subscribers: string[];
   moderators: string[];
   quizzes: string[];
-  _id?: string;
+  _id?: ObjectId;
 };
 
 export default class PlatformModel {
