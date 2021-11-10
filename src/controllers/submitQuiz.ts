@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import Joi from "joi";
-import { ObjectId } from "mongodb";
 import QuizModel from "../models/Quiz";
 import UserModel from "../models/User";
 
@@ -15,6 +14,10 @@ export type SubmitQuizPost = {
   answers: number[];
 };
 
+// Grace period, in seconds, where a quiz can be submitted after its due date.
+// The due date is usually determined by timeStarted + timeLimit.
+const GRACE_PERIOD = 30;
+
 const submitQuiz = async (req: Request, res: Response) => {
   try {
     await submitQuizSchema.validateAsync(req.body);
@@ -24,8 +27,6 @@ const submitQuiz = async (req: Request, res: Response) => {
   }
 
   const { answers } = req.body as SubmitQuizPost;
-
-  // TODO Check if the user took too long to submit
   const { platform, quizTitle } = req.params;
 
   try {
@@ -40,20 +41,33 @@ const submitQuiz = async (req: Request, res: Response) => {
 
     if (!user) throw Error(`${res.locals.authenticatedUser} not found in database`);
 
-    const quizId = quiz.getId() as ObjectId;
+    const userScoreIndex = quiz.scores.findIndex((s) => s.user === user.getUsername());
 
-    if (user.quizzesTaken.find((q) => q.equals(quizId))) {
-      console.error(`${quizTitle} has already been taken by ${user.getUsername()}`);
+    if (userScoreIndex === -1) {
+      console.error(`${quizTitle} has not been started by ${user.getUsername()}`);
       return res.sendStatus(400);
     }
 
-    user.quizzesTaken.push(quizId);
-    await user.update();
+    if (quiz.scores[userScoreIndex].score !== undefined) {
+      console.error(`${quizTitle} has already been submitted by ${user.getUsername()}`);
+      return res.sendStatus(400);
+    }
 
-    // TODO Use this to save user score in quiz and update their total for the platform
+    const timeDue = quiz.scores[userScoreIndex].timeStarted;
+    timeDue.setSeconds(timeDue.getSeconds() + quiz.getTimeLimit() + GRACE_PERIOD);
+
+    if (new Date() > timeDue) {
+      console.error(`${quizTitle} submission period has passed.`);
+      return res.sendStatus(400);
+    }
+
+    // TODO Update user total for the platform
     const totalCorrect = quiz.correctAnswers.reduce((prev, curr, index) => {
       return answers[index] === curr ? prev + 1 : prev;
     }, 0);
+
+    quiz.scores[userScoreIndex].score = totalCorrect;
+    await quiz.update();
 
     return res
       .status(200)

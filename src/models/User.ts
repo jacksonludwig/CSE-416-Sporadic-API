@@ -28,7 +28,6 @@ export type User = {
   subscriptions: string[];
   friends: string[];
   notifications: Notification[];
-  quizzesTaken: ObjectId[];
 };
 
 export default class UserModel {
@@ -43,7 +42,6 @@ export default class UserModel {
   public notifications: User["notifications"];
   public friends: User["friends"];
   public subscriptions: User["subscriptions"];
-  public quizzesTaken: User["quizzesTaken"];
 
   constructor(user: User) {
     this.email = user.email;
@@ -57,7 +55,6 @@ export default class UserModel {
     this.subscriptions = user.subscriptions;
     this.friends = user.friends;
     this.notifications = user.notifications;
-    this.quizzesTaken = user.quizzesTaken;
   }
 
   public async save(): Promise<string> {
@@ -73,7 +70,6 @@ export default class UserModel {
       friends: this.friends,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
-      quizzesTaken: this.quizzesTaken,
     });
   }
 
@@ -90,7 +86,6 @@ export default class UserModel {
       friends: this.friends,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
-      quizzesTaken: this.quizzesTaken,
     };
   }
 
@@ -122,7 +117,6 @@ export default class UserModel {
         friends: this.friends,
         notifications: this.notifications,
         lastLogin: this.lastLogin,
-        quizzesTaken: this.quizzesTaken,
       },
     );
   }

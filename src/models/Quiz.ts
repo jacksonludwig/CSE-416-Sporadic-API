@@ -14,14 +14,25 @@ export type Question = {
 
 export type Score = {
   user: string;
-  score: number;
-  timeSubmitted: Date;
+  score?: number;
+  timeStarted: Date;
 };
 
 export type Comment = {
   user: string;
   text: string;
   date: Date;
+};
+
+type QuizJSON = {
+  title: Quiz["title"];
+  platform: Quiz["platform"];
+  timeLimit: Quiz["timeLimit"];
+  upvotes: Quiz["upvotes"];
+  downvotes: Quiz["downvotes"];
+  description: Quiz["description"];
+  comments: Quiz["comments"];
+  _id?: string;
 };
 
 export type Quiz = {
@@ -44,12 +55,12 @@ export default class QuizModel {
   private upvotes: Quiz["upvotes"];
   private downvotes: Quiz["downvotes"];
   private description: Quiz["description"];
-  private scores: Quiz["scores"];
   private comments: Quiz["comments"];
   private _id: Quiz["_id"];
   public title: Quiz["title"];
   public questions: Quiz["questions"];
   public correctAnswers: Quiz["correctAnswers"];
+  public scores: Quiz["scores"];
 
   constructor(quiz: Quiz) {
     this._id = quiz._id;
@@ -81,18 +92,7 @@ export default class QuizModel {
     });
   }
 
-  public toJSON(): {
-    title: string;
-    platform: string;
-    timeLimit: number;
-    upvotes: number;
-    downvotes: number;
-    description: string;
-    questions: Question[];
-    scores: Score[];
-    comments: Comment[];
-    _id?: ObjectId;
-  } {
+  public toJSON(): QuizJSON {
     return {
       title: this.title,
       platform: this.platform,
@@ -100,10 +100,22 @@ export default class QuizModel {
       upvotes: this.upvotes,
       downvotes: this.downvotes,
       description: this.description,
-      questions: this.questions,
-      scores: this.scores,
       comments: this.comments,
-      _id: this._id,
+      _id: this._id?.toString(),
+    };
+  }
+
+  public toJSONWithQuestions(): QuizJSON & { questions: Quiz["questions"] } {
+    return {
+      title: this.title,
+      platform: this.platform,
+      timeLimit: this.timeLimit,
+      upvotes: this.upvotes,
+      downvotes: this.downvotes,
+      description: this.description,
+      comments: this.comments,
+      questions: this.questions,
+      _id: this._id?.toString(),
     };
   }
 
@@ -113,6 +125,10 @@ export default class QuizModel {
 
   public getPlatform(): Quiz["platform"] {
     return this.platform;
+  }
+
+  public getTimeLimit(): Quiz["timeLimit"] {
+    return this.timeLimit;
   }
 
   /**
@@ -141,5 +157,25 @@ export default class QuizModel {
     if (filter.platform) quizFilter.platform = filter.platform.toLowerCase();
 
     return await DbClient.find<Quiz>(COLLECTION, quizFilter, {});
+  }
+
+  /**
+   * Update mutable fields of the quiz in the database.
+   */
+  public async update(): Promise<void> {
+    await DbClient.updateOne<Quiz>(
+      COLLECTION,
+      { title: this.title, platform: this.platform },
+      {
+        timeLimit: this.timeLimit,
+        upvotes: this.upvotes,
+        downvotes: this.downvotes,
+        description: this.description,
+        questions: this.questions,
+        correctAnswers: this.correctAnswers,
+        scores: this.scores,
+        comments: this.comments,
+      },
+    );
   }
 }
