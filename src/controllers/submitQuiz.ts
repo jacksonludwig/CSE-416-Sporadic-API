@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Joi from "joi";
+import { ObjectId } from "mongodb";
 import QuizModel from "../models/Quiz";
 import UserModel from "../models/User";
 
@@ -39,9 +40,9 @@ const submitQuiz = async (req: Request, res: Response) => {
 
     if (!user) throw Error(`${res.locals.authenticatedUser} not found in database`);
 
-    const quizId = quiz.getId() as string;
+    const quizId = quiz.getId() as ObjectId;
 
-    if (user.quizzesTaken.includes(quizId)) {
+    if (user.quizzesTaken.find((q) => q.equals(quizId))) {
       console.error(`${quizTitle} has already been taken by ${user.getUsername()}`);
       return res.sendStatus(400);
     }

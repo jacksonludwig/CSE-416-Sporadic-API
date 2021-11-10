@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import DbClient from "../utils/DbClient";
 
 const COLLECTION = "quizzes";
@@ -34,7 +35,7 @@ export type Quiz = {
   correctAnswers: number[];
   scores: Score[];
   comments: Comment[];
-  _id?: string;
+  _id?: ObjectId;
 };
 
 export default class QuizModel {
@@ -90,7 +91,7 @@ export default class QuizModel {
     questions: Question[];
     scores: Score[];
     comments: Comment[];
-    _id?: string;
+    _id?: ObjectId;
   } {
     return {
       title: this.title,
