@@ -25,12 +25,15 @@ const submitQuiz = async (req: Request, res: Response) => {
   const { answers } = req.body as SubmitQuizPost;
 
   // TODO Check if the user took too long to submit
+  const { platform, quizTitle } = req.params;
 
   try {
-    const quiz = await QuizModel.retrieveByTitle(req.params.platform, req.params.quizTitle);
+    const quiz = await QuizModel.retrieveByTitle(platform, quizTitle);
 
-    if (!quiz || !quiz["questions"] || quiz["questions"].length !== answers.length)
+    if (!quiz || !quiz["questions"] || quiz["questions"].length !== answers.length) {
+      console.error(`${quizTitle} does not exist in ${platform} or given answers do not match.`);
       return res.sendStatus(400);
+    }
 
     const user = await UserModel.retrieveByUsername(res.locals.authenticatedUser);
 
@@ -38,7 +41,10 @@ const submitQuiz = async (req: Request, res: Response) => {
 
     const quizId = quiz.getId() as string;
 
-    if (user.quizzesTaken.includes(quizId)) return res.sendStatus(400);
+    if (user.quizzesTaken.includes(quizId)) {
+      console.error(`${quizTitle} has already been taken by ${user.getUsername()}`);
+      return res.sendStatus(400);
+    }
 
     user.quizzesTaken.push(quizId);
     await user.update();
