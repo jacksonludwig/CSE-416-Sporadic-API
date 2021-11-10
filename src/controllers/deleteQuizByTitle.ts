@@ -28,6 +28,10 @@ const deleteQuizByTitle = async (req: Request, res: Response) => {
 
     await quiz.delete();
 
+    platformObj.quizzes = platformObj.quizzes.filter((q) => q !== quizTitle);
+
+    await platformObj.update();
+
     return res.sendStatus(204);
   } catch (err) {
     console.error(err);
