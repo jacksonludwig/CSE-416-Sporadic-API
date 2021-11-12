@@ -14,7 +14,7 @@ quizRouter.post("/", createQuiz);
 quizRouter.post("/:platform/:quizTitle/submit", submitQuiz);
 quizRouter.post("/:platform/:quizTitle/start", startQuiz);
 
-quizRouter.get("/", validateToken, retrieveQuizzes);
+quizRouter.get("/", retrieveQuizzes);
 quizRouter.get("/:platform/:quizTitle", retrieveQuizByTitle);
 
 quizRouter.delete("/:platform/:quizTitle", deleteQuizByTitle);
