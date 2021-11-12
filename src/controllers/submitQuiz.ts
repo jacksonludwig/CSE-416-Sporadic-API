@@ -28,6 +28,7 @@ const submitQuiz = async (req: Request, res: Response) => {
 
   const { answers } = req.body as SubmitQuizPost;
   const { platform, quizTitle } = req.params;
+  const username = res.locals.authenticatedUser;
 
   try {
     const quiz = await QuizModel.retrieveByTitle(platform, quizTitle);
@@ -37,19 +38,19 @@ const submitQuiz = async (req: Request, res: Response) => {
       return res.sendStatus(400);
     }
 
-    const user = await UserModel.retrieveByUsername(res.locals.authenticatedUser);
+    const user = await UserModel.retrieveByUsername(username);
 
-    if (!user) throw Error(`${res.locals.authenticatedUser} not found in database`);
+    if (!user) throw Error(`${username} not found in database`);
 
-    const userScoreIndex = quiz.scores.findIndex((s) => s.user === user.getUsername());
+    const userScoreIndex = quiz.scores.findIndex((s) => s.user === username);
 
     if (userScoreIndex === -1) {
-      console.error(`${quizTitle} has not been started by ${user.getUsername()}`);
+      console.error(`${quizTitle} has not been started by ${username}`);
       return res.sendStatus(400);
     }
 
     if (quiz.scores[userScoreIndex].score !== undefined) {
-      console.error(`${quizTitle} has already been submitted by ${user.getUsername()}`);
+      console.error(`${quizTitle} has already been submitted by ${username}`);
       return res.sendStatus(400);
     }
 
