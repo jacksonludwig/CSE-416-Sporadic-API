@@ -55,12 +55,12 @@ export default class QuizModel {
   private upvotes: Quiz["upvotes"];
   private downvotes: Quiz["downvotes"];
   private description: Quiz["description"];
-  private comments: Quiz["comments"];
   private _id: Quiz["_id"];
   public title: Quiz["title"];
   public questions: Quiz["questions"];
   public correctAnswers: Quiz["correctAnswers"];
   public scores: Quiz["scores"];
+  public comments: Quiz["comments"];
 
   constructor(quiz: Quiz) {
     this._id = quiz._id;

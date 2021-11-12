@@ -1,4 +1,5 @@
 import express from "express";
+import addCommentToQuiz from "../controllers/addCommentToQuiz";
 import createQuiz from "../controllers/createQuiz";
 import deleteQuizByTitle from "../controllers/deleteQuizByTitle";
 import retrieveQuizByTitle from "../controllers/retrieveQuizByTitle";
@@ -16,6 +17,8 @@ quizRouter.post("/:platform/:quizTitle/start", startQuiz);
 
 quizRouter.get("/", retrieveQuizzes);
 quizRouter.get("/:platform/:quizTitle", retrieveQuizByTitle);
+
+quizRouter.put("/:platform/:quizTitle/comment", addCommentToQuiz);
 
 quizRouter.delete("/:platform/:quizTitle", deleteQuizByTitle);
 
