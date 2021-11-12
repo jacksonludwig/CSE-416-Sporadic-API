@@ -7,7 +7,7 @@ import { Question } from "../models/Quiz";
 const createQuizSchema = Joi.object({
   quizTitle: Joi.string().alphanum().min(1).max(75).required(),
   platformTitle: Joi.string().alphanum().min(1).max(100).required(),
-  timeLimit: Joi.number().required(),
+  timeLimit: Joi.number().min(60).max(600).required(),
   description: Joi.string().min(1).max(500).required(),
   questions: Joi.array()
     .items(
