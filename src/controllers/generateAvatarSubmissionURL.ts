@@ -11,7 +11,10 @@ const s3 = new aws.S3({
   signatureVersion: "v4",
 });
 const generateAvatarSubmissionURL = async (req: Request, res: Response) => {
-  const filename = "avatar.png";
+  if (!(res.locals.authenticatedUser === req.params.username)) {
+    return res.sendStatus(401);
+  }
+  const filename = `users/${req.params.username}/avatar.png`;
   const params = {
     Bucket: bucketName,
     Key: filename,

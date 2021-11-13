@@ -15,7 +15,7 @@ export const cognitoClient = new CognitoIdentityProviderClient({
 
 userRouter.post("/", createUser);
 userRouter.post("/:username/confirm", confirmEmail);
-userRouter.post("/:username/avatar", generateAvatarSubmissionURL);
+userRouter.get("/:username/avatar", validateToken, generateAvatarSubmissionURL);
 
 userRouter.get("/:username", validateToken, retrieveByUsername);
 
