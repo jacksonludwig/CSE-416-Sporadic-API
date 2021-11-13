@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import dotenv from "dotenv";
 import aws from "aws-sdk";
 const region = "us-east-1";
 const bucketName = "sporadic-development-bucket";
@@ -9,23 +8,18 @@ const s3 = new aws.S3({
   region,
   accessKeyId,
   secretAccessKey,
+  signatureVersion: "v4",
 });
-const submitUserAvatar = async (req: Request, res: Response) => {
-  const filename = "avatar";
-  console.log("hey there");
+const generateAvatarSubmissionURL = async (req: Request, res: Response) => {
+  console.log(accessKeyId);
+  const filename = "avatar.png";
   const params = {
     Bucket: bucketName,
     Key: filename,
     Expires: 60,
   };
-
   const uploadURL = await s3.getSignedUrlPromise("putObject", params);
-  await fetch(uploadURL, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-    body: req.body,
-  });
+  return res.send(uploadURL);
 };
 
-export default submitUserAvatar;
+export default generateAvatarSubmissionURL;
