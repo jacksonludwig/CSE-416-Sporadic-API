@@ -39,7 +39,7 @@ describe(`create quiz test`, () => {
     mockRequest = {
       quizTitle: mockTitle,
       platformTitle: mockPlatform,
-      timeLimit: 5,
+      timeLimit: 60,
       description: "some description",
       questions: mockQuiz.questions,
       correctAnswers: mockQuiz.correctAnswers,
