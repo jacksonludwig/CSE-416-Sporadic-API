@@ -4,6 +4,7 @@ import confirmEmail from "../controllers/confirmEmail";
 import createUser from "../controllers/createUser";
 import retrieveByUsername from "../controllers/retrieveUserByUsername";
 import updateRelationship from "../controllers/updateRelationship";
+import generateAvatarSubmissionURL from "../controllers/generateAvatarSubmissionURL";
 import { validateToken } from "../middleware/auth";
 
 const userRouter = express.Router();
@@ -14,6 +15,7 @@ export const cognitoClient = new CognitoIdentityProviderClient({
 
 userRouter.post("/", createUser);
 userRouter.post("/:username/confirm", confirmEmail);
+userRouter.get("/:username/avatar", validateToken, generateAvatarSubmissionURL);
 
 userRouter.get("/:username", validateToken, retrieveByUsername);
 
