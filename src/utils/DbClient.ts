@@ -82,3 +82,5 @@ class DbClient {
 }
 
 export default new DbClient();
+
+// add aggregate function
