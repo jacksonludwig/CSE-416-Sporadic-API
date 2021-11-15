@@ -24,7 +24,6 @@ export type User = {
   awards: Award[];
   isGloballyBanned: boolean;
   lastLogin?: Date;
-  profilePicture?: string;
   subscriptions: string[];
   friends: string[];
   notifications: Notification[];
@@ -38,7 +37,6 @@ export default class UserModel {
   private awards: User["awards"];
   private isGloballyBanned: User["isGloballyBanned"];
   private lastLogin: User["lastLogin"];
-  private profilePicture: User["profilePicture"];
   public notifications: User["notifications"];
   public friends: User["friends"];
   public subscriptions: User["subscriptions"];
@@ -51,7 +49,6 @@ export default class UserModel {
     this.awards = user.awards;
     this.lastLogin = user.lastLogin;
     this.isGloballyBanned = user.isGloballyBanned;
-    this.profilePicture = user.profilePicture;
     this.subscriptions = user.subscriptions;
     this.friends = user.friends;
     this.notifications = user.notifications;
@@ -65,7 +62,6 @@ export default class UserModel {
       _id: this._id,
       awards: this.awards,
       isGloballyBanned: this.isGloballyBanned,
-      profilePicture: this.profilePicture,
       subscriptions: this.subscriptions,
       friends: this.friends,
       notifications: this.notifications,
@@ -81,7 +77,6 @@ export default class UserModel {
       _id: this._id,
       awards: this.awards,
       isGloballyBanned: this.isGloballyBanned,
-      profilePicture: this.profilePicture,
       subscriptions: this.subscriptions,
       friends: this.friends,
       notifications: this.notifications,
@@ -112,7 +107,6 @@ export default class UserModel {
       {
         awards: this.awards,
         isGloballyBanned: this.isGloballyBanned,
-        profilePicture: this.profilePicture,
         subscriptions: this.subscriptions,
         friends: this.friends,
         notifications: this.notifications,
