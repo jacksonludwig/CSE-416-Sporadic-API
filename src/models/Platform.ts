@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import DbClient from "../utils/DbClient";
 
 const COLLECTION = "platforms";
@@ -10,7 +11,7 @@ export type Platform = {
   subscribers: string[];
   moderators: string[];
   quizzes: string[];
-  _id?: string;
+  _id?: ObjectId;
 };
 
 export default class PlatformModel {
@@ -19,8 +20,8 @@ export default class PlatformModel {
   private description: Platform["description"];
   private bannedUsers: Platform["bannedUsers"];
   private _id: Platform["_id"];
-  private moderators: Platform["moderators"];
-  private quizzes: Platform["quizzes"];
+  public moderators: Platform["moderators"];
+  public quizzes: Platform["quizzes"];
   public subscribers: Platform["subscribers"];
 
   constructor(platform: Platform) {
@@ -32,6 +33,10 @@ export default class PlatformModel {
     this.moderators = platform.moderators;
     this.quizzes = platform.quizzes;
     this.bannedUsers = platform.bannedUsers;
+  }
+
+  public getOwner(): Platform["owner"] {
+    return this.owner;
   }
 
   public async save(): Promise<string> {

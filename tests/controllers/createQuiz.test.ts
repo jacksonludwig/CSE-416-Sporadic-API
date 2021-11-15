@@ -1,8 +1,9 @@
 import request from "supertest";
 import app from "../../src/app";
 import { CreateQuizPost } from "../../src/controllers/createQuiz";
+import PlatformModel, { Platform } from "../../src/models/Platform";
 import QuizModel from "../../src/models/Quiz";
-import { Quiz } from "../../src/models/Quiz";
+import mockQuiz from "../mocks/mockQuiz";
 
 const username = "john1";
 
@@ -14,10 +15,10 @@ jest.mock("../../src/middleware/auth", () => ({
 }));
 
 describe(`create quiz test`, () => {
-  let mockQuiz: Quiz;
   let mockRequest: CreateQuizPost;
   let mockTitle: string;
   let mockPlatform: string;
+  let mockPlatformObj: Platform;
 
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
@@ -25,51 +26,95 @@ describe(`create quiz test`, () => {
     mockTitle = "mocktitle";
     mockPlatform = "mockPlatform".toLowerCase();
 
-    mockQuiz = {
-      title: mockTitle,
-      platform: mockPlatform,
-      timeLimit: 5,
-      upvotes: 2,
-      downvotes: 3,
-      description: "some description",
-    } as Quiz;
+    mockPlatformObj = {
+      title: mockPlatform,
+      owner: username,
+      description: "descript",
+      subscribers: [],
+      moderators: [],
+      quizzes: [],
+      bannedUsers: [],
+    };
 
     mockRequest = {
-      title: mockTitle,
-      platform: mockPlatform,
-      timeLimit: 5,
+      quizTitle: mockTitle,
+      platformTitle: mockPlatform,
+      timeLimit: 60,
       description: "some description",
-    } as CreateQuizPost;
+      questions: mockQuiz.questions,
+      correctAnswers: mockQuiz.correctAnswers,
+    };
 
-    QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(null);
+    PlatformModel.retrieveByTitle = jest
+      .fn()
+      .mockResolvedValueOnce(new PlatformModel(mockPlatformObj));
     QuizModel.prototype.save = jest.fn().mockResolvedValueOnce(null);
+    PlatformModel.prototype.update = jest.fn().mockResolvedValueOnce(null);
   });
 
-  test(`Should create quiz on success`, async () => {
+  test(`Should create quiz on success if user is owner`, async () => {
     const response = await request(app).post("/quizzes/").send(mockRequest);
 
-    expect(QuizModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.platform, mockRequest.title);
+    expect(PlatformModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.platformTitle);
+    expect(QuizModel.prototype.save).toHaveBeenCalled();
+    expect(response.statusCode).toBe(204);
+  });
+
+  test(`Should create quiz on success if user is moderator`, async () => {
+    mockPlatformObj.owner = "somerandomowner";
+    mockPlatformObj.moderators.push(username);
+    PlatformModel.retrieveByTitle = jest
+      .fn()
+      .mockResolvedValueOnce(new PlatformModel(mockPlatformObj));
+
+    const response = await request(app).post("/quizzes/").send(mockRequest);
+
+    expect(PlatformModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.platformTitle);
     expect(QuizModel.prototype.save).toHaveBeenCalled();
     expect(response.statusCode).toBe(204);
   });
 
   test(`Should give 400 error if quiz already exists`, async () => {
-    QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));
+    const plat = new PlatformModel(mockPlatformObj);
+    plat.quizzes.push(mockTitle);
+    PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(plat);
+
     const response = await request(app).post("/quizzes/").send(mockRequest);
 
-    expect(QuizModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.platform, mockRequest.title);
+    expect(PlatformModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.platformTitle);
     expect(response.statusCode).toBe(400);
   });
 
+  test(`Should give 400 error if platform doesn't exist`, async () => {
+    PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(null);
+
+    const response = await request(app).post("/quizzes/").send(mockRequest);
+
+    expect(PlatformModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.platformTitle);
+    expect(response.statusCode).toBe(400);
+  });
+
+  test(`Should give 403 error if user is not platform owner or moderator`, async () => {
+    mockPlatformObj.owner = "somerandomowner";
+    PlatformModel.retrieveByTitle = jest
+      .fn()
+      .mockResolvedValueOnce(new PlatformModel(mockPlatformObj));
+
+    const response = await request(app).post("/quizzes/").send(mockRequest);
+
+    expect(PlatformModel.retrieveByTitle).toHaveBeenCalledWith(mockRequest.platformTitle);
+    expect(response.statusCode).toBe(403);
+  });
+
   test(`Should give 400 error if schema validation fails`, async () => {
-    mockRequest.title = "";
+    mockRequest.quizTitle = "";
     const response = await request(app).post("/quizzes/").send(mockRequest);
 
     expect(response.statusCode).toBe(400);
   });
 
   test(`Should give 500 error if retrieve fails`, async () => {
-    QuizModel.retrieveByTitle = jest.fn().mockRejectedValueOnce(new Error("mock err"));
+    PlatformModel.retrieveByTitle = jest.fn().mockRejectedValueOnce(new Error("mock err"));
     const response = await request(app).post("/quizzes/").send(mockRequest);
 
     expect(response.statusCode).toBe(500);

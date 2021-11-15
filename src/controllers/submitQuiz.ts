@@ -14,6 +14,10 @@ export type SubmitQuizPost = {
   answers: number[];
 };
 
+// Grace period, in seconds, where a quiz can be submitted after its due date.
+// The due date is usually determined by timeStarted + timeLimit.
+const GRACE_PERIOD = 30;
+
 const submitQuiz = async (req: Request, res: Response) => {
   try {
     await submitQuizSchema.validateAsync(req.body);
@@ -23,30 +27,48 @@ const submitQuiz = async (req: Request, res: Response) => {
   }
 
   const { answers } = req.body as SubmitQuizPost;
-
-  // TODO Check if the user took too long to submit
+  const { platform, quizTitle } = req.params;
+  const username = res.locals.authenticatedUser;
 
   try {
-    const quiz = await QuizModel.retrieveByTitle(req.params.platform, req.params.quizTitle);
+    const quiz = await QuizModel.retrieveByTitle(platform, quizTitle);
 
-    if (!quiz || !quiz["questions"] || quiz["questions"].length !== answers.length)
+    if (!quiz || !quiz["questions"] || quiz["questions"].length !== answers.length) {
+      console.error(`${quizTitle} does not exist in ${platform} or given answers do not match.`);
       return res.sendStatus(400);
+    }
 
-    const user = await UserModel.retrieveByUsername(res.locals.authenticatedUser);
+    const user = await UserModel.retrieveByUsername(username);
 
-    if (!user) throw Error(`${res.locals.authenticatedUser} not found in database`);
+    if (!user) throw Error(`${username} not found in database`);
 
-    const quizId = quiz.getId() as string;
+    const userScoreIndex = quiz.scores.findIndex((s) => s.user === username);
 
-    if (user.quizzesTaken.includes(quizId)) return res.sendStatus(400);
+    if (userScoreIndex === -1) {
+      console.error(`${quizTitle} has not been started by ${username}`);
+      return res.sendStatus(400);
+    }
 
-    user.quizzesTaken.push(quizId);
-    await user.update();
+    if (quiz.scores[userScoreIndex].score !== undefined) {
+      console.error(`${quizTitle} has already been submitted by ${username}`);
+      return res.sendStatus(400);
+    }
 
-    // TODO Use this to save user score in quiz and update their total for the platform
+    const timeDue = quiz.scores[userScoreIndex].timeStarted;
+    timeDue.setSeconds(timeDue.getSeconds() + quiz.getTimeLimit() + GRACE_PERIOD);
+
+    if (new Date() > timeDue) {
+      console.error(`${quizTitle} submission period has passed.`);
+      return res.sendStatus(400);
+    }
+
+    // TODO Update user total for the platform
     const totalCorrect = quiz.correctAnswers.reduce((prev, curr, index) => {
       return answers[index] === curr ? prev + 1 : prev;
     }, 0);
+
+    quiz.scores[userScoreIndex].score = totalCorrect;
+    await quiz.update();
 
     return res
       .status(200)

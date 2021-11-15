@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import DbClient from "../utils/DbClient";
 
 const COLLECTION = "users";
@@ -12,21 +13,21 @@ type Award = {
 type Notification = {
   title: string;
   body: string;
+  hasBeenViewed: boolean;
 };
 
 export type User = {
   email: string;
   username: string;
   cognitoId: string;
-  _id?: string;
-  awards?: Award[];
-  isGloballyBanned?: boolean;
+  _id?: ObjectId;
+  awards: Award[];
+  isGloballyBanned: boolean;
   lastLogin?: Date;
   profilePicture?: string;
   subscriptions: string[];
   friends: string[];
   notifications: Notification[];
-  quizzesTaken: string[];
 };
 
 export default class UserModel {
@@ -38,10 +39,9 @@ export default class UserModel {
   private isGloballyBanned: User["isGloballyBanned"];
   private lastLogin: User["lastLogin"];
   private profilePicture: User["profilePicture"];
-  private friends: User["friends"];
-  private notifications: User["notifications"];
+  public notifications: User["notifications"];
+  public friends: User["friends"];
   public subscriptions: User["subscriptions"];
-  public quizzesTaken: User["quizzesTaken"];
 
   constructor(user: User) {
     this.email = user.email;
@@ -55,7 +55,6 @@ export default class UserModel {
     this.subscriptions = user.subscriptions;
     this.friends = user.friends;
     this.notifications = user.notifications;
-    this.quizzesTaken = user.quizzesTaken;
   }
 
   public async save(): Promise<string> {
@@ -71,7 +70,6 @@ export default class UserModel {
       friends: this.friends,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
-      quizzesTaken: this.quizzesTaken,
     });
   }
 
@@ -88,7 +86,6 @@ export default class UserModel {
       friends: this.friends,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
-      quizzesTaken: this.quizzesTaken,
     };
   }
 
@@ -120,7 +117,6 @@ export default class UserModel {
         friends: this.friends,
         notifications: this.notifications,
         lastLogin: this.lastLogin,
-        quizzesTaken: this.quizzesTaken,
       },
     );
   }
