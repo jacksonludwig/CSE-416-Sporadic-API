@@ -20,7 +20,7 @@ export type User = {
   email: string;
   username: string;
   cognitoId: string;
-  aboutSection: string;
+  aboutSection?: string;
   _id?: ObjectId;
   awards: Award[];
   isGloballyBanned: boolean;
