@@ -69,6 +69,7 @@ export default class UserModel {
       friends: this.friends,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
+      aboutSection: this.aboutSection,
     });
   }
 
@@ -115,6 +116,7 @@ export default class UserModel {
         friends: this.friends,
         notifications: this.notifications,
         lastLogin: this.lastLogin,
+        aboutSection: this.aboutSection,
       },
     );
   }
