@@ -52,4 +52,13 @@ describe(`get all quizzes route`, () => {
     expect(validateToken).toHaveBeenCalled();
     expect(response.statusCode).toBe(500);
   });
+
+  test(`Should send back 400 if schema validation fails`, async () => {
+    const response = await request(app).get(
+      `/quizzes?platform=${mockQueryParams.platform}&sortDirection=0`,
+    );
+
+    expect(validateToken).toHaveBeenCalled();
+    expect(response.statusCode).toBe(400);
+  });
 });

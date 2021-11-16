@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { FindOptions, ObjectId, SortDirection } from "mongodb";
 import DbClient from "../utils/DbClient";
 
 const COLLECTION = "quizzes";
@@ -159,15 +159,22 @@ export default class QuizModel {
 
   /**
    * Retrieve all quizzes matching the given parameters.
+   *
+   * @param filter The fields to filter with
+   * @param sortBy The field and direction to sort with
    */
   public static async retrieveAll(
     filter: QuizFilter = {},
+    sortBy: { field?: string; direction?: SortDirection } = {},
   ): Promise<{ totalItems: number; items: Quiz[] }> {
     const quizFilter: QuizFilter = {};
+    const findOpts: FindOptions = {};
 
     if (filter.platform) quizFilter.platform = filter.platform.toLowerCase();
 
-    return await DbClient.find<Quiz>(COLLECTION, quizFilter, {});
+    findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
+
+    return await DbClient.find<Quiz>(COLLECTION, quizFilter, findOpts);
   }
 
   /**
