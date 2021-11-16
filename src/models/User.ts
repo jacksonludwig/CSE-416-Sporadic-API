@@ -16,6 +16,15 @@ type Notification = {
   hasBeenViewed: boolean;
 };
 
+type UserPublicJSON = {
+  username: User["username"];
+  _id: User["_id"];
+  awards: User["awards"];
+  friends: User["friends"];
+  lastLogin: User["lastLogin"];
+  aboutSection: User["aboutSection"];
+};
+
 export type User = {
   email: string;
   username: string;
@@ -73,7 +82,7 @@ export default class UserModel {
     });
   }
 
-  public toJSON(): User {
+  public toJSONWithPrivateData(): User {
     return {
       username: this.username,
       email: this.email,
@@ -84,6 +93,17 @@ export default class UserModel {
       subscriptions: this.subscriptions,
       friends: this.friends,
       notifications: this.notifications,
+      lastLogin: this.lastLogin,
+      aboutSection: this.aboutSection,
+    };
+  }
+
+  public toJSON(): UserPublicJSON {
+    return {
+      username: this.username,
+      _id: this._id,
+      awards: this.awards,
+      friends: this.friends,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
     };
