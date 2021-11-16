@@ -6,6 +6,9 @@ type Token = {
   email_verified: boolean;
 };
 
+/**
+ * Check the user's JWT and extract their username from it.
+ */
 export const validateToken = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.headers?.authorization?.split(" ")[1]; // token should be "Bearer <token>"

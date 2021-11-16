@@ -20,6 +20,7 @@ export type User = {
   email: string;
   username: string;
   cognitoId: string;
+  aboutSection?: string;
   _id?: ObjectId;
   awards: Award[];
   isGloballyBanned: boolean;
@@ -40,6 +41,7 @@ export default class UserModel {
   public notifications: User["notifications"];
   public friends: User["friends"];
   public subscriptions: User["subscriptions"];
+  public aboutSection: User["aboutSection"];
 
   constructor(user: User) {
     this.email = user.email;
@@ -52,6 +54,7 @@ export default class UserModel {
     this.subscriptions = user.subscriptions;
     this.friends = user.friends;
     this.notifications = user.notifications;
+    this.aboutSection = user.aboutSection;
   }
 
   public async save(): Promise<string> {
@@ -66,6 +69,7 @@ export default class UserModel {
       friends: this.friends,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
+      aboutSection: this.aboutSection,
     });
   }
 
@@ -81,6 +85,7 @@ export default class UserModel {
       friends: this.friends,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
+      aboutSection: this.aboutSection,
     };
   }
 
@@ -111,6 +116,7 @@ export default class UserModel {
         friends: this.friends,
         notifications: this.notifications,
         lastLogin: this.lastLogin,
+        aboutSection: this.aboutSection,
       },
     );
   }
