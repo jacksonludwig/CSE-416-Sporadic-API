@@ -51,7 +51,7 @@ const createUser = async (req: Request, res: Response) => {
     try {
       response = await cognitoClient.send(signUpCommand);
     } catch (err) {
-      if (err && err.$metadata && err.$metadata.httpStatusCode < 500)
+      if (err.$metadata && err.$metadata.httpStatusCode < 500)
         return res.status(err.$metadata.httpStatusCode).send({
           name: err.name,
           message: err.message,
