@@ -6,7 +6,7 @@ import { Request, Response } from "express";
 
 const createUserSchema = Joi.object({
   username: Joi.string().alphanum().min(1).max(40).required(),
-  password: Joi.string().min(7).max(50).required(),
+  password: Joi.string().min(8).max(50).required(),
   email: Joi.string().email().required(),
 });
 
