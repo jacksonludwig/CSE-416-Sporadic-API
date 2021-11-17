@@ -4,7 +4,14 @@ import UserModel from "../models/User";
 import PlatformModel from "../models/Platform";
 
 const retrieveQuizFeed= async (req: Request, res: Response) => {
-  
+  try {
+    const username = res.locals.authenticatedUser;
+
+    const user = await UserModel.retrieveByUsername(username);
+
+    if (!user) throw Error(`${username} not found in database`);
+  }
+
 }
 
 export default retrieveQuizFeed;
