@@ -34,7 +34,7 @@ const createPlatform = async (req: Request, res: Response) => {
       description: description,
       moderators: [username],
       bannedUsers: [],
-      subscribers: [],
+      subscribers: [username],
       quizzes: [],
       owner: username,
     });

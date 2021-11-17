@@ -30,7 +30,7 @@ describe(`create platform test`, () => {
       owner: username,
       moderators: [username],
       bannedUsers: [],
-      subscribers: [],
+      subscribers: [username],
       quizzes: [],
     };
 
