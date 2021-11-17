@@ -3,10 +3,20 @@ import Joi from "joi";
 import { SortDirection } from "mongodb";
 import QuizModel from "../models/Quiz";
 
+enum SortDirs {
+  Ascending = "ascending",
+  Descending = "descending",
+}
+
+const dirMap = new Map<string, SortDirection>([
+  [SortDirs.Ascending, 1],
+  [SortDirs.Descending, -1],
+]);
+
 const retrieveQuizzesSchema = Joi.object({
   platform: Joi.string().max(50),
   sortBy: Joi.string().valid("upvotes", "title", "platform"),
-  sortDirection: Joi.string().valid("1", "-1"),
+  sortDirection: Joi.string().valid(SortDirs.Ascending, SortDirs.Descending),
 });
 
 const retrieveQuizzes = async (req: Request, res: Response) => {
@@ -24,7 +34,7 @@ const retrieveQuizzes = async (req: Request, res: Response) => {
       },
       {
         field: req.query.sortBy as string,
-        direction: req.query.sortDirection as SortDirection,
+        direction: dirMap.get(req.query.sortDirection as SortDirs),
       },
     );
 
