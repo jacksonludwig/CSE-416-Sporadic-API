@@ -76,6 +76,7 @@ const createQuiz = async (req: Request, res: Response) => {
     await quiz.save();
 
     platform.quizzes.push(quiz.title);
+    platform.totalQuestions += questions.length;
     await platform.update();
 
     return res.sendStatus(204);

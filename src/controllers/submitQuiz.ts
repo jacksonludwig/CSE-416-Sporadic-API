@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Joi from "joi";
 import QuizModel from "../models/Quiz";
 import UserModel from "../models/User";
+import PlatformModel from "../models/Platform";
 
 const submitQuizSchema = Joi.object({
   // The request will contain an array of numbers which represent the multiple choice answers
@@ -62,13 +63,15 @@ const submitQuiz = async (req: Request, res: Response) => {
       return res.sendStatus(400);
     }
 
-    // TODO Update user total for the platform
     const totalCorrect = quiz.correctAnswers.reduce((prev, curr, index) => {
       return answers[index] === curr ? prev + 1 : prev;
     }, 0);
 
     quiz.scores[userScoreIndex].score = totalCorrect;
     await quiz.update();
+
+     // TODO Update user total for the platform
+    platform.totalScores
 
     return res
       .status(200)

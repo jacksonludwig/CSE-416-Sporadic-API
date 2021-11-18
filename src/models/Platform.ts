@@ -3,6 +3,8 @@ import DbClient from "../utils/DbClient";
 
 const COLLECTION = "platforms";
 
+
+
 export type Platform = {
   title: string;
   owner: string;
@@ -12,6 +14,7 @@ export type Platform = {
   moderators: string[];
   quizzes: string[];
   totalQuestions: number;
+  totalScores: number[];
   _id?: ObjectId;
 };
 
@@ -25,6 +28,7 @@ export default class PlatformModel {
   public quizzes: Platform["quizzes"];
   public subscribers: Platform["subscribers"];
   public totalQuestions: Platform["totalQuestions"];
+  public totalScores: Platform["totalScores"];
 
   constructor(platform: Platform) {
     this._id = platform._id;
@@ -35,11 +39,20 @@ export default class PlatformModel {
     this.moderators = platform.moderators;
     this.quizzes = platform.quizzes;
     this.totalQuestions = platform.totalQuestions;
+    this.totalScores = platform.totalScores;
     this.bannedUsers = platform.bannedUsers;
   }
 
   public getOwner(): Platform["owner"] {
     return this.owner;
+  }
+
+  public getTotalQuestions(): Platform["totalQuestions"]{
+    return this.totalQuestions;
+  }
+
+  public getTotalScores(): Platform["totalScores"]{
+    return this.totalScores;
   }
 
   public async save(): Promise<string> {
@@ -52,6 +65,7 @@ export default class PlatformModel {
       moderators: this.moderators,
       quizzes: this.quizzes,
       totalQuestions: this.totalQuestions,
+      totalScores: this.totalScores,
       bannedUsers: this.bannedUsers,
     });
   }
@@ -66,6 +80,7 @@ export default class PlatformModel {
       moderators: this.moderators,
       quizzes: this.quizzes,
       totalQuestions: this.totalQuestions,
+      totalScores: this.totalScores,
       bannedUsers: this.bannedUsers,
     };
   }
@@ -83,6 +98,8 @@ export default class PlatformModel {
     return platform ? new PlatformModel(platform) : null;
   }
 
+
+
   /**
    * Update mutable fields of the platform in the database.
    */
@@ -95,6 +112,8 @@ export default class PlatformModel {
         subscribers: this.subscribers,
         moderators: this.moderators,
         quizzes: this.quizzes,
+        totalQuestions: this.totalQuestions,
+        totalScores: this.totalScores,
         bannedUsers: this.bannedUsers,
       },
     );
