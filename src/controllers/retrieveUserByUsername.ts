@@ -2,10 +2,21 @@ import { Request, Response } from "express";
 import UserModel from "../models/User";
 
 const retrieveByUsername = async (req: Request, res: Response) => {
-  try {
-    const user = await UserModel.retrieveByUsername(req.params.username);
+  const username = req.params.username;
 
-    return user ? res.status(200).send(user.toJSON()) : res.sendStatus(400);
+  try {
+    const user = await UserModel.retrieveByUsername(username);
+
+    if (!user) {
+      console.error(`${username} not found in database`);
+      return res.sendStatus(400);
+    }
+
+    return res
+      .status(200)
+      .send(
+        username === res.locals.authenticatedUser ? user.toJSONWithPrivateData() : user.toJSON(),
+      );
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
