@@ -49,7 +49,7 @@ const updateBannedUsers = async (req: Request, res: Response) => {
       return res.sendStatus(400);
     }
 
-    if (username !== platform.getOwner() && !platform.bannedUsers.includes(username)) {
+    if (username !== platform.getOwner() && !platform.moderators.includes(username)) {
       console.error(`${username} is not an owner or moderator of ${platformTitle}`);
       return res.sendStatus(403);
     }
