@@ -32,6 +32,7 @@ describe(`create platform test`, () => {
       bannedUsers: [],
       subscribers: [username],
       quizzes: [],
+      scores: [],
     };
 
     mockRequest = {

@@ -34,6 +34,7 @@ describe(`create quiz test`, () => {
       moderators: [],
       quizzes: [],
       bannedUsers: [],
+      scores: [],
     };
 
     mockRequest = {

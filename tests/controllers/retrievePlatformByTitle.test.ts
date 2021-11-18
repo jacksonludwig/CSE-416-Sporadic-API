@@ -20,6 +20,7 @@ describe(`get user by username route test`, () => {
       bannedUsers: [],
       subscribers: [],
       quizzes: [],
+      scores: [],
     };
 
     PlatformModel.retrieveByTitle = jest

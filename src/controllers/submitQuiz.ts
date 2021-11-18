@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Joi from "joi";
+import PlatformModel from "../models/Platform";
 import QuizModel from "../models/Quiz";
 import UserModel from "../models/User";
 
@@ -42,6 +43,10 @@ const submitQuiz = async (req: Request, res: Response) => {
 
     if (!user) throw Error(`${username} not found in database`);
 
+    const platformModel = await PlatformModel.retrieveByTitle(platform);
+
+    if (!platformModel) throw Error(`${platform} not found in database`);
+
     const userScoreIndex = quiz.scores.findIndex((s) => s.user === username);
 
     if (userScoreIndex === -1) {
@@ -62,12 +67,22 @@ const submitQuiz = async (req: Request, res: Response) => {
       return res.sendStatus(400);
     }
 
-    // TODO Update user total for the platform
     const totalCorrect = quiz.correctAnswers.reduce((prev, curr, index) => {
       return answers[index] === curr ? prev + 1 : prev;
     }, 0);
 
+    const platformUserScoreIndex = platformModel.scores.findIndex((u) => u.username === username);
+
+    // Add the correct questions to the platform total
+    platformUserScoreIndex === -1
+      ? platformModel.scores.push({ username: username, totalCorrect: totalCorrect })
+      : (platformModel.scores[platformUserScoreIndex].totalCorrect += totalCorrect);
+
+    // Add the correct questions to the quiz total
     quiz.scores[userScoreIndex].score = totalCorrect;
+
+    await platformModel.update();
+
     await quiz.update();
 
     return res
