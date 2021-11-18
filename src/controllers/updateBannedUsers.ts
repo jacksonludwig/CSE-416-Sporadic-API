@@ -62,6 +62,7 @@ const updateBannedUsers = async (req: Request, res: Response) => {
         return res.sendStatus(400);
       }
       platform.bannedUsers.push(targetUsername);
+      platform.subscribers = platform.subscribers.filter((m) => m !== targetUsername);
     } else {
       if (!hasBannedUser) {
         console.error(`${targetUsername} is not currently banned`);
