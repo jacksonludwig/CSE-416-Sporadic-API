@@ -11,6 +11,7 @@ export type Platform = {
   subscribers: string[];
   moderators: string[];
   quizzes: string[];
+  totalQuestions: number;
   _id?: ObjectId;
 };
 
@@ -23,6 +24,7 @@ export default class PlatformModel {
   public moderators: Platform["moderators"];
   public quizzes: Platform["quizzes"];
   public subscribers: Platform["subscribers"];
+  public totalQuestions: Platform["totalQuestions"];
 
   constructor(platform: Platform) {
     this._id = platform._id;
@@ -32,6 +34,7 @@ export default class PlatformModel {
     this.subscribers = platform.subscribers;
     this.moderators = platform.moderators;
     this.quizzes = platform.quizzes;
+    this.totalQuestions = platform.totalQuestions;
     this.bannedUsers = platform.bannedUsers;
   }
 
@@ -48,6 +51,7 @@ export default class PlatformModel {
       subscribers: this.subscribers,
       moderators: this.moderators,
       quizzes: this.quizzes,
+      totalQuestions: this.totalQuestions,
       bannedUsers: this.bannedUsers,
     });
   }
@@ -61,6 +65,7 @@ export default class PlatformModel {
       subscribers: this.subscribers,
       moderators: this.moderators,
       quizzes: this.quizzes,
+      totalQuestions: this.totalQuestions,
       bannedUsers: this.bannedUsers,
     };
   }
