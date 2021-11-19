@@ -80,7 +80,7 @@ describe(`get all quizzes route`, () => {
     expect(response.statusCode).toBe(500);
   });
 
-  test(`Should send back 400 if platofrm is null`, async () => {
+  test(`Should send back 400 if platform is null`, async () => {
     PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(null);
     const response = await request(app).get(`/quizzes?platform=${mockQueryParams.platform}`);
 
