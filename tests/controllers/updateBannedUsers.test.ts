@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../../src/app";
-import { Action, UpdateBannedUsersRequest } from "../../src/controllers/updateBannedUsers";
+import { UpdateBannedUsersRequest } from "../../src/controllers/updateBannedUsers";
 import { validateToken } from "../../src/middleware/auth";
 import PlatformModel from "../../src/models/Platform";
 import UserModel from "../../src/models/User";
@@ -31,7 +31,7 @@ describe(`update banned user tests`, () => {
 
     mockRequest = {
       targetUsername: mockTargetUser.username,
-      action: "add" as Action,
+      action: "add" as Sporadic.UpdateAction,
     };
 
     mockPlatformModel = new PlatformModel(mockPlatform);
@@ -58,7 +58,7 @@ describe(`update banned user tests`, () => {
 
   test(`Should send back 204 on success when removing`, async () => {
     mockPlatformModel.bannedUsers = [mockTargetUserModel["username"]];
-    mockRequest.action = "remove" as Action;
+    mockRequest.action = "remove" as Sporadic.UpdateAction;
     const response = await request(app)
       .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
@@ -93,7 +93,7 @@ describe(`update banned user tests`, () => {
   });
 
   test(`Should send back 400 if schema validation fails`, async () => {
-    mockRequest.action = "something" as Action;
+    mockRequest.action = "something" as Sporadic.UpdateAction;
 
     const response = await request(app)
       .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
@@ -144,7 +144,7 @@ describe(`update banned user tests`, () => {
 
   test(`Should send back 400 if user is not moderator and trying to remove`, async () => {
     mockPlatformModel.bannedUsers = [];
-    mockRequest.action = "remove" as Action;
+    mockRequest.action = "remove" as Sporadic.UpdateAction;
     const response = await request(app)
       .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);

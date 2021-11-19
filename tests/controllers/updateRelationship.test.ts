@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../../src/app";
-import { Action, UpdateRelationshipRequest } from "../../src/controllers/updateRelationship";
+import { UpdateRelationshipRequest } from "../../src/controllers/updateRelationship";
 import { validateToken } from "../../src/middleware/auth";
 import UserModel from "../../src/models/User";
 import mockUser from "../mocks/mockUser";
@@ -28,7 +28,7 @@ describe(`subscribe user tests`, () => {
 
     mockRequest = {
       targetUsername: mockTargetUser.username,
-      action: "add" as Action,
+      action: "add" as Sporadic.UpdateAction,
     };
 
     UserModel.retrieveByUsername = jest
@@ -47,7 +47,7 @@ describe(`subscribe user tests`, () => {
   });
 
   test(`Should send back 204 on success when removing`, async () => {
-    mockRequest.action = "remove" as Action;
+    mockRequest.action = "remove" as Sporadic.UpdateAction;
     const response = await request(app).put(`/users/updateRelationship`).send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();
@@ -76,7 +76,7 @@ describe(`subscribe user tests`, () => {
   });
 
   test(`Should send back 400 if schema validation fails`, async () => {
-    mockRequest.action = "something" as Action;
+    mockRequest.action = "something" as Sporadic.UpdateAction;
 
     const response = await request(app).put(`/users/updateRelationship`).send(mockRequest);
 
@@ -123,7 +123,7 @@ describe(`subscribe user tests`, () => {
 
   test(`Should send back 400 if user is not friend with target and trying to remove`, async () => {
     mockUserModel.friends = [];
-    mockRequest.action = "remove" as Action;
+    mockRequest.action = "remove" as Sporadic.UpdateAction;
     const response = await request(app).put(`/users/updateRelationship`).send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();

@@ -5,9 +5,7 @@ import UserModel from "../models/User";
 
 const updateModeratorsSchema = Joi.object({
   targetUsername: Joi.string().alphanum().min(1).max(40).required(),
-  action: Joi.string()
-    .valid(Sporadic.UpdateAction.Add, Sporadic.UpdateAction.Remove)
-    .required(),
+  action: Joi.string().valid(Sporadic.UpdateAction.Add, Sporadic.UpdateAction.Remove).required(),
 });
 
 export type UpdateModeratorsRequest = {
