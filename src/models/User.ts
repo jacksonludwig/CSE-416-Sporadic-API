@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import DbClient from "../utils/DbClient";
+import PlatformModel from "./Platform";
 
 const COLLECTION = "users";
 
@@ -33,6 +34,7 @@ export type User = {
   _id?: ObjectId;
   awards: Award[];
   isGloballyBanned: boolean;
+  isGlobalAdmin: boolean;
   lastLogin?: Date;
   subscriptions: string[];
   friends: string[];
@@ -46,6 +48,7 @@ export default class UserModel {
   private _id: User["_id"];
   private awards: User["awards"];
   private isGloballyBanned: User["isGloballyBanned"];
+  private isGlobalAdmin: User["isGlobalAdmin"];
   private lastLogin: User["lastLogin"];
   public notifications: User["notifications"];
   public friends: User["friends"];
@@ -60,6 +63,7 @@ export default class UserModel {
     this.awards = user.awards;
     this.lastLogin = user.lastLogin;
     this.isGloballyBanned = user.isGloballyBanned;
+    this.isGlobalAdmin = user.isGlobalAdmin;
     this.subscriptions = user.subscriptions;
     this.friends = user.friends;
     this.notifications = user.notifications;
@@ -95,6 +99,7 @@ export default class UserModel {
       notifications: this.notifications,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
+      isGlobalAdmin: this.isGlobalAdmin,
     };
   }
 
@@ -113,6 +118,10 @@ export default class UserModel {
     return this.username;
   }
 
+  public getIsGlobalAdmin(): User["isGlobalAdmin"] {
+    return this.isGlobalAdmin;
+  }
+
   /**
    * Returns user with the given username.
    */
@@ -120,6 +129,23 @@ export default class UserModel {
     const user = await DbClient.findOne<User>(COLLECTION, { username: username }, {});
 
     return user ? new UserModel(user) : null;
+  }
+
+  /**
+   * Check what permissions the user has in a given platform.
+   */
+  public permissionsOn(platform: PlatformModel): Sporadic.Permissions {
+    if (this.isGlobalAdmin) return Sporadic.Permissions.Admin;
+
+    if (platform.bannedUsers.includes(this.username)) return Sporadic.Permissions.Banned;
+
+    if (platform.getOwner() === this.username) return Sporadic.Permissions.Owner;
+
+    if (platform.moderators.includes(this.username)) return Sporadic.Permissions.Moderator;
+
+    if (platform.subscribers.includes(this.username)) return Sporadic.Permissions.Subscriber;
+
+    return Sporadic.Permissions.User;
   }
 
   /**

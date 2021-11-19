@@ -1,9 +1,30 @@
 import { Request, Response } from "express";
+import PlatformModel from "../models/Platform";
 import QuizModel from "../models/Quiz";
+import UserModel from "../models/User";
 
 const retrieveQuizByTitle = async (req: Request, res: Response) => {
+  const { platform, quizTitle } = req.params;
+  const username = res.locals.authenticatedUser;
+
   try {
-    const quiz = await QuizModel.retrieveByTitle(req.params.platform, req.params.quizTitle);
+    const user = await UserModel.retrieveByUsername(username);
+
+    if (!user) throw Error(`${username} not found in database`);
+
+    const platformModel = await PlatformModel.retrieveByTitle(platform);
+
+    if (!platformModel) {
+      console.error(`${platform} does not exist`);
+      return res.sendStatus(400);
+    }
+
+    if (user.permissionsOn(platformModel) < Sporadic.Permissions.User) {
+      console.error(`${username} lacks permission to fetch quizzes for ${platform}`);
+      return res.sendStatus(403);
+    }
+
+    const quiz = await QuizModel.retrieveByTitle(platform, quizTitle);
 
     return quiz ? res.status(200).send(quiz.toJSON()) : res.sendStatus(400);
   } catch (err) {

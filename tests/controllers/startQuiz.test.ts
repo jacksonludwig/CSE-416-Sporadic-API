@@ -1,10 +1,12 @@
 import request from "supertest";
 import app from "../../src/app";
 import { validateToken } from "../../src/middleware/auth";
+import PlatformModel from "../../src/models/Platform";
 import QuizModel from "../../src/models/Quiz";
 import UserModel, { User } from "../../src/models/User";
 import mockQuiz from "../mocks/mockQuiz";
 import globalMockUser from "../mocks/mockUser";
+import globalMockPlatform from "../mocks/mockPlatform";
 
 jest.mock("../../src/middleware/auth", () => ({
   validateToken: jest.fn((req, res, next) => {
@@ -38,6 +40,9 @@ describe(`start quiz route tests`, () => {
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));
     UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
     QuizModel.prototype.update = jest.fn().mockResolvedValueOnce(null);
+    PlatformModel.retrieveByTitle = jest
+      .fn()
+      .mockResolvedValueOnce(new PlatformModel(globalMockPlatform));
   });
 
   test(`Should send back 200 and quiz object on success`, async () => {
@@ -84,8 +89,26 @@ describe(`start quiz route tests`, () => {
     expect(response.statusCode).toBe(200);
   });
 
+  test(`Should send back 403 if user is banned from platform`, async () => {
+    const mockPlat = new PlatformModel(globalMockPlatform);
+    mockPlat.bannedUsers = [globalMockUser.username];
+    PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(mockPlat);
+    const response = await request(app).post(`/quizzes/${mockPlatform}/${mockQuiz.title}/start`);
+
+    expect(validateToken).toHaveBeenCalled();
+    expect(response.statusCode).toBe(403);
+  });
+
   test(`Should send back 500 if no user is returned`, async () => {
     UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(null);
+    const response = await request(app).post(`/quizzes/${mockPlatform}/${mockQuiz.title}/start`);
+
+    expect(validateToken).toHaveBeenCalled();
+    expect(response.statusCode).toBe(500);
+  });
+
+  test(`Should send back 500 if no platform is returned`, async () => {
+    PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(null);
     const response = await request(app).post(`/quizzes/${mockPlatform}/${mockQuiz.title}/start`);
 
     expect(validateToken).toHaveBeenCalled();
