@@ -6,9 +6,16 @@ import { validateToken } from "../../src/middleware/auth";
 import QuizModel from "../../src/models/Quiz";
 import UserModel, { User } from "../../src/models/User";
 import mockQuiz from "../mocks/mockQuiz";
+<<<<<<< HEAD
+=======
+import globalMockuser from "../mocks/mockUser";
+>>>>>>> BUILD_5
 
 jest.mock("../../src/middleware/auth", () => ({
-  validateToken: jest.fn((req, res, next) => next()),
+  validateToken: jest.fn((req, res, next) => {
+    res.locals.authenticatedUser = globalMockuser.username;
+    next();
+  }),
 }));
 
 describe(`submit quiz route tests`, () => {
@@ -41,7 +48,7 @@ describe(`submit quiz route tests`, () => {
     mockQuiz.timeLimit = 10000;
 
     mockUser = {
-      username: "testuser",
+      username: globalMockuser.username,
       email: "email@email.com",
       cognitoId: "asdkjskdjfas",
     } as User;

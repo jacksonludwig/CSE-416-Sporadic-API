@@ -38,7 +38,7 @@ const confirmEmail = async (req: Request, res: Response) => {
     try {
       await cognitoClient.send(confirmEmailCommand);
     } catch (err) {
-      if (err && err.$metadata && err.$metadata.httpStatusCode < 500)
+      if (err.$metadata && err.$metadata.httpStatusCode < 500)
         return res.status(err.$metadata.httpStatusCode).send({
           name: err.name,
           message: err.message,

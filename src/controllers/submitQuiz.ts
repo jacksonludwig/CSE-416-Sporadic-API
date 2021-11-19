@@ -28,6 +28,10 @@ const submitQuiz = async (req: Request, res: Response) => {
 
   const { answers } = req.body as SubmitQuizPost;
   const { platform, quizTitle } = req.params;
+<<<<<<< HEAD
+=======
+  const username = res.locals.authenticatedUser;
+>>>>>>> BUILD_5
 
   try {
     const quiz = await QuizModel.retrieveByTitle(platform, quizTitle);
@@ -36,11 +40,22 @@ const submitQuiz = async (req: Request, res: Response) => {
       console.error(`${quizTitle} does not exist in ${platform} or given answers do not match.`);
       return res.sendStatus(400);
     }
+<<<<<<< HEAD
+=======
 
-    const user = await UserModel.retrieveByUsername(res.locals.authenticatedUser);
+    const user = await UserModel.retrieveByUsername(username);
 
-    if (!user) throw Error(`${res.locals.authenticatedUser} not found in database`);
+    if (!user) throw Error(`${username} not found in database`);
+>>>>>>> BUILD_5
 
+    const userScoreIndex = quiz.scores.findIndex((s) => s.user === username);
+
+    if (userScoreIndex === -1) {
+      console.error(`${quizTitle} has not been started by ${username}`);
+      return res.sendStatus(400);
+    }
+
+<<<<<<< HEAD
     const userScoreIndex = quiz.scores.findIndex((s) => s.user === user.getUsername());
 
     if (userScoreIndex === -1) {
@@ -50,6 +65,10 @@ const submitQuiz = async (req: Request, res: Response) => {
 
     if (quiz.scores[userScoreIndex].score !== undefined) {
       console.error(`${quizTitle} has already been submitted by ${user.getUsername()}`);
+=======
+    if (quiz.scores[userScoreIndex].score !== undefined) {
+      console.error(`${quizTitle} has already been submitted by ${username}`);
+>>>>>>> BUILD_5
       return res.sendStatus(400);
     }
 

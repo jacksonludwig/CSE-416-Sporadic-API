@@ -63,6 +63,21 @@ class DbClient {
   }
 
   /**
+   * Deletes a document on a mongo collection.
+   */
+  public async deleteOne<T>(
+    collection: string,
+    filter: Filter<T> = {},
+    options: FindOptions,
+  ): Promise<void> {
+    const db = await this.connect();
+    const result = await db.collection<T>(collection).deleteOne(filter, options);
+
+    if (!result.acknowledged || result.deletedCount < 1)
+      throw new Error(`${document} could not be deleted from ${collection}.`);
+  }
+
+  /**
    * Updates a document.
    * Currently does not accept options.
    *

@@ -3,7 +3,9 @@ import express from "express";
 import confirmEmail from "../controllers/confirmEmail";
 import createUser from "../controllers/createUser";
 import retrieveQuizFeed from "../controllers/retreiveQuizFeed";
+import generateAvatarSubmissionURL from "../controllers/generateAvatarSubmissionURL";
 import retrieveByUsername from "../controllers/retrieveUserByUsername";
+import updateAboutSection from "../controllers/updateAboutSection";
 import updateRelationship from "../controllers/updateRelationship";
 import { validateToken } from "../middleware/auth";
 
@@ -15,11 +17,13 @@ export const cognitoClient = new CognitoIdentityProviderClient({
 
 userRouter.post("/", createUser);
 userRouter.post("/:username/confirm", confirmEmail);
+userRouter.get("/:username/avatar", validateToken, generateAvatarSubmissionURL);
 
 userRouter.get("/:username", validateToken, retrieveByUsername);
 
 userRouter.put("/updateRelationship", validateToken, updateRelationship);
 
 userRouter.get("/:username/retreiveQuizFeed", validateToken, retrieveQuizFeed);
+userRouter.patch("/about", validateToken, updateAboutSection);
 
 export default userRouter;

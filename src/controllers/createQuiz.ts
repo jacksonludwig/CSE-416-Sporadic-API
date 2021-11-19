@@ -1,13 +1,21 @@
 import { Request, Response } from "express";
 import Joi from "joi";
 import PlatformModel from "../models/Platform";
+<<<<<<< HEAD
 import QuizModel, { Score } from "../models/Quiz";
+=======
+import QuizModel from "../models/Quiz";
+>>>>>>> BUILD_5
 import { Question } from "../models/Quiz";
 
 const createQuizSchema = Joi.object({
   quizTitle: Joi.string().alphanum().min(1).max(75).required(),
   platformTitle: Joi.string().alphanum().min(1).max(100).required(),
+<<<<<<< HEAD
   timeLimit: Joi.number().required(),
+=======
+  timeLimit: Joi.number().min(60).max(600).required(),
+>>>>>>> BUILD_5
   description: Joi.string().min(1).max(500).required(),
   questions: Joi.array()
     .items(
