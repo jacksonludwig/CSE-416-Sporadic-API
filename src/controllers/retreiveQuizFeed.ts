@@ -10,7 +10,7 @@ const retrieveQuizFeed= async (req: Request, res: Response) => {
     const user = await UserModel.retrieveByUsername(username);
 
     if (!user) throw Error(`${username} not found in database`);
-  }
+  } finally {}
 
 }
 
