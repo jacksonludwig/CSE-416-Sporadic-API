@@ -1,11 +1,11 @@
 declare namespace Sporadic {
   export const enum Permissions {
-    Admin = 0,
-    Owner = 1,
-    Moderator = 2,
-    Subscriber = 3,
-    User = 4,
-    Banned = 5,
+    Admin = 5,
+    Owner = 4,
+    Moderator = 3,
+    Subscriber = 2,
+    User = 1,
+    Banned = 0,
   }
 
   export const enum UpdateAction {

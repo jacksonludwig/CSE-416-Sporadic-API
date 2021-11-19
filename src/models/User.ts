@@ -134,7 +134,7 @@ export default class UserModel {
   /**
    * Check what permissions the user has in a given platform.
    */
-  public getPermissionsOn(platform: PlatformModel): Sporadic.Permissions {
+  public permissionsOn(platform: PlatformModel): Sporadic.Permissions {
     if (this.isGlobalAdmin) return Sporadic.Permissions.Admin;
 
     if (platform.bannedUsers.includes(this.username)) return Sporadic.Permissions.Banned;
