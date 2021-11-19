@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import PlatformModel from "../models/Platform";
 import QuizModel from "../models/Quiz";
 import UserModel from "../models/User";
 
@@ -12,6 +13,15 @@ const startQuiz = async (req: Request, res: Response) => {
     if (!quiz) {
       console.error(`${quizTitle} does not exist in ${platform}.`);
       return res.sendStatus(400);
+    }
+
+    const platformModel = await PlatformModel.retrieveByTitle(platform);
+
+    if (!platformModel) throw Error(`${platform} not found in database`);
+
+    if (platformModel.bannedUsers.includes(username)) {
+      console.error(`${username} is banned from ${platform}`);
+      return res.sendStatus(403);
     }
 
     const user = await UserModel.retrieveByUsername(username);
