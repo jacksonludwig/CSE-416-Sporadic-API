@@ -37,6 +37,7 @@ const createPlatform = async (req: Request, res: Response) => {
       subscribers: [username],
       quizzes: [],
       owner: username,
+      scores: [],
     });
 
     await platform.save();

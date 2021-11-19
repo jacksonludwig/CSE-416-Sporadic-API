@@ -35,7 +35,7 @@ describe(`create quiz test`, () => {
 
     mockPlatformModel["owner"] = mockUsermodel.getUsername();
     mockPlatformModel.quizzes = [];
-
+    
     mockRequest = {
       quizTitle: mockQuiz.title,
       platformTitle: mockPlatform.title,

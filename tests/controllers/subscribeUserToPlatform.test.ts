@@ -28,6 +28,7 @@ describe(`subscribe user tests`, () => {
       bannedUsers: [],
       subscribers: [],
       quizzes: [],
+      scores: [],
     };
 
     mockUserModel = new UserModel(mockUser);
