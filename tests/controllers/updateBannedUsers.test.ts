@@ -25,12 +25,11 @@ describe(`update banned user tests`, () => {
 
     mockUserModel = new UserModel(mockUser);
 
-    const mockTargetUser = mockUser;
-    mockTargetUser.username = "otheruser";
-    mockTargetUserModel = new UserModel(mockTargetUser);
+    mockTargetUserModel = new UserModel(mockUser);
+    mockTargetUserModel["username"] = "otheruser";
 
     mockRequest = {
-      targetUsername: mockTargetUser.username,
+      targetUsername: mockTargetUserModel.getUsername(),
       action: "add" as Sporadic.UpdateAction,
     };
 
@@ -47,7 +46,13 @@ describe(`update banned user tests`, () => {
   });
 
   test(`Should send back 204 on success when adding`, async () => {
-    mockPlatformModel.bannedUsers = [];
+    mockPlatformModel.moderators = [mockUser.username];
+    PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(mockPlatformModel);
+    UserModel.retrieveByUsername = jest
+      .fn()
+      .mockResolvedValueOnce(mockUserModel)
+      .mockResolvedValueOnce(mockTargetUserModel);
+
     const response = await request(app)
       .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
@@ -58,6 +63,12 @@ describe(`update banned user tests`, () => {
 
   test(`Should send back 204 on success when removing`, async () => {
     mockPlatformModel.bannedUsers = [mockTargetUserModel["username"]];
+    PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(mockPlatformModel);
+    UserModel.retrieveByUsername = jest
+      .fn()
+      .mockResolvedValueOnce(mockUserModel)
+      .mockResolvedValueOnce(mockTargetUserModel);
+
     mockRequest.action = "remove" as Sporadic.UpdateAction;
     const response = await request(app)
       .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)

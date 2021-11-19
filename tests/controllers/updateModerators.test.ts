@@ -16,21 +16,20 @@ jest.mock("../../src/middleware/auth", () => ({
 
 describe(`update moderator tests`, () => {
   let mockUserModel: UserModel;
-  let mockTargetUserModel: UserModel;
   let mockRequest: UpdateModeratorsRequest;
   let mockPlatformModel: PlatformModel;
+  let mockTargetUserModel: UserModel;
 
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
 
     mockUserModel = new UserModel(mockUser);
 
-    const mockTargetUser = mockUser;
-    mockTargetUser.username = "otheruser";
-    mockTargetUserModel = new UserModel(mockTargetUser);
+    mockTargetUserModel = new UserModel(mockUser);
+    mockTargetUserModel["username"] = "otheruser";
 
     mockRequest = {
-      targetUsername: mockTargetUser.username,
+      targetUsername: mockTargetUserModel.getUsername(),
       action: "add" as Sporadic.UpdateAction,
     };
 
@@ -46,7 +45,15 @@ describe(`update moderator tests`, () => {
     PlatformModel.prototype.update = jest.fn().mockResolvedValue(null);
   });
 
+  // These tests are kinda broken because of the double user request call
   test(`Should send back 204 on success when adding`, async () => {
+    mockPlatformModel.moderators = [mockUser.username];
+    PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(mockPlatformModel);
+    UserModel.retrieveByUsername = jest
+      .fn()
+      .mockResolvedValueOnce(mockUserModel)
+      .mockResolvedValueOnce(mockTargetUserModel);
+
     const response = await request(app)
       .put(`/platforms/${mockPlatform.title}/updateModerators`)
       .send(mockRequest);
@@ -57,6 +64,13 @@ describe(`update moderator tests`, () => {
 
   test(`Should send back 204 on success when removing`, async () => {
     mockRequest.action = "remove" as Sporadic.UpdateAction;
+    mockPlatformModel.moderators = [mockUser.username, mockTargetUserModel.getUsername()];
+    PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(mockPlatformModel);
+    UserModel.retrieveByUsername = jest
+      .fn()
+      .mockResolvedValueOnce(mockUserModel)
+      .mockResolvedValueOnce(mockTargetUserModel);
+
     const response = await request(app)
       .put(`/platforms/${mockPlatform.title}/updateModerators`)
       .send(mockRequest);
