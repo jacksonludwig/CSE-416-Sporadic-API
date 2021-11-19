@@ -33,6 +33,7 @@ export type User = {
   _id?: ObjectId;
   awards: Award[];
   isGloballyBanned: boolean;
+  isGlobalAdmin: boolean;
   lastLogin?: Date;
   subscriptions: string[];
   friends: string[];
@@ -46,6 +47,7 @@ export default class UserModel {
   private _id: User["_id"];
   private awards: User["awards"];
   private isGloballyBanned: User["isGloballyBanned"];
+  private isGlobalAdmin: User["isGlobalAdmin"];
   private lastLogin: User["lastLogin"];
   public notifications: User["notifications"];
   public friends: User["friends"];
@@ -60,6 +62,7 @@ export default class UserModel {
     this.awards = user.awards;
     this.lastLogin = user.lastLogin;
     this.isGloballyBanned = user.isGloballyBanned;
+    this.isGlobalAdmin = user.isGlobalAdmin;
     this.subscriptions = user.subscriptions;
     this.friends = user.friends;
     this.notifications = user.notifications;
@@ -95,6 +98,7 @@ export default class UserModel {
       notifications: this.notifications,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
+      isGlobalAdmin: this.isGlobalAdmin,
     };
   }
 
@@ -111,6 +115,10 @@ export default class UserModel {
 
   public getUsername(): User["username"] {
     return this.username;
+  }
+
+  public getIsGlobalAdmin(): User["isGlobalAdmin"] {
+    return this.isGlobalAdmin;
   }
 
   /**

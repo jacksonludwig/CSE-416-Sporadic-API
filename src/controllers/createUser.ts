@@ -65,6 +65,7 @@ const createUser = async (req: Request, res: Response) => {
       cognitoId: response.UserSub as string,
       lastLogin: new Date(),
       isGloballyBanned: false,
+      isGlobalAdmin: false,
       awards: [],
       subscriptions: [],
       friends: [],
