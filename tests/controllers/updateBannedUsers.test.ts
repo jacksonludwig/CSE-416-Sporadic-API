@@ -43,6 +43,7 @@ describe(`update banned user tests`, () => {
 
     PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(mockPlatformModel);
     PlatformModel.prototype.update = jest.fn().mockResolvedValue(null);
+    UserModel.prototype.update = jest.fn().mockResolvedValue(null);
   });
 
   test(`Should send back 204 on success when adding`, async () => {

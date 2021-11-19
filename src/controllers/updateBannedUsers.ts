@@ -56,8 +56,13 @@ const updateBannedUsers = async (req: Request, res: Response) => {
         console.error(`${targetUsername} is already banned`);
         return res.sendStatus(400);
       }
+
       platform.bannedUsers.push(targetUsername);
-      platform.subscribers = platform.subscribers.filter((m) => m !== targetUsername);
+      platform.moderators = platform.moderators.filter((m) => m !== targetUsername);
+      platform.subscribers = platform.subscribers.filter((s) => s !== targetUsername);
+      targetUser.subscriptions = targetUser.subscriptions.filter((p) => p !== platformTitle);
+
+      await targetUser.update();
     } else {
       if (!hasBannedUser) {
         console.error(`${targetUsername} is not currently banned`);
