@@ -5,6 +5,9 @@ import subscribeUserToPlatform from "../controllers/subscribeUserToPlatform";
 import unsubscribeUserFromPlatform from "../controllers/unsubscribeUserFromPlatform";
 import updateBannedUsers from "../controllers/updateBannedUsers";
 import updateModerators from "../controllers/updateModerators";
+import generatePlatformBannerSubmissionURL from "../controllers/generatePlatformBannerSubmissionURL";
+import generatePlatformIconSubmissionURL from "../controllers/generatePlatformIconSubmissionURL";
+
 import { validateToken } from "../middleware/auth";
 
 const platformRouter = express.Router();
@@ -13,6 +16,8 @@ platformRouter.use(validateToken);
 platformRouter.post("/", createPlatform);
 
 platformRouter.get("/:platformTitle", retrieveByTitle);
+platformRouter.get("/:platform/set-banner", validateToken, generatePlatformBannerSubmissionURL);
+platformRouter.get("/:platform/set-icon", validateToken, generatePlatformIconSubmissionURL);
 
 platformRouter.patch("/:platformTitle/subscribe", subscribeUserToPlatform);
 platformRouter.patch("/:platformTitle/unsubscribe", unsubscribeUserFromPlatform);
