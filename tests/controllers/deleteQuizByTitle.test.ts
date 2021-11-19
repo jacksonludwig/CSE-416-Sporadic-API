@@ -3,6 +3,7 @@ import app from "../../src/app";
 import { validateToken } from "../../src/middleware/auth";
 import PlatformModel from "../../src/models/Platform";
 import QuizModel from "../../src/models/Quiz";
+import UserModel from "../../src/models/User";
 import mockPlatform from "../mocks/mockPlatform";
 import mockQuiz from "../mocks/mockQuiz";
 import mockUser from "../mocks/mockUser";
@@ -24,6 +25,7 @@ describe(`get quiz by title/platform route test`, () => {
     QuizModel.prototype.delete = jest.fn().mockResolvedValueOnce(null);
     PlatformModel.retrieveByTitle = jest.fn().mockResolvedValue(new PlatformModel(mockPlatform));
     PlatformModel.prototype.update = jest.fn().mockResolvedValue(null);
+    UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
   });
 
   test(`Should send back 204 on success`, async () => {
@@ -49,6 +51,22 @@ describe(`get quiz by title/platform route test`, () => {
 
   test(`Should send back 500 if lookup of quiz fails`, async () => {
     QuizModel.retrieveByTitle = jest.fn().mockRejectedValueOnce(new Error("mock err"));
+    const response = await request(app).delete(`/quizzes/somePlatform/${mockQuiz.title}`);
+
+    expect(validateToken).toHaveBeenCalled();
+    expect(response.statusCode).toBe(500);
+  });
+
+  test(`Should send back 500 if lookup of user fails`, async () => {
+    UserModel.retrieveByUsername = jest.fn().mockRejectedValueOnce(new Error("mock err"));
+    const response = await request(app).delete(`/quizzes/somePlatform/${mockQuiz.title}`);
+
+    expect(validateToken).toHaveBeenCalled();
+    expect(response.statusCode).toBe(500);
+  });
+
+  test(`Should send back 500 if user doesn't exist`, async () => {
+    UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(null);
     const response = await request(app).delete(`/quizzes/somePlatform/${mockQuiz.title}`);
 
     expect(validateToken).toHaveBeenCalled();
