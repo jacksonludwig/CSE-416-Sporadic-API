@@ -2,19 +2,16 @@ import { Request, Response } from "express";
 import Joi from "joi";
 import UserModel from "../models/User";
 
-export enum Action {
-  Add = "add",
-  Remove = "remove",
-}
-
 const updateRelationshipSchema = Joi.object({
   targetUsername: Joi.string().alphanum().min(1).max(40).required(),
-  action: Joi.string().valid(Action.Add, Action.Remove).required(),
+  action: Joi.string()
+    .valid(Sporadic.UpdateAction.Add, Sporadic.UpdateAction.Remove)
+    .required(),
 });
 
 export type UpdateRelationshipRequest = {
   targetUsername: string;
-  action: Action;
+  action: Sporadic.UpdateAction;
 };
 
 const updateRelationship = async (req: Request, res: Response) => {
@@ -42,7 +39,7 @@ const updateRelationship = async (req: Request, res: Response) => {
 
     const userHasFriend = user.friends.includes(targetUsername);
 
-    if (action === Action.Add) {
+    if (action === Sporadic.UpdateAction.Add) {
       if (userHasFriend) {
         console.error(`${username} already has ${targetUsername} as friend`);
         return res.sendStatus(400);

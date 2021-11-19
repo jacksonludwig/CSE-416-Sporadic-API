@@ -3,19 +3,16 @@ import Joi from "joi";
 import PlatformModel from "../models/Platform";
 import UserModel from "../models/User";
 
-export enum Action {
-  Add = "add",
-  Remove = "remove",
-}
-
 const updateBannedUsersSchema = Joi.object({
   targetUsername: Joi.string().alphanum().min(1).max(40).required(),
-  action: Joi.string().valid(Action.Add, Action.Remove).required(),
+  action: Joi.string()
+    .valid(Sporadic.UpdateAction.Add, Sporadic.UpdateAction.Remove)
+    .required(),
 });
 
 export type UpdateBannedUsersRequest = {
   targetUsername: string;
-  action: Action;
+  action: Sporadic.UpdateAction;
 };
 
 const updateBannedUsers = async (req: Request, res: Response) => {
@@ -56,7 +53,7 @@ const updateBannedUsers = async (req: Request, res: Response) => {
 
     const hasBannedUser = platform.bannedUsers.includes(targetUsername);
 
-    if (action === Action.Add) {
+    if (action === Sporadic.UpdateAction.Add) {
       if (hasBannedUser) {
         console.error(`${targetUsername} is already banned`);
         return res.sendStatus(400);

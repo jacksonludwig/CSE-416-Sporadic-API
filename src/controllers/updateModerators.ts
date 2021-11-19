@@ -3,19 +3,16 @@ import Joi from "joi";
 import PlatformModel from "../models/Platform";
 import UserModel from "../models/User";
 
-export enum Action {
-  Add = "add",
-  Remove = "remove",
-}
-
 const updateModeratorsSchema = Joi.object({
   targetUsername: Joi.string().alphanum().min(1).max(40).required(),
-  action: Joi.string().valid(Action.Add, Action.Remove).required(),
+  action: Joi.string()
+    .valid(Sporadic.UpdateAction.Add, Sporadic.UpdateAction.Remove)
+    .required(),
 });
 
 export type UpdateModeratorsRequest = {
   targetUsername: string;
-  action: Action;
+  action: Sporadic.UpdateAction;
 };
 
 const updateModerators = async (req: Request, res: Response) => {
@@ -56,7 +53,7 @@ const updateModerators = async (req: Request, res: Response) => {
 
     const hasUserAsModerator = platform.moderators.includes(targetUsername);
 
-    if (action === Action.Add) {
+    if (action === Sporadic.UpdateAction.Add) {
       if (hasUserAsModerator) {
         console.error(`${targetUsername} is already a moderator`);
         return res.sendStatus(400);

@@ -26,15 +26,6 @@ type UserPublicJSON = {
   aboutSection: User["aboutSection"];
 };
 
-export enum Permissions {
-  Admin = 0,
-  Owner = 1,
-  Moderator = 2,
-  Subscriber = 3,
-  User = 4,
-  Banned = 5,
-}
-
 export type User = {
   email: string;
   username: string;
@@ -143,18 +134,18 @@ export default class UserModel {
   /**
    * Check what permissions the user has in a given platform.
    */
-  public getPermissionsOn(platform: PlatformModel): Permissions {
-    if (this.isGlobalAdmin) return Permissions.Admin;
+  public getPermissionsOn(platform: PlatformModel): Sporadic.Permissions {
+    if (this.isGlobalAdmin) return Sporadic.Permissions.Admin;
 
-    if (platform.bannedUsers.includes(this.username)) return Permissions.Banned;
+    if (platform.bannedUsers.includes(this.username)) return Sporadic.Permissions.Banned;
 
-    if (platform.getOwner() === this.username) return Permissions.Owner;
+    if (platform.getOwner() === this.username) return Sporadic.Permissions.Owner;
 
-    if (platform.moderators.includes(this.username)) return Permissions.Moderator;
+    if (platform.moderators.includes(this.username)) return Sporadic.Permissions.Moderator;
 
-    if (platform.subscribers.includes(this.username)) return Permissions.Subscriber;
+    if (platform.subscribers.includes(this.username)) return Sporadic.Permissions.Subscriber;
 
-    return Permissions.User;
+    return Sporadic.Permissions.User;
   }
 
   /**
