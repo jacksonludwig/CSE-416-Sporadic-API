@@ -3,6 +3,7 @@ import Joi from "joi";
 import PlatformModel from "../models/Platform";
 import QuizModel from "../models/Quiz";
 import { Question } from "../models/Quiz";
+import UserModel from "../models/User";
 
 const createQuizSchema = Joi.object({
   quizTitle: Joi.string().alphanum().min(1).max(75).required(),
@@ -50,12 +51,16 @@ const createQuiz = async (req: Request, res: Response) => {
       return res.sendStatus(400);
     }
 
+    const user = await UserModel.retrieveByUsername(username);
+
+    if (!user) throw Error(`${username} not found in database`);
+
     if (platform.quizzes.includes(quizTitle)) {
       console.error(`${platformTitle} already includes ${quizTitle}`);
       return res.sendStatus(400);
     }
 
-    if (platform.getOwner() !== username && !platform.moderators.includes(username)) {
+    if (user.permissionsOn(platform) < Sporadic.Permissions.Moderator) {
       console.error(`${username} not an owner or moderator of ${platformTitle}`);
       return res.sendStatus(403);
     }

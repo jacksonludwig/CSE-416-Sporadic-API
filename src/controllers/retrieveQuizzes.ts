@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import Joi from "joi";
 import { SortDirection } from "mongodb";
+import PlatformModel from "../models/Platform";
 import QuizModel from "../models/Quiz";
+import UserModel from "../models/User";
 
 enum SortDirs {
   Ascending = "ascending",
@@ -14,7 +16,7 @@ const dirMap = new Map<string, SortDirection>([
 ]);
 
 const retrieveQuizzesSchema = Joi.object({
-  platform: Joi.string().max(50),
+  platform: Joi.string().min(1).max(50).required(),
   sortBy: Joi.string().valid("upvotes", "title", "platform"),
   sortDirection: Joi.string().valid(SortDirs.Ascending, SortDirs.Descending),
 });
@@ -27,10 +29,29 @@ const retrieveQuizzes = async (req: Request, res: Response) => {
     return res.sendStatus(400);
   }
 
+  const username = res.locals.authenticatedUser;
+  const platformTitle = req.query.platform as string;
+
   try {
+    const user = await UserModel.retrieveByUsername(username);
+
+    if (!user) throw Error(`${username} not found in database`);
+
+    const platform = await PlatformModel.retrieveByTitle(platformTitle);
+
+    if (!platform) {
+      console.error(`${platformTitle} does not exist`);
+      return res.sendStatus(400);
+    }
+
+    if (user.permissionsOn(platform) < Sporadic.Permissions.User) {
+      console.error(`${username} lacks permission to fetch quizzes for ${platform}`);
+      return res.sendStatus(403);
+    }
+
     const quizzes = await QuizModel.retrieveAll(
       {
-        platform: req.query.platform as string,
+        platform: platformTitle,
       },
       {
         field: req.query.sortBy as string,
