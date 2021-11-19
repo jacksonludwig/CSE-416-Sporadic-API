@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import DbClient from "../utils/DbClient";
+import PlatformModel from "./Platform";
 
 const COLLECTION = "users";
 
@@ -24,6 +25,15 @@ type UserPublicJSON = {
   lastLogin: User["lastLogin"];
   aboutSection: User["aboutSection"];
 };
+
+export enum Permissions {
+  Admin = 0,
+  Owner = 1,
+  Moderator = 2,
+  Subscriber = 3,
+  User = 4,
+  Banned = 5,
+}
 
 export type User = {
   email: string;
@@ -128,6 +138,23 @@ export default class UserModel {
     const user = await DbClient.findOne<User>(COLLECTION, { username: username }, {});
 
     return user ? new UserModel(user) : null;
+  }
+
+  /**
+   * Check what permissions the user has in a given platform.
+   */
+  public getPermissionsOn(platform: PlatformModel): Permissions {
+    if (this.isGlobalAdmin) return Permissions.Admin;
+
+    if (platform.bannedUsers.includes(this.username)) return Permissions.Banned;
+
+    if (platform.getOwner() === this.username) return Permissions.Owner;
+
+    if (platform.moderators.includes(this.username)) return Permissions.Moderator;
+
+    if (platform.subscribers.includes(this.username)) return Permissions.Subscriber;
+
+    return Permissions.User;
   }
 
   /**
