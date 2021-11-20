@@ -13,10 +13,6 @@ const user: User = {
   friends: [],
   notifications: [],
   awards: [],
-<<<<<<< HEAD
-  profilePicture: "https://imageurl.png",
-=======
->>>>>>> BUILD_5
 };
 
 export default user;

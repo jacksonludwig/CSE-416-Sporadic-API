@@ -6,10 +6,7 @@ import { validateToken } from "../../src/middleware/auth";
 import QuizModel from "../../src/models/Quiz";
 import UserModel, { User } from "../../src/models/User";
 import mockQuiz from "../mocks/mockQuiz";
-<<<<<<< HEAD
-=======
 import globalMockuser from "../mocks/mockUser";
->>>>>>> BUILD_5
 
 jest.mock("../../src/middleware/auth", () => ({
   validateToken: jest.fn((req, res, next) => {

@@ -21,10 +21,7 @@ const createPlatform = async (req: Request, res: Response) => {
   }
 
   const { title, description } = req.body as CreatePlatformPost;
-<<<<<<< HEAD
-=======
   const username = res.locals.authenticatedUser;
->>>>>>> BUILD_5
 
   try {
     if (await PlatformModel.retrieveByTitle(title)) {
@@ -35,11 +32,7 @@ const createPlatform = async (req: Request, res: Response) => {
     const platform = new PlatformModel({
       title: title,
       description: description,
-<<<<<<< HEAD
-      moderators: [],
-=======
       moderators: [username],
->>>>>>> BUILD_5
       bannedUsers: [],
       subscribers: [username],
       quizzes: [],

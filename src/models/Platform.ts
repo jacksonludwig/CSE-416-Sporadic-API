@@ -19,10 +19,7 @@ export default class PlatformModel {
   private owner: Platform["owner"];
   private description: Platform["description"];
   private _id: Platform["_id"];
-<<<<<<< HEAD
-=======
   public bannedUsers: Platform["bannedUsers"];
->>>>>>> BUILD_5
   public moderators: Platform["moderators"];
   public quizzes: Platform["quizzes"];
   public subscribers: Platform["subscribers"];

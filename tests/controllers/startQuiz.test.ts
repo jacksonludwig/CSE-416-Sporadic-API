@@ -20,10 +20,7 @@ describe(`start quiz route tests`, () => {
 
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
-<<<<<<< HEAD
-=======
     jest.spyOn(console, "log").mockImplementationOnce(() => null);
->>>>>>> BUILD_5
     mockTitle = "mocktitle";
     mockPlatform = "mockPlatform".toLowerCase();
 
@@ -78,21 +75,13 @@ describe(`start quiz route tests`, () => {
     expect(response.statusCode).toBe(400);
   });
 
-<<<<<<< HEAD
-  test(`Should send back 400 if user already started quiz`, async () => {
-=======
   test(`Should send back 200 if user already started quiz`, async () => {
->>>>>>> BUILD_5
     mockQuiz.scores[0] = { user: mockUser.username, score: 0, timeStarted: new Date() };
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));
     const response = await request(app).post(`/quizzes/${mockPlatform}/${mockQuiz.title}/start`);
 
     expect(validateToken).toHaveBeenCalled();
-<<<<<<< HEAD
-    expect(response.statusCode).toBe(400);
-=======
     expect(response.statusCode).toBe(200);
->>>>>>> BUILD_5
   });
 
   test(`Should send back 500 if no user is returned`, async () => {
