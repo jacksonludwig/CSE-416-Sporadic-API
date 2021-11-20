@@ -183,14 +183,16 @@ export default class QuizModel {
    */
 
   public static async retrieveFeed(
-    platformFilters: void[],
+    subscriptions: string[],
     sortBy: { field?: string; direction?: SortDirection } = {},
   ): Promise<{ totalItems: number; items: Quiz[] }> {
     const findOpts: FindOptions = {};
-
+    const feedFilter = {
+      platform: {$in: subscriptions}
+    }
     findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
 
-    return await DbClient.find<Quiz>(COLLECTION, { $or: platformFilters}, findOpts);
+    return await DbClient.find<Quiz>(COLLECTION, feedFilter, findOpts);
   }
 
 

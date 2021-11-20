@@ -21,7 +21,7 @@ const retrieveQuizFeed= async (req: Request, res: Response) => {
   const subscriptions = user.subscriptions;
   if (!subscriptions) throw Error(`${username} has no subscriptions`);
 
-  const filters = user.subscriptions.map(platformString => {platform: platformString});
+  // const filters = user.subscriptions.map(platformString => {platform: platformString});
 
   
   enum SortDirs {
@@ -35,20 +35,16 @@ const retrieveQuizFeed= async (req: Request, res: Response) => {
   ]);
   
   try {
-    const quizzes = await QuizModel.retrieveFeed(
-      {
-        platformFilters: filters,
-      },
-     
+    const quizzes = await QuizModel.retrieveFeed(     
+      subscriptions,    
       {
         field: req.query.sortBy as string,
         direction: dirMap.get(req.query.sortDirection as SortDirs),
       },
   
     );
-
     return res.status(200).send(quizzes);
-    
+        
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
@@ -70,7 +66,7 @@ db.platforms.quizzes.sort({_id:-1}).limit(1).skip(i))
 
 continue loop until n = 10
 
-
+{$or: [ {platform: "movies"}, {platform: "moodyboody"}] }
 fetch all quizzes from subscribed platforms 
 
 */
