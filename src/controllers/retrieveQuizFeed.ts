@@ -23,7 +23,7 @@ const retrieveQuizFeed= async (req: Request, res: Response) => {
 
   const filters = user.subscriptions.map(platformString => {platform: platformString});
 
-  /*
+  
   enum SortDirs {
     Ascending = "ascending",
     Descending = "descending",
@@ -33,23 +33,26 @@ const retrieveQuizFeed= async (req: Request, res: Response) => {
     [SortDirs.Ascending, 1],
     [SortDirs.Descending, -1],
   ]);
-  */
+  
   try {
     const quizzes = await QuizModel.retrieveFeed(
       {
         platformFilters: filters,
       },
- /*     
+     
       {
         field: req.query.sortBy as string,
         direction: dirMap.get(req.query.sortDirection as SortDirs),
       },
-  */
+  
     );
 
     return res.status(200).send(quizzes);
     
-  } finally {}
+  } catch (err) {
+    console.error(err);
+    return res.sendStatus(500);
+  }
 
 }
 
