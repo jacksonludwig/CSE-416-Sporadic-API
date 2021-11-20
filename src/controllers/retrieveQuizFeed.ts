@@ -3,6 +3,17 @@ import QuizModel from "../models/Quiz";
 import UserModel from "../models/User";
 import { SortDirection } from "mongodb";
 
+enum SortDirs {
+  Ascending = "ascending",
+  Descending = "descending",
+}
+
+const dirMap = new Map<string, SortDirection>([
+  [SortDirs.Ascending, 1],
+  [SortDirs.Descending, -1],
+]);
+
+
 const retrieveQuizFeed= async (req: Request, res: Response) => {
   const username = res.locals.authenticatedUser;
   // const username = req.params.username;
@@ -12,16 +23,6 @@ const retrieveQuizFeed= async (req: Request, res: Response) => {
 
   const subscriptions = user.subscriptions;
   if (!subscriptions) throw Error(`${username} has no subscriptions`);
-  
-  enum SortDirs {
-    Ascending = "ascending",
-    Descending = "descending",
-  }
-  
-  const dirMap = new Map<string, SortDirection>([
-    [SortDirs.Ascending, 1],
-    [SortDirs.Descending, -1],
-  ]);
   
   try {
     const quizzes = await QuizModel.retrieveFeed(     
