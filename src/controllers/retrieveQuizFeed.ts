@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import QuizModel from "../models/Quiz";
 import UserModel from "../models/User";
 import { SortDirection } from "mongodb";
+import Joi from "joi";
+
 
 enum SortDirs {
   Ascending = "ascending",
@@ -13,10 +15,23 @@ const dirMap = new Map<string, SortDirection>([
   [SortDirs.Descending, -1],
 ]);
 
+const retrieveQuizFeedSchema = Joi.object({
+  sortBy: Joi.string().valid("upvotes", "title", "platform"),
+  sortDirection: Joi.string().valid(SortDirs.Ascending, SortDirs.Descending),
+});
+
 
 const retrieveQuizFeed= async (req: Request, res: Response) => {
-  const username = res.locals.authenticatedUser;
+  
   // const username = req.params.username;
+  try {
+    await retrieveQuizFeedSchema.validateAsync(req.query);
+  } catch (err) {
+    console.error(err);
+    return res.sendStatus(400);
+  }
+
+  const username = res.locals.authenticatedUser;
 
   const user = await UserModel.retrieveByUsername(username);
   if (!user) throw Error(`${username} not found in database`);
@@ -30,6 +45,8 @@ const retrieveQuizFeed= async (req: Request, res: Response) => {
         field: req.query.sortBy as string,
         direction: dirMap.get(req.query.sortDirection as SortDirs),
       },
+
+
   
     );
     return res.status(200).send(quizzes);
