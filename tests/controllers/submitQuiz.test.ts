@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import request from "supertest";
 import app from "../../src/app";
 import { SubmitQuizPost } from "../../src/controllers/submitQuiz";

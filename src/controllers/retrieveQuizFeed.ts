@@ -22,7 +22,6 @@ const retrieveQuizFeed= async (req: Request, res: Response) => {
   if (!user) throw Error(`${username} not found in database`);
 
   const subscriptions = user.subscriptions;
-  if (!subscriptions) throw Error(`${username} has no subscriptions`);
   
   try {
     const quizzes = await QuizModel.retrieveFeed(     
