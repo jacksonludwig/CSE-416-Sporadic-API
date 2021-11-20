@@ -178,6 +178,24 @@ export default class QuizModel {
   }
 
   /**
+   * retrieve quizzes for feed function
+   * have find from dbclient in here
+   */
+
+  public static async retrieveFeed(
+    platformFilters: void[],
+    // sortBy: { field?: string; direction?: SortDirection } = {},
+  ): Promise<{ totalItems: number; items: Quiz[] }> {
+    // const feedFilter: { $or: platforms.map(p: string => { platform: p }); };
+    // const findOpts: FindOptions = {};
+
+    //findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
+
+    return await DbClient.find<Quiz>(COLLECTION, feedFilter, findOpts);
+  }
+
+
+  /**
    * Update mutable fields of the quiz in the database.
    */
   public async update(): Promise<void> {
@@ -196,4 +214,5 @@ export default class QuizModel {
       },
     );
   }
+
 }

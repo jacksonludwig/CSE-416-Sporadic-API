@@ -2,7 +2,7 @@ import { CognitoIdentityProviderClient } from "@aws-sdk/client-cognito-identity-
 import express from "express";
 import confirmEmail from "../controllers/confirmEmail";
 import createUser from "../controllers/createUser";
-import retrieveQuizFeed from "../controllers/retreiveQuizFeed";
+import retrieveQuizFeed from "../controllers/retrieveQuizFeed";
 import generateAvatarSubmissionURL from "../controllers/generateAvatarSubmissionURL";
 import retrieveByUsername from "../controllers/retrieveUserByUsername";
 import updateAboutSection from "../controllers/updateAboutSection";

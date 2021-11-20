@@ -14,8 +14,6 @@ type Notification = {
   title: string;
   body: string;
   hasBeenViewed: boolean;
-<<<<<<< HEAD
-=======
 };
 
 type UserPublicJSON = {
@@ -25,17 +23,13 @@ type UserPublicJSON = {
   friends: User["friends"];
   lastLogin: User["lastLogin"];
   aboutSection: User["aboutSection"];
->>>>>>> BUILD_5
 };
 
 export type User = {
   email: string;
   username: string;
   cognitoId: string;
-<<<<<<< HEAD
-=======
   aboutSection?: string;
->>>>>>> BUILD_5
   _id?: ObjectId;
   awards: Award[];
   isGloballyBanned: boolean;
@@ -53,17 +47,10 @@ export default class UserModel {
   private awards: User["awards"];
   private isGloballyBanned: User["isGloballyBanned"];
   private lastLogin: User["lastLogin"];
-<<<<<<< HEAD
-  private profilePicture: User["profilePicture"];
-  public notifications: User["notifications"];
-  public friends: User["friends"];
-  public subscriptions: User["subscriptions"];
-=======
   public notifications: User["notifications"];
   public friends: User["friends"];
   public subscriptions: User["subscriptions"];
   public aboutSection: User["aboutSection"];
->>>>>>> BUILD_5
 
   constructor(user: User) {
     this.email = user.email;
@@ -76,10 +63,7 @@ export default class UserModel {
     this.subscriptions = user.subscriptions;
     this.friends = user.friends;
     this.notifications = user.notifications;
-<<<<<<< HEAD
-=======
     this.aboutSection = user.aboutSection;
->>>>>>> BUILD_5
   }
 
   public async save(): Promise<string> {
@@ -94,10 +78,7 @@ export default class UserModel {
       friends: this.friends,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
-<<<<<<< HEAD
-=======
       aboutSection: this.aboutSection,
->>>>>>> BUILD_5
     });
   }
 
@@ -113,8 +94,6 @@ export default class UserModel {
       friends: this.friends,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
-<<<<<<< HEAD
-=======
       aboutSection: this.aboutSection,
     };
   }
@@ -127,7 +106,6 @@ export default class UserModel {
       friends: this.friends,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
->>>>>>> BUILD_5
     };
   }
 
@@ -158,10 +136,7 @@ export default class UserModel {
         friends: this.friends,
         notifications: this.notifications,
         lastLogin: this.lastLogin,
-<<<<<<< HEAD
-=======
         aboutSection: this.aboutSection,
->>>>>>> BUILD_5
       },
     );
   }
