@@ -15,16 +15,11 @@ quizRouter.post("/", createQuiz);
 quizRouter.post("/:platform/:quizTitle/submit", submitQuiz);
 quizRouter.post("/:platform/:quizTitle/start", startQuiz);
 
-<<<<<<< HEAD
-quizRouter.get("/", validateToken, retrieveQuizzes);
-quizRouter.get("/:platform/:quizTitle", retrieveQuizByTitle);
-=======
 quizRouter.get("/", retrieveQuizzes);
 quizRouter.get("/:platform/:quizTitle", retrieveQuizByTitle);
 
 quizRouter.put("/:platform/:quizTitle/comment", addCommentToQuiz);
 
 quizRouter.delete("/:platform/:quizTitle", deleteQuizByTitle);
->>>>>>> BUILD_5
 
 export default quizRouter;
