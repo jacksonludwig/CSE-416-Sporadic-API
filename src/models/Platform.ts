@@ -106,7 +106,9 @@ export default class PlatformModel {
             index: "platform_title",
             text: {
               query: searchString,
-              fuzzy: {},
+              fuzzy: {
+                maxEdits: 2,
+              },
               path: "title",
             },
           },
