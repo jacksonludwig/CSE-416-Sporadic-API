@@ -1,6 +1,6 @@
 import request from "supertest";
 import app from "../../src/app";
-import { UpdateModeratorsRequest } from "../../src/controllers/updateModerators";
+import { UpdateBannedUsersRequest } from "../../src/controllers/updateBannedUsers";
 import { validateToken } from "../../src/middleware/auth";
 import PlatformModel from "../../src/models/Platform";
 import UserModel from "../../src/models/User";
@@ -14,11 +14,11 @@ jest.mock("../../src/middleware/auth", () => ({
   }),
 }));
 
-describe(`update moderator tests`, () => {
+describe(`update banned user tests`, () => {
   let mockUserModel: UserModel;
-  let mockRequest: UpdateModeratorsRequest;
-  let mockPlatformModel: PlatformModel;
   let mockTargetUserModel: UserModel;
+  let mockRequest: UpdateBannedUsersRequest;
+  let mockPlatformModel: PlatformModel;
 
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
@@ -43,9 +43,9 @@ describe(`update moderator tests`, () => {
 
     PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(mockPlatformModel);
     PlatformModel.prototype.update = jest.fn().mockResolvedValue(null);
+    UserModel.prototype.update = jest.fn().mockResolvedValue(null);
   });
 
-  // These tests are kinda broken because of the double user request call
   test(`Should send back 204 on success when adding`, async () => {
     mockPlatformModel.moderators = [mockUser.username];
     PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(mockPlatformModel);
@@ -55,7 +55,7 @@ describe(`update moderator tests`, () => {
       .mockResolvedValueOnce(mockTargetUserModel);
 
     const response = await request(app)
-      .put(`/platforms/${mockPlatform.title}/updateModerators`)
+      .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();
@@ -63,16 +63,16 @@ describe(`update moderator tests`, () => {
   });
 
   test(`Should send back 204 on success when removing`, async () => {
-    mockRequest.action = "remove" as Sporadic.UpdateAction;
-    mockPlatformModel.moderators = [mockUser.username, mockTargetUserModel.getUsername()];
+    mockPlatformModel.bannedUsers = [mockTargetUserModel["username"]];
     PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(mockPlatformModel);
     UserModel.retrieveByUsername = jest
       .fn()
       .mockResolvedValueOnce(mockUserModel)
       .mockResolvedValueOnce(mockTargetUserModel);
 
+    mockRequest.action = "remove" as Sporadic.UpdateAction;
     const response = await request(app)
-      .put(`/platforms/${mockPlatform.title}/updateModerators`)
+      .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();
@@ -83,7 +83,7 @@ describe(`update moderator tests`, () => {
     UserModel.retrieveByUsername = jest.fn().mockRejectedValueOnce(new Error("mock err"));
 
     const response = await request(app)
-      .put(`/platforms/${mockPlatform.title}/updateModerators`)
+      .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();
@@ -97,7 +97,7 @@ describe(`update moderator tests`, () => {
       .mockRejectedValueOnce(new Error("mock err"));
 
     const response = await request(app)
-      .put(`/platforms/${mockPlatform.title}/updateModerators`)
+      .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();
@@ -108,7 +108,7 @@ describe(`update moderator tests`, () => {
     mockRequest.action = "something" as Sporadic.UpdateAction;
 
     const response = await request(app)
-      .put(`/platforms/${mockPlatform.title}/updateModerators`)
+      .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();
@@ -122,7 +122,7 @@ describe(`update moderator tests`, () => {
       .mockResolvedValueOnce(null);
 
     const response = await request(app)
-      .put(`/platforms/${mockPlatform.title}/updateModerators`)
+      .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();
@@ -136,7 +136,7 @@ describe(`update moderator tests`, () => {
       .mockResolvedValueOnce(mockTargetUserModel);
 
     const response = await request(app)
-      .put(`/platforms/${mockPlatform.title}/updateModerators`)
+      .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();
@@ -144,10 +144,10 @@ describe(`update moderator tests`, () => {
   });
 
   test(`Should send back 400 if is already moderator`, async () => {
-    mockPlatformModel.moderators.push(mockTargetUserModel.getUsername());
+    mockPlatformModel.bannedUsers.push(mockTargetUserModel.getUsername());
 
     const response = await request(app)
-      .put(`/platforms/${mockPlatform.title}/updateModerators`)
+      .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();
@@ -155,10 +155,10 @@ describe(`update moderator tests`, () => {
   });
 
   test(`Should send back 400 if user is not moderator and trying to remove`, async () => {
-    mockPlatformModel.moderators = [];
+    mockPlatformModel.bannedUsers = [];
     mockRequest.action = "remove" as Sporadic.UpdateAction;
     const response = await request(app)
-      .put(`/platforms/${mockPlatform.title}/updateModerators`)
+      .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();
@@ -169,7 +169,7 @@ describe(`update moderator tests`, () => {
     PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(null);
 
     const response = await request(app)
-      .put(`/platforms/${mockPlatform.title}/updateModerators`)
+      .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();
@@ -178,11 +178,11 @@ describe(`update moderator tests`, () => {
 
   test(`Should send back 403 if user is not mod or owner`, async () => {
     mockPlatformModel["owner"] = "";
-    mockPlatformModel.moderators = [];
+    mockPlatformModel.bannedUsers = [];
     PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(mockPlatformModel);
 
     const response = await request(app)
-      .put(`/platforms/${mockPlatform.title}/updateModerators`)
+      .put(`/platforms/${mockPlatform.title}/updateBannedUsers`)
       .send(mockRequest);
 
     expect(validateToken).toHaveBeenCalled();

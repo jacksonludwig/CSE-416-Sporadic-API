@@ -10,6 +10,7 @@ const platform: Platform = {
   moderators: [],
   quizzes: [],
   bannedUsers: [],
+  scores: [],
 };
 
 export default platform;

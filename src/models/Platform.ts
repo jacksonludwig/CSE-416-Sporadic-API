@@ -3,6 +3,11 @@ import DbClient from "../utils/DbClient";
 
 const COLLECTION = "platforms";
 
+type Score = {
+  username: string;
+  totalCorrect: number;
+};
+
 export type Platform = {
   title: string;
   owner: string;
@@ -12,17 +17,19 @@ export type Platform = {
   moderators: string[];
   quizzes: string[];
   _id?: ObjectId;
+  scores: Score[];
 };
 
 export default class PlatformModel {
   private title: Platform["title"];
   private owner: Platform["owner"];
   private description: Platform["description"];
-  private bannedUsers: Platform["bannedUsers"];
   private _id: Platform["_id"];
+  public bannedUsers: Platform["bannedUsers"];
   public moderators: Platform["moderators"];
   public quizzes: Platform["quizzes"];
   public subscribers: Platform["subscribers"];
+  public scores: Platform["scores"];
 
   constructor(platform: Platform) {
     this._id = platform._id;
@@ -33,6 +40,7 @@ export default class PlatformModel {
     this.moderators = platform.moderators;
     this.quizzes = platform.quizzes;
     this.bannedUsers = platform.bannedUsers;
+    this.scores = platform.scores;
   }
 
   public getOwner(): Platform["owner"] {
@@ -49,6 +57,7 @@ export default class PlatformModel {
       moderators: this.moderators,
       quizzes: this.quizzes,
       bannedUsers: this.bannedUsers,
+      scores: this.scores,
     });
   }
 
@@ -62,6 +71,7 @@ export default class PlatformModel {
       moderators: this.moderators,
       quizzes: this.quizzes,
       bannedUsers: this.bannedUsers,
+      scores: this.scores,
     };
   }
 
@@ -91,6 +101,7 @@ export default class PlatformModel {
         moderators: this.moderators,
         quizzes: this.quizzes,
         bannedUsers: this.bannedUsers,
+        scores: this.scores,
       },
     );
   }

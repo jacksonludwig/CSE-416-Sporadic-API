@@ -1,38 +1,50 @@
 import request from "supertest";
 import app from "../../src/app";
 import { validateToken } from "../../src/middleware/auth";
-import UserModel, { User } from "../../src/models/User";
+import UserModel from "../../src/models/User";
+import mockUser from "../mocks/mockUser";
 
 jest.mock("@aws-sdk/client-cognito-identity-provider");
 jest.mock("../../src/middleware/auth", () => ({
-  validateToken: jest.fn((req, res, next) => next()),
+  validateToken: jest.fn((req, res, next) => {
+    res.locals.authenticatedUser = mockUser.username;
+    next();
+  }),
 }));
 
 describe(`get user by username route test`, () => {
-  let mockUser: User;
+  let mockUserModel: UserModel;
+
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
 
-    mockUser = {
-      username: "testuser",
-      email: "email@email.com",
-      cognitoId: "asdkjskdjfas",
-    } as User;
+    mockUserModel = new UserModel(mockUser);
 
-    UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
+    UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(mockUserModel);
   });
 
-  test(`Should send back user on success`, async () => {
-    const response = await request(app).get(`/users/${mockUser.username}`);
+  test(`Should send back user with private data if user matches query on success`, async () => {
+    const response = await request(app).get(`/users/${mockUserModel["username"]}`);
 
     expect(validateToken).toHaveBeenCalled();
     expect(response.statusCode).toBe(200);
-    expect(response.body).toStrictEqual(mockUser);
+    expect(JSON.stringify(response.body)).toEqual(
+      JSON.stringify(mockUserModel.toJSONWithPrivateData()),
+    );
+  });
+
+  test(`Should send back user with public data if user doesn't match query on success`, async () => {
+    mockUserModel["username"] = "wrongname";
+    const response = await request(app).get(`/users/${mockUserModel["username"]}`);
+
+    expect(validateToken).toHaveBeenCalled();
+    expect(response.statusCode).toBe(200);
+    expect(JSON.stringify(response.body)).toEqual(JSON.stringify(mockUserModel.toJSON()));
   });
 
   test(`Should send back 500 if lookup fails`, async () => {
     UserModel.retrieveByUsername = jest.fn().mockRejectedValueOnce(new Error("mock err"));
-    const response = await request(app).get(`/users/${mockUser.username}`);
+    const response = await request(app).get(`/users/${mockUserModel["username"]}`);
 
     expect(validateToken).toHaveBeenCalled();
     expect(response.statusCode).toBe(500);
@@ -40,7 +52,7 @@ describe(`get user by username route test`, () => {
 
   test(`Should send back 400 if no user is returned`, async () => {
     UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(null);
-    const response = await request(app).get(`/users/${mockUser.username}`);
+    const response = await request(app).get(`/users/${mockUserModel["username"]}`);
 
     expect(validateToken).toHaveBeenCalled();
     expect(response.statusCode).toBe(400);

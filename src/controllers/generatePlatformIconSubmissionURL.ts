@@ -1,16 +1,30 @@
 import { Request, Response } from "express";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-
+import PlatformModel from "../models/Platform";
 const bucketName = process.env.AWS_BUCKET;
 const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
 const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
 
-const generateAvatarSubmissionURL = async (req: Request, res: Response) => {
+const generatePlatformIconSubmissionURL = async (req: Request, res: Response) => {
   try {
-    if (res.locals.authenticatedUser !== req.params.username) return res.sendStatus(401);
+    const platform = await PlatformModel.retrieveByTitle(req.params.platform);
 
-    const key = `users/${req.params.username}/avatar.png`;
+    if (!platform) {
+      console.error(`${req.params.platform} not found in database`);
+      return res.sendStatus(400);
+    }
+
+    if (
+      res.locals.authenticatedUser !== platform.getOwner() &&
+      !platform.moderators.includes(res.locals.authenticatedUser)
+    ) {
+      console.error(
+        `${res.locals.authenticatedUser} is not an owner or moderator of ${req.params.platform}`,
+      );
+      return res.sendStatus(403);
+    }
+    const key = `platforms/${req.params.platform}/icon.png`;
 
     const s3Client = new S3Client({
       region: process.env.COGNITO_REGION,
@@ -44,4 +58,4 @@ const generateAvatarSubmissionURL = async (req: Request, res: Response) => {
   }
 };
 
-export default generateAvatarSubmissionURL;
+export default generatePlatformIconSubmissionURL;

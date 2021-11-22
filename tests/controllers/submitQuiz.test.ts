@@ -2,10 +2,12 @@ import request from "supertest";
 import app from "../../src/app";
 import { SubmitQuizPost } from "../../src/controllers/submitQuiz";
 import { validateToken } from "../../src/middleware/auth";
+import PlatformModel from "../../src/models/Platform";
 import QuizModel from "../../src/models/Quiz";
 import UserModel, { User } from "../../src/models/User";
 import mockQuiz from "../mocks/mockQuiz";
 import globalMockuser from "../mocks/mockUser";
+import mockPlatform from "../mocks/mockPlatform";
 
 jest.mock("../../src/middleware/auth", () => ({
   validateToken: jest.fn((req, res, next) => {
@@ -16,7 +18,6 @@ jest.mock("../../src/middleware/auth", () => ({
 
 describe(`submit quiz route tests`, () => {
   let mockTitle: string;
-  let mockPlatform: string;
   let mockAnswers: SubmitQuizPost;
   let mockUser: User;
   let mockStartDate: Date;
@@ -33,14 +34,13 @@ describe(`submit quiz route tests`, () => {
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
     mockTitle = "mocktitle";
-    mockPlatform = "mockPlatform".toLowerCase();
 
     mockStartDate = new Date(2020, 3, 1);
 
     mockAnswers = { answers: [0, 1] };
 
     mockQuiz.title = mockTitle;
-    mockQuiz.platform = mockPlatform;
+    mockQuiz.platform = mockPlatform.title;
     mockQuiz.timeLimit = 10000;
 
     mockUser = {
@@ -57,6 +57,10 @@ describe(`submit quiz route tests`, () => {
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));
     UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
     QuizModel.prototype.update = jest.fn().mockResolvedValueOnce(null);
+    PlatformModel.prototype.update = jest.fn().mockResolvedValueOnce(null);
+    PlatformModel.retrieveByTitle = jest
+      .fn()
+      .mockResolvedValueOnce(new PlatformModel(mockPlatform));
   });
 
   test(`Should send back correct answers and amount correct on success`, async () => {
@@ -136,6 +140,16 @@ describe(`submit quiz route tests`, () => {
 
   test(`Should send back 500 if no user is returned`, async () => {
     UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(null);
+    const response = await request(app)
+      .post(`/quizzes/${mockPlatform}/${mockQuiz.title}/submit`)
+      .send({ answers: mockAnswers.answers });
+
+    expect(validateToken).toHaveBeenCalled();
+    expect(response.statusCode).toBe(500);
+  });
+
+  test(`Should send back 500 if no quiz is returned`, async () => {
+    PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(null);
     const response = await request(app)
       .post(`/quizzes/${mockPlatform}/${mockQuiz.title}/submit`)
       .send({ answers: mockAnswers.answers });

@@ -5,8 +5,8 @@ import { cognitoClient } from "../routes/userRouter";
 import { Request, Response } from "express";
 
 const createUserSchema = Joi.object({
-  username: Joi.string().alphanum().min(1).max(40).required(),
-  password: Joi.string().min(7).max(50).required(),
+  username: Joi.string().alphanum().min(1).max(40).lowercase().required(),
+  password: Joi.string().min(8).max(50).required(),
   email: Joi.string().email().required(),
 });
 
@@ -51,7 +51,7 @@ const createUser = async (req: Request, res: Response) => {
     try {
       response = await cognitoClient.send(signUpCommand);
     } catch (err) {
-      if (err && err.$metadata && err.$metadata.httpStatusCode < 500)
+      if (err.$metadata && err.$metadata.httpStatusCode < 500)
         return res.status(err.$metadata.httpStatusCode).send({
           name: err.name,
           message: err.message,
@@ -65,6 +65,7 @@ const createUser = async (req: Request, res: Response) => {
       cognitoId: response.UserSub as string,
       lastLogin: new Date(),
       isGloballyBanned: false,
+      isGlobalAdmin: false,
       awards: [],
       subscriptions: [],
       friends: [],

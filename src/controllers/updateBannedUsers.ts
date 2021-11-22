@@ -3,25 +3,25 @@ import Joi from "joi";
 import PlatformModel from "../models/Platform";
 import UserModel from "../models/User";
 
-const updateModeratorsSchema = Joi.object({
+const updateBannedUsersSchema = Joi.object({
   targetUsername: Joi.string().alphanum().min(1).max(40).required(),
   action: Joi.string().valid(Sporadic.UpdateAction.Add, Sporadic.UpdateAction.Remove).required(),
 });
 
-export type UpdateModeratorsRequest = {
+export type UpdateBannedUsersRequest = {
   targetUsername: string;
   action: Sporadic.UpdateAction;
 };
 
-const updateModerators = async (req: Request, res: Response) => {
+const updateBannedUsers = async (req: Request, res: Response) => {
   try {
-    await updateModeratorsSchema.validateAsync(req.body);
+    await updateBannedUsersSchema.validateAsync(req.body);
   } catch (err) {
     console.error(err);
     return res.sendStatus(400);
   }
 
-  const { targetUsername, action } = req.body as UpdateModeratorsRequest;
+  const { targetUsername, action } = req.body as UpdateBannedUsersRequest;
   const username = res.locals.authenticatedUser as string;
   const platformTitle = req.params.platformTitle;
 
@@ -49,20 +49,26 @@ const updateModerators = async (req: Request, res: Response) => {
       return res.sendStatus(403);
     }
 
-    const hasUserAsModerator = platform.moderators.includes(targetUsername);
+    const hasBannedUser = platform.bannedUsers.includes(targetUsername);
 
     if (action === Sporadic.UpdateAction.Add) {
-      if (hasUserAsModerator) {
-        console.error(`${targetUsername} is already a moderator`);
+      if (hasBannedUser) {
+        console.error(`${targetUsername} is already banned`);
         return res.sendStatus(400);
       }
-      platform.moderators.push(targetUsername);
-    } else {
-      if (!hasUserAsModerator) {
-        console.error(`${targetUsername} is not a moderator`);
-        return res.sendStatus(400);
-      }
+
+      platform.bannedUsers.push(targetUsername);
       platform.moderators = platform.moderators.filter((m) => m !== targetUsername);
+      platform.subscribers = platform.subscribers.filter((s) => s !== targetUsername);
+      targetUser.subscriptions = targetUser.subscriptions.filter((p) => p !== platformTitle);
+
+      await targetUser.update();
+    } else {
+      if (!hasBannedUser) {
+        console.error(`${targetUsername} is not currently banned`);
+        return res.sendStatus(400);
+      }
+      platform.bannedUsers = platform.bannedUsers.filter((m) => m !== targetUsername);
     }
 
     await platform.update();
@@ -74,4 +80,4 @@ const updateModerators = async (req: Request, res: Response) => {
   }
 };
 
-export default updateModerators;
+export default updateBannedUsers;

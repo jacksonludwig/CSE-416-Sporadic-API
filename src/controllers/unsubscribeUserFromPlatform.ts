@@ -19,6 +19,7 @@ const unsubscribeUserFromPlatform = async (req: Request, res: Response) => {
     await user.update();
 
     platform.subscribers = platform.subscribers.filter((u) => u !== username);
+    platform.moderators = platform.moderators.filter((u) => u !== username);
     await platform.update();
 
     return res.sendStatus(204);

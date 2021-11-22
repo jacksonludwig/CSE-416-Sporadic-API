@@ -28,6 +28,7 @@ describe(`unsubscribe user tests`, () => {
       bannedUsers: [],
       subscribers: [mockUser.username],
       quizzes: [],
+      scores: [],
     };
 
     mockUserModel = new UserModel(mockUser);

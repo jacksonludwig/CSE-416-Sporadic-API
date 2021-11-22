@@ -21,6 +21,7 @@ const createPlatform = async (req: Request, res: Response) => {
   }
 
   const { title, description } = req.body as CreatePlatformPost;
+  const username = res.locals.authenticatedUser;
 
   try {
     if (await PlatformModel.retrieveByTitle(title)) {
@@ -31,11 +32,12 @@ const createPlatform = async (req: Request, res: Response) => {
     const platform = new PlatformModel({
       title: title,
       description: description,
-      moderators: [],
+      moderators: [username],
       bannedUsers: [],
-      subscribers: [],
+      subscribers: [username],
       quizzes: [],
-      owner: res.locals.authenticatedUser,
+      owner: username,
+      scores: [],
     });
 
     await platform.save();

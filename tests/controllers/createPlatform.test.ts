@@ -28,10 +28,11 @@ describe(`create platform test`, () => {
       title: mockTitle,
       description: mockDescription,
       owner: username,
-      moderators: [],
+      moderators: [username],
       bannedUsers: [],
-      subscribers: [],
+      subscribers: [username],
       quizzes: [],
+      scores: [],
     };
 
     mockRequest = {
