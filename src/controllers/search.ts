@@ -25,6 +25,8 @@ const searchSchema = Joi.object({
   sortDirection: Joi.string().valid(SortDirs.Ascending, SortDirs.Descending),
   scope: Joi.string().valid(SearchScopes.Platforms, SearchScopes.Quizzes, SearchScopes.Users),
   searchQuery: Joi.string().min(1).max(50).required(),
+  skip: Joi.number().min(0).max(100000),
+  limit: Joi.number().min(1).max(100),
 });
 
 const search = async (req: Request, res: Response) => {
@@ -36,8 +38,11 @@ const search = async (req: Request, res: Response) => {
   }
 
   const username = res.locals.authenticatedUser;
+
   const scope = req.query.scope;
   const searchQuery = req.query.searchQuery as string;
+  const skip = Number(req.query.skip as string | undefined);
+  const limit = Number(req.query.limit as string | undefined);
 
   try {
     const user = await UserModel.retrieveByUsername(username);
@@ -46,7 +51,7 @@ const search = async (req: Request, res: Response) => {
 
     switch (scope) {
       case SearchScopes.Platforms:
-        return res.status(200).send(await PlatformModel.searchByTitle(searchQuery));
+        return res.status(200).send(await PlatformModel.searchByTitle(searchQuery, skip, limit));
         break;
       case SearchScopes.Quizzes:
         break;

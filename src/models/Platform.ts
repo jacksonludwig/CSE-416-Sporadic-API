@@ -90,9 +90,11 @@ export default class PlatformModel {
 
   public static async searchByTitle(
     searchString: string,
-    skip = 0,
-    limit = 100,
+    skip?: number,
+    limit?: number,
   ): Promise<{ totalItems: number; items: Platform[] }> {
+    skip = skip || 0;
+    limit = limit || 100;
     return await DbClient.aggregate(
       COLLECTION,
       [
