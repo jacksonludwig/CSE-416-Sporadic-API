@@ -107,7 +107,7 @@ export default class PlatformModel {
             text: {
               query: searchString,
               fuzzy: {
-                maxEdits: 2,
+                maxEdits: 1,
               },
               path: "title",
             },

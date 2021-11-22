@@ -223,7 +223,7 @@ export default class QuizModel {
             text: {
               query: searchString,
               fuzzy: {
-                maxEdits: 2,
+                maxEdits: 1,
               },
               path: "title",
             },

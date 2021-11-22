@@ -159,7 +159,7 @@ export default class UserModel {
             text: {
               query: searchString,
               fuzzy: {
-                maxEdits: 2,
+                maxEdits: 1,
               },
               path: "username",
             },
