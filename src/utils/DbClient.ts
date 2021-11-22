@@ -29,7 +29,7 @@ class DbClient {
     filter: Filter<T> = {},
     options: FindOptions,
     skip = 0,
-    limit = 0,
+    limit = 100,
   ): Promise<{ totalItems: number; items: T[] }> {
     const db = await this.connect();
     const cursor = db.collection<T>(collection).find<T>(filter, options);
