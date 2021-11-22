@@ -8,6 +8,7 @@ import UserModel from "../models/User";
 const createQuizSchema = Joi.object({
   quizTitle: Joi.string()
     .pattern(/^[\w\-\s]*$/) // alphanumeric and spaces allowed
+    .trim()
     .min(1)
     .max(100)
     .required(),
@@ -36,7 +37,7 @@ export type CreateQuizPost = {
 
 const createQuiz = async (req: Request, res: Response) => {
   try {
-    await createQuizSchema.validateAsync(req.body);
+    await createQuizSchema.validateAsync(req.body, { convert: false });
   } catch (err) {
     console.error(err);
     return res.sendStatus(400);
