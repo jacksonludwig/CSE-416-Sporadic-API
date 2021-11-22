@@ -221,7 +221,7 @@ export default class QuizModel {
           $search: {
             index: "quiz_title",
             wildcard: {
-              query: searchString,
+              query: `*${searchString}*`,
               allowAnalyzedField: true,
               path: "title",
             },

@@ -105,7 +105,7 @@ export default class PlatformModel {
           $search: {
             index: "platform_title",
             wildcard: {
-              query: searchString,
+              query: `*${searchString}*`,
               allowAnalyzedField: true,
               path: "title",
             },

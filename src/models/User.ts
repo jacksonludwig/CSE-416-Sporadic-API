@@ -157,7 +157,7 @@ export default class UserModel {
           $search: {
             index: "user_username",
             wildcard: {
-              query: searchString,
+              query: `*${searchString}*`,
               allowAnalyzedField: true,
               path: "username",
             },
