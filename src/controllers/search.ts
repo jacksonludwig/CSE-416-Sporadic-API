@@ -60,10 +60,15 @@ const search = async (req: Request, res: Response) => {
         return res.status(200).send(await UserModel.searchByUsername(searchQuery, skip, limit));
         break;
       default:
+        const platforms = await PlatformModel.searchByTitle(searchQuery, skip, limit);
+        const quizzes = await QuizModel.searchByTitle(searchQuery, skip, limit);
+        const users = await UserModel.searchByUsername(searchQuery, skip, limit);
+
+        return res.status(200).send({ users: users, platforms: platforms, quizzes: quizzes });
         break;
     }
 
-    return res.status(200).send([]);
+    return res.sendStatus(500);
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
