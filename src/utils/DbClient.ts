@@ -116,7 +116,7 @@ class DbClient {
     const result = await cursor.toArray();
 
     return {
-      totalItems: result[0].totalItems[0].count,
+      totalItems: result[0].totalItems[0]?.count || 0,
       items: result[0].items as T[],
     };
   }

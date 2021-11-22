@@ -88,6 +88,33 @@ export default class PlatformModel {
     return platform ? new PlatformModel(platform) : null;
   }
 
+  public static async searchByTitle(
+    searchString: string,
+    skip = 0,
+    limit = 100,
+  ): Promise<{ totalItems: number; items: Platform[] }> {
+    return await DbClient.aggregate(
+      COLLECTION,
+      [
+        {
+          $search: {
+            index: "platform_title",
+            text: {
+              query: searchString,
+              fuzzy: {
+                maxEdits: 2,
+              },
+              path: "title",
+            },
+          },
+        },
+      ],
+      {},
+      skip,
+      limit,
+    );
+  }
+
   /**
    * Update mutable fields of the platform in the database.
    */
