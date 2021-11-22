@@ -6,7 +6,12 @@ import { Question } from "../models/Quiz";
 import UserModel from "../models/User";
 
 const createQuizSchema = Joi.object({
-  quizTitle: Joi.string().alphanum().min(1).max(75).required(),
+  quizTitle: Joi.string()
+    .pattern(/^[\w\-\s]*$/) // alphanumeric and spaces allowed
+    .trim()
+    .min(1)
+    .max(100)
+    .required(),
   platformTitle: Joi.string().alphanum().min(1).max(100).required(),
   timeLimit: Joi.number().min(60).max(600).required(),
   description: Joi.string().min(1).max(500).required(),
@@ -32,7 +37,7 @@ export type CreateQuizPost = {
 
 const createQuiz = async (req: Request, res: Response) => {
   try {
-    await createQuizSchema.validateAsync(req.body);
+    await createQuizSchema.validateAsync(req.body, { convert: false });
   } catch (err) {
     console.error(err);
     return res.sendStatus(400);
