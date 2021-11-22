@@ -3,6 +3,12 @@ import DbClient from "../utils/DbClient";
 
 const COLLECTION = "quizzes";
 
+const PROJECTION = {
+  questions: 0,
+  correctAnswers: 0,
+  scores: 0,
+};
+
 export type QuizFilter = {
   platform?: string;
 };
@@ -173,12 +179,7 @@ export default class QuizModel {
     if (filter.platform) quizFilter.platform = filter.platform.toLowerCase();
 
     findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
-    findOpts.projection = {
-      questions: 0,
-      comments: 0,
-      correctAnswers: 0,
-      scores: 0,
-    };
+    findOpts.projection = PROJECTION;
 
     return await DbClient.find<QuizJSON>(COLLECTION, quizFilter, findOpts);
   }
@@ -198,12 +199,7 @@ export default class QuizModel {
     };
 
     findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
-    findOpts.projection = {
-      questions: 0,
-      comments: 0,
-      correctAnswers: 0,
-      scores: 0,
-    };
+    findOpts.projection = PROJECTION;
 
     return await DbClient.find<QuizJSON>(COLLECTION, feedFilter, findOpts);
   }
