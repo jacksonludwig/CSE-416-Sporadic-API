@@ -4,16 +4,6 @@ import PlatformModel from "../models/Platform";
 import QuizModel from "../models/Quiz";
 import UserModel from "../models/User";
 
-enum SortDirs {
-  Ascending = "ascending",
-  Descending = "descending",
-}
-
-// const dirMap = new Map<string, SortDirection>([
-//   [SortDirs.Ascending, 1],
-//   [SortDirs.Descending, -1],
-// ]);
-
 enum SearchScopes {
   Platforms = "platforms",
   Quizzes = "quizzes",
@@ -21,8 +11,6 @@ enum SearchScopes {
 }
 
 const searchSchema = Joi.object({
-  sortBy: Joi.string().valid("upvotes", "title", "platform"),
-  sortDirection: Joi.string().valid(SortDirs.Ascending, SortDirs.Descending),
   scope: Joi.string().valid(SearchScopes.Platforms, SearchScopes.Quizzes, SearchScopes.Users),
   searchQuery: Joi.string().min(1).max(50).required(),
   skip: Joi.number().min(0).max(100000),
