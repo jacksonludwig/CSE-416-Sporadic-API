@@ -57,6 +57,7 @@ const search = async (req: Request, res: Response) => {
         return res.status(200).send(await QuizModel.searchByTitle(searchQuery, skip, limit));
         break;
       case SearchScopes.Users:
+        return res.status(200).send(await UserModel.searchByUsername(searchQuery, skip, limit));
         break;
       default:
         break;
