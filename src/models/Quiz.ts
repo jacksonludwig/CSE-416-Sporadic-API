@@ -220,12 +220,9 @@ export default class QuizModel {
         {
           $search: {
             index: "quiz_title",
-            text: {
+            wildcard: {
               query: searchString,
-              fuzzy: {
-                maxEdits: 2,
-                prefixLength: 2,
-              },
+              allowAnalyzedField: true,
               path: "title",
             },
           },

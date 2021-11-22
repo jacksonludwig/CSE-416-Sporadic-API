@@ -104,12 +104,9 @@ export default class PlatformModel {
         {
           $search: {
             index: "platform_title",
-            text: {
+            wildcard: {
               query: searchString,
-              fuzzy: {
-                maxEdits: 2,
-                prefixLength: 2,
-              },
+              allowAnalyzedField: true,
               path: "title",
             },
           },

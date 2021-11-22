@@ -156,12 +156,9 @@ export default class UserModel {
         {
           $search: {
             index: "user_username",
-            text: {
+            wildcard: {
               query: searchString,
-              fuzzy: {
-                maxEdits: 2,
-                prefixLength: 2,
-              },
+              allowAnalyzedField: true,
               path: "username",
             },
           },
