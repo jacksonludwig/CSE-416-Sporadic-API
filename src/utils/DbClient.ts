@@ -96,7 +96,7 @@ class DbClient {
     pipeline: Document[],
     options: AggregateOptions,
     skip = 0,
-    limit = 0,
+    limit = 100,
   ): Promise<{ totalItems: number; items: T[] }> {
     const db = await this.connect();
 
@@ -114,10 +114,11 @@ class DbClient {
     const cursor = await db.collection<T>(collection).aggregate(pipeline, options);
 
     const result = await cursor.toArray();
+    console.log(result[0]);
 
     return {
-      totalItems: result[1][0].count,
-      items: result[0] as T[],
+      totalItems: result[0].totalItems[0].count,
+      items: result[0].items as T[],
     };
   }
 
