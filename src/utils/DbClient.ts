@@ -1,4 +1,12 @@
-import { Db, MongoClient, Filter, FindOptions, Document, MatchKeysAndValues } from "mongodb";
+import {
+  Db,
+  MongoClient,
+  Filter,
+  FindOptions,
+  Document,
+  MatchKeysAndValues,
+  AggregateOptions,
+} from "mongodb";
 
 class DbClient {
   private cachedDb: Db | null = null;
@@ -75,6 +83,42 @@ class DbClient {
 
     if (!result.acknowledged || result.deletedCount < 1)
       throw new Error(`${document} could not be deleted from ${collection}.`);
+  }
+
+  /**
+   * This performs a mongodb aggregate query.
+   *
+   * It will stick on a $facet to the pipeline in order to maintain the same structure as
+   * the findMany function by counting the total documents.
+   */
+  public async aggregate<T>(
+    collection: string,
+    pipeline: Document[],
+    options: AggregateOptions,
+    skip = 0,
+    limit = 0,
+  ): Promise<{ totalItems: number; items: T[] }> {
+    const db = await this.connect();
+
+    pipeline.push({
+      $facet: {
+        items: [{ $skip: skip }, { $limit: limit }],
+        totalItems: [
+          {
+            $count: "count",
+          },
+        ],
+      },
+    });
+
+    const cursor = await db.collection<T>(collection).aggregate(pipeline, options);
+
+    const result = await cursor.toArray();
+
+    return {
+      totalItems: result[1][0].count,
+      items: result[0] as T[],
+    };
   }
 
   /**
