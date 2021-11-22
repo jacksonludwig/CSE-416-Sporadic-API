@@ -172,15 +172,16 @@ export default class QuizModel {
   public static async retrieveAll(
     filter: QuizFilter = {},
     sortBy: { field?: string; direction?: SortDirection } = {},
-  ): Promise<{ totalItems: number; items: Quiz[] }> {
+  ): Promise<{ totalItems: number; items: QuizJSON[] }> {
     const quizFilter: QuizFilter = {};
     const findOpts: FindOptions = {};
 
     if (filter.platform) quizFilter.platform = filter.platform.toLowerCase();
 
     findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
+    findOpts.projection = PROJECTION;
 
-    return await DbClient.find<Quiz>(COLLECTION, quizFilter, findOpts);
+    return await DbClient.find<QuizJSON>(COLLECTION, quizFilter, findOpts);
   }
 
   /**
@@ -191,14 +192,16 @@ export default class QuizModel {
   public static async retrieveFeed(
     subscriptions: string[],
     sortBy: { field?: string; direction?: SortDirection } = {},
-  ): Promise<{ totalItems: number; items: Quiz[] }> {
+  ): Promise<{ totalItems: number; items: QuizJSON[] }> {
     const findOpts: FindOptions = {};
     const feedFilter = {
       platform: { $in: subscriptions },
     };
-    findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
 
-    return await DbClient.find<Quiz>(COLLECTION, feedFilter, findOpts);
+    findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
+    findOpts.projection = PROJECTION;
+
+    return await DbClient.find<QuizJSON>(COLLECTION, feedFilter, findOpts);
   }
 
   /**
@@ -256,4 +259,3 @@ export default class QuizModel {
     );
   }
 }
-
