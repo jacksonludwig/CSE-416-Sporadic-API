@@ -222,9 +222,7 @@ export default class QuizModel {
             index: "quiz_title",
             text: {
               query: searchString,
-              fuzzy: {
-                maxEdits: 2,
-              },
+              fuzzy: {},
               path: "title",
             },
           },
