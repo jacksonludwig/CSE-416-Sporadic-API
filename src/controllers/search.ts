@@ -40,20 +40,16 @@ const search = async (req: Request, res: Response) => {
     switch (scope) {
       case SearchScopes.Platforms:
         return res.status(200).send(await PlatformModel.searchByTitle(searchQuery, skip, limit));
-        break;
       case SearchScopes.Quizzes:
         return res.status(200).send(await QuizModel.searchByTitle(searchQuery, skip, limit));
-        break;
       case SearchScopes.Users:
         return res.status(200).send(await UserModel.searchByUsername(searchQuery, skip, limit));
-        break;
       default:
         const platforms = await PlatformModel.searchByTitle(searchQuery, skip, limit);
         const quizzes = await QuizModel.searchByTitle(searchQuery, skip, limit);
         const users = await UserModel.searchByUsername(searchQuery, skip, limit);
 
         return res.status(200).send({ users: users, platforms: platforms, quizzes: quizzes });
-        break;
     }
 
     return res.sendStatus(500);
