@@ -6,7 +6,11 @@ import { Question } from "../models/Quiz";
 import UserModel from "../models/User";
 
 const createQuizSchema = Joi.object({
-  quizTitle: Joi.string().alphanum().min(1).max(75).required(),
+  quizTitle: Joi.string()
+    .pattern(/^[\w\-\s]*$/) // alphanumeric and spaces allowed
+    .min(1)
+    .max(100)
+    .required(),
   platformTitle: Joi.string().alphanum().min(1).max(100).required(),
   timeLimit: Joi.number().min(60).max(600).required(),
   description: Joi.string().min(1).max(500).required(),

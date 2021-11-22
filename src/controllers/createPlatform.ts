@@ -3,7 +3,11 @@ import Joi from "joi";
 import PlatformModel from "../models/Platform";
 
 const createPlatformSchema = Joi.object({
-  title: Joi.string().alphanum().min(3).max(100).required(),
+  title: Joi.string()
+    .pattern(/^[\w\-\s]*$/) // alphanumeric and spaces allowed
+    .min(1)
+    .max(100)
+    .required(),
   description: Joi.string().min(1).max(500).required(),
 });
 
