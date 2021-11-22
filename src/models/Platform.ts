@@ -88,6 +88,9 @@ export default class PlatformModel {
     return platform ? new PlatformModel(platform) : null;
   }
 
+  /**
+   * Fuzzy search for a platforms by title
+   */
   public static async searchByTitle(
     searchString: string,
     skip?: number,

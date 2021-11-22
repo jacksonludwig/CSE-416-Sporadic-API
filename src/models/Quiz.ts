@@ -3,6 +3,12 @@ import DbClient from "../utils/DbClient";
 
 const COLLECTION = "quizzes";
 
+const PROJECTION = {
+  questions: 0,
+  correctAnswers: 0,
+  scores: 0,
+};
+
 export type QuizFilter = {
   platform?: string;
 };
@@ -188,13 +194,47 @@ export default class QuizModel {
   ): Promise<{ totalItems: number; items: Quiz[] }> {
     const findOpts: FindOptions = {};
     const feedFilter = {
-      platform: {$in: subscriptions}
-    }
+      platform: { $in: subscriptions },
+    };
     findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
 
     return await DbClient.find<Quiz>(COLLECTION, feedFilter, findOpts);
   }
 
+  /**
+   * Fuzzy search for quizzes by title
+   */
+  public static async searchByTitle(
+    searchString: string,
+    skip?: number,
+    limit?: number,
+  ): Promise<{ totalItems: number; items: QuizJSON[] }> {
+    skip = skip || 0;
+    limit = limit || 100;
+    return await DbClient.aggregate(
+      COLLECTION,
+      [
+        {
+          $search: {
+            index: "quiz_title",
+            text: {
+              query: searchString,
+              fuzzy: {
+                maxEdits: 2,
+              },
+              path: "title",
+            },
+          },
+        },
+        {
+          $project: PROJECTION,
+        },
+      ],
+      {},
+      skip,
+      limit,
+    );
+  }
 
   /**
    * Update mutable fields of the quiz in the database.
@@ -215,5 +255,5 @@ export default class QuizModel {
       },
     );
   }
-
 }
+
