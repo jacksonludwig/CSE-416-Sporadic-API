@@ -177,6 +177,7 @@ export default class QuizModel {
       questions: 0,
       comments: 0,
       correctAnswers: 0,
+      scores: 0,
     };
 
     return await DbClient.find<QuizJSON>(COLLECTION, quizFilter, findOpts);
@@ -190,7 +191,7 @@ export default class QuizModel {
   public static async retrieveFeed(
     subscriptions: string[],
     sortBy: { field?: string; direction?: SortDirection } = {},
-  ): Promise<{ totalItems: number; items: Quiz[] }> {
+  ): Promise<{ totalItems: number; items: QuizJSON[] }> {
     const findOpts: FindOptions = {};
     const feedFilter = {
       platform: { $in: subscriptions },
@@ -201,9 +202,10 @@ export default class QuizModel {
       questions: 0,
       comments: 0,
       correctAnswers: 0,
+      scores: 0,
     };
 
-    return await DbClient.find<Quiz>(COLLECTION, feedFilter, findOpts);
+    return await DbClient.find<QuizJSON>(COLLECTION, feedFilter, findOpts);
   }
 
   /**
