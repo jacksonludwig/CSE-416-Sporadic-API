@@ -114,7 +114,6 @@ class DbClient {
     const cursor = await db.collection<T>(collection).aggregate(pipeline, options);
 
     const result = await cursor.toArray();
-    console.log(result[0]);
 
     return {
       totalItems: result[0].totalItems[0].count,
