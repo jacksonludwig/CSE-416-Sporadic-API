@@ -9,7 +9,6 @@ import submitQuiz from "../controllers/submitQuiz";
 import retrieveQuizFeed from "../controllers/retrieveQuizFeed";
 import { validateToken } from "../middleware/auth";
 
-
 const quizRouter = express.Router();
 quizRouter.use(validateToken);
 
@@ -20,7 +19,6 @@ quizRouter.post("/:platform/:quizTitle/start", startQuiz);
 quizRouter.get("/", retrieveQuizzes);
 quizRouter.get("/:platform/:quizTitle", retrieveQuizByTitle);
 quizRouter.get("/feed", retrieveQuizFeed);
-
 
 quizRouter.put("/:platform/:quizTitle/comment", addCommentToQuiz);
 

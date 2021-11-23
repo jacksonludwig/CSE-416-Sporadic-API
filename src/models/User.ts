@@ -4,6 +4,15 @@ import PlatformModel from "./Platform";
 
 const COLLECTION = "users";
 
+const PROJECTION = {
+  email: 0,
+  cognitoId: 0,
+  isGloballyBanned: 0,
+  isGlobalAdmin: 0,
+  subscriptions: 0,
+  notifications: 0,
+};
+
 type Award = {
   title: string;
   description: string;
@@ -129,6 +138,39 @@ export default class UserModel {
     const user = await DbClient.findOne<User>(COLLECTION, { username: username }, {});
 
     return user ? new UserModel(user) : null;
+  }
+
+  /**
+   * Fuzzy search for users by username
+   */
+  public static async searchByUsername(
+    searchString: string,
+    skip?: number,
+    limit?: number,
+  ): Promise<{ totalItems: number; items: UserPublicJSON[] }> {
+    skip = skip || 0;
+    limit = limit || 100;
+    return await DbClient.aggregate(
+      COLLECTION,
+      [
+        {
+          $search: {
+            index: "user_username",
+            wildcard: {
+              query: `*${searchString}*`,
+              allowAnalyzedField: true,
+              path: "username",
+            },
+          },
+        },
+        {
+          $project: PROJECTION,
+        },
+      ],
+      {},
+      skip,
+      limit,
+    );
   }
 
   /**

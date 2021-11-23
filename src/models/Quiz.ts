@@ -205,6 +205,39 @@ export default class QuizModel {
   }
 
   /**
+   * Fuzzy search for quizzes by title
+   */
+  public static async searchByTitle(
+    searchString: string,
+    skip?: number,
+    limit?: number,
+  ): Promise<{ totalItems: number; items: QuizJSON[] }> {
+    skip = skip || 0;
+    limit = limit || 100;
+    return await DbClient.aggregate(
+      COLLECTION,
+      [
+        {
+          $search: {
+            index: "quiz_title",
+            wildcard: {
+              query: `*${searchString}*`,
+              allowAnalyzedField: true,
+              path: "title",
+            },
+          },
+        },
+        {
+          $project: PROJECTION,
+        },
+      ],
+      {},
+      skip,
+      limit,
+    );
+  }
+
+  /**
    * Update mutable fields of the quiz in the database.
    */
   public async update(): Promise<void> {
@@ -224,4 +257,3 @@ export default class QuizModel {
     );
   }
 }
-
