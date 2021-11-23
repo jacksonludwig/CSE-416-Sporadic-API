@@ -60,11 +60,3 @@ const retrieveQuizFeed = async (req: Request, res: Response) => {
 };
 
 export default retrieveQuizFeed;
-
-/* 
-#TODO: implement skip and limit
-skip for page #
-limit for # of results to show
-
-*/
-
