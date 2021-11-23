@@ -5,7 +5,7 @@
  */
 const pagesToSkipAndLimit = (page?: number, amountPerPage?: number) => {
   if (!page) page = 1;
-  if (!amountPerPage) amountPerPage = 100;
+  if (!amountPerPage) amountPerPage = 10;
 
   return { skip: amountPerPage * (page - 1), limit: amountPerPage };
 };
