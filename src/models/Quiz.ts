@@ -168,10 +168,14 @@ export default class QuizModel {
    *
    * @param filter The fields to filter with
    * @param sortBy The field and direction to sort with
+   * @param skip The amount of results to skip
+   * @param limit The max amount of results to return
    */
   public static async retrieveAll(
     filter: QuizFilter = {},
     sortBy: { field?: string; direction?: SortDirection } = {},
+    skip = 0,
+    limit = 100,
   ): Promise<{ totalItems: number; items: QuizJSON[] }> {
     const quizFilter: QuizFilter = {};
     const findOpts: FindOptions = {};
@@ -181,17 +185,18 @@ export default class QuizModel {
     findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
     findOpts.projection = PROJECTION;
 
-    return await DbClient.find<QuizJSON>(COLLECTION, quizFilter, findOpts);
+    return await DbClient.find<QuizJSON>(COLLECTION, quizFilter, findOpts, skip, limit);
   }
 
   /**
    * retrieve quizzes for feed function
    * have find from dbclient in here
    */
-
   public static async retrieveFeed(
     subscriptions: string[],
     sortBy: { field?: string; direction?: SortDirection } = {},
+    skip = 0,
+    limit = 100,
   ): Promise<{ totalItems: number; items: QuizJSON[] }> {
     const findOpts: FindOptions = {};
     const feedFilter = {
@@ -201,7 +206,7 @@ export default class QuizModel {
     findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
     findOpts.projection = PROJECTION;
 
-    return await DbClient.find<QuizJSON>(COLLECTION, feedFilter, findOpts);
+    return await DbClient.find<QuizJSON>(COLLECTION, feedFilter, findOpts, skip, limit);
   }
 
   /**

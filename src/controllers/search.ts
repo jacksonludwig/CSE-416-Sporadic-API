@@ -3,6 +3,7 @@ import Joi from "joi";
 import PlatformModel from "../models/Platform";
 import QuizModel from "../models/Quiz";
 import UserModel from "../models/User";
+import pagesToSkipAndLimit from "../utils/Pagination";
 
 enum SearchScopes {
   Platforms = "platforms",
@@ -13,8 +14,8 @@ enum SearchScopes {
 const searchSchema = Joi.object({
   scope: Joi.string().valid(SearchScopes.Platforms, SearchScopes.Quizzes, SearchScopes.Users),
   searchQuery: Joi.string().min(1).max(50).required(),
-  skip: Joi.number().min(0).max(100000),
-  limit: Joi.number().min(1).max(100),
+  page: Joi.number().integer().min(1).max(100000),
+  amountPerPage: Joi.number().integer().min(1).max(100),
 });
 
 const search = async (req: Request, res: Response) => {
@@ -29,8 +30,10 @@ const search = async (req: Request, res: Response) => {
 
   const scope = req.query.scope;
   const searchQuery = req.query.searchQuery as string;
-  const skip = Number(req.query.skip as string | undefined);
-  const limit = Number(req.query.limit as string | undefined);
+  const { skip, limit } = pagesToSkipAndLimit(
+    Number(req.query.page),
+    Number(req.query.amountPerPage),
+  );
 
   try {
     const user = await UserModel.retrieveByUsername(username);

@@ -3,7 +3,7 @@ import QuizModel from "../models/Quiz";
 import UserModel from "../models/User";
 import { SortDirection } from "mongodb";
 import Joi from "joi";
-
+import pagesToSkipAndLimit from "../utils/Pagination";
 
 enum SortDirs {
   Ascending = "ascending",
@@ -18,12 +18,11 @@ const dirMap = new Map<string, SortDirection>([
 const retrieveQuizFeedSchema = Joi.object({
   sortBy: Joi.string().valid("upvotes", "title", "platform"),
   sortDirection: Joi.string().valid(SortDirs.Ascending, SortDirs.Descending),
+  page: Joi.number().integer().min(1).max(100000),
+  amountPerPage: Joi.number().integer().min(1).max(100),
 });
 
-
-const retrieveQuizFeed= async (req: Request, res: Response) => {
-  
-  // const username = req.params.username;
+const retrieveQuizFeed = async (req: Request, res: Response) => {
   try {
     await retrieveQuizFeedSchema.validateAsync(req.query);
   } catch (err) {
@@ -33,36 +32,31 @@ const retrieveQuizFeed= async (req: Request, res: Response) => {
 
   const username = res.locals.authenticatedUser;
 
+  const { skip, limit } = pagesToSkipAndLimit(
+    Number(req.query.page),
+    Number(req.query.amountPerPage),
+  );
+
   const user = await UserModel.retrieveByUsername(username);
   if (!user) throw Error(`${username} not found in database`);
 
   const subscriptions = user.subscriptions;
-  
+
   try {
-    const quizzes = await QuizModel.retrieveFeed(     
-      subscriptions,    
+    const quizzes = await QuizModel.retrieveFeed(
+      subscriptions,
       {
         field: req.query.sortBy as string,
         direction: dirMap.get(req.query.sortDirection as SortDirs),
       },
-
-
-  
+      skip,
+      limit,
     );
     return res.status(200).send(quizzes);
-
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
   }
-
-}
+};
 
 export default retrieveQuizFeed;
-
-/* 
-#TODO: implement skip and limit
-skip for page #
-limit for # of results to show
-
-*/

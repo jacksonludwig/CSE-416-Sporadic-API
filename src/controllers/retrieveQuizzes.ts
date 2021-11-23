@@ -4,6 +4,7 @@ import { SortDirection } from "mongodb";
 import PlatformModel from "../models/Platform";
 import QuizModel from "../models/Quiz";
 import UserModel from "../models/User";
+import pagesToSkipAndLimit from "../utils/Pagination";
 
 enum SortDirs {
   Ascending = "ascending",
@@ -19,6 +20,8 @@ const retrieveQuizzesSchema = Joi.object({
   platform: Joi.string().min(1).max(50).required(),
   sortBy: Joi.string().valid("upvotes", "title", "platform"),
   sortDirection: Joi.string().valid(SortDirs.Ascending, SortDirs.Descending),
+  page: Joi.number().integer().min(1).max(100000),
+  amountPerPage: Joi.number().integer().min(1).max(100),
 });
 
 const retrieveQuizzes = async (req: Request, res: Response) => {
@@ -31,6 +34,10 @@ const retrieveQuizzes = async (req: Request, res: Response) => {
 
   const username = res.locals.authenticatedUser;
   const platformTitle = req.query.platform as string;
+  const { skip, limit } = pagesToSkipAndLimit(
+    Number(req.query.page),
+    Number(req.query.amountPerPage),
+  );
 
   try {
     const user = await UserModel.retrieveByUsername(username);
@@ -57,6 +64,8 @@ const retrieveQuizzes = async (req: Request, res: Response) => {
         field: req.query.sortBy as string,
         direction: dirMap.get(req.query.sortDirection as SortDirs),
       },
+      skip,
+      limit,
     );
 
     return res.status(200).send(quizzes);
