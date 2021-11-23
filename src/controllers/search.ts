@@ -14,8 +14,8 @@ enum SearchScopes {
 const searchSchema = Joi.object({
   scope: Joi.string().valid(SearchScopes.Platforms, SearchScopes.Quizzes, SearchScopes.Users),
   searchQuery: Joi.string().min(1).max(50).required(),
-  page: Joi.number().min(1).max(100000),
-  amountPerPage: Joi.number().min(1).max(100),
+  page: Joi.number().integer().min(1).max(100000),
+  amountPerPage: Joi.number().integer().min(1).max(100),
 });
 
 const search = async (req: Request, res: Response) => {

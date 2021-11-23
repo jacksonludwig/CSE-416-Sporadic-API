@@ -20,8 +20,8 @@ const retrieveQuizzesSchema = Joi.object({
   platform: Joi.string().min(1).max(50).required(),
   sortBy: Joi.string().valid("upvotes", "title", "platform"),
   sortDirection: Joi.string().valid(SortDirs.Ascending, SortDirs.Descending),
-  page: Joi.number().min(1).max(100000),
-  amountPerPage: Joi.number().min(1).max(100),
+  page: Joi.number().integer().min(1).max(100000),
+  amountPerPage: Joi.number().integer().min(1).max(100),
 });
 
 const retrieveQuizzes = async (req: Request, res: Response) => {
