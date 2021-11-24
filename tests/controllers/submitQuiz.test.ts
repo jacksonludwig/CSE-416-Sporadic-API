@@ -71,13 +71,12 @@ describe(`submit quiz route tests`, () => {
     expect(validateToken).toHaveBeenCalled();
     expect(response.statusCode).toBe(200);
     expect(response.body).toStrictEqual({
-      correctAnswers: [0, 1],
       totalCorrect: 2,
       submitted: true,
     });
   });
 
-  test(`Should send back correct answers and amount correct on success with incorrect answers`, async () => {
+  test(`Should send back amount correct on success with incorrect answers`, async () => {
     mockAnswers.answers = [1, 3];
     const response = await request(app)
       .post(`/quizzes/${mockPlatform}/${mockQuiz.title}/submit`)
@@ -86,7 +85,6 @@ describe(`submit quiz route tests`, () => {
     expect(validateToken).toHaveBeenCalled();
     expect(response.statusCode).toBe(200);
     expect(response.body).toStrictEqual({
-      correctAnswers: [0, 1],
       totalCorrect: 0,
       submitted: true,
     });

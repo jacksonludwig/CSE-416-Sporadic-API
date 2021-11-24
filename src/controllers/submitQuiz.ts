@@ -57,7 +57,6 @@ const submitQuiz = async (req: Request, res: Response) => {
     if (quiz.scores[userScoreIndex].score !== undefined) {
       console.log(`${quizTitle} has already been submitted by ${username}`);
       return res.status(200).send({
-        correctAnswers: quiz.correctAnswers,
         totalCorrect: quiz.scores[userScoreIndex],
         submitted: false,
       });
@@ -68,9 +67,7 @@ const submitQuiz = async (req: Request, res: Response) => {
 
     if (new Date() > timeDue) {
       console.log(`${quizTitle} submission period has passed.`);
-      return res
-        .status(200)
-        .send({ correctAnswers: quiz.correctAnswers, totalCorrect: 0, submitted: false });
+      return res.status(200).send({ totalCorrect: 0, submitted: false });
     }
 
     const totalCorrect = quiz.correctAnswers.reduce((prev, curr, index) => {
@@ -92,7 +89,6 @@ const submitQuiz = async (req: Request, res: Response) => {
     await quiz.update();
 
     return res.status(200).send({
-      correctAnswers: quiz.correctAnswers,
       totalCorrect: totalCorrect,
       submitted: true,
     });
