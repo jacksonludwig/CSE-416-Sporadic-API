@@ -47,7 +47,11 @@ describe(`get quiz by title/platform route test`, () => {
     expect(validateToken).toHaveBeenCalled();
     expect(response.statusCode).toBe(200);
     expect(JSON.stringify(response.body)).toBe(
-      JSON.stringify({ ...mockQuizModel.toJSON(), score: 1 }),
+      JSON.stringify({
+        ...mockQuizModel.toJSON(),
+        score: 1,
+        totalQuestions: mockQuizModel.questions.length,
+      }),
     );
   });
 

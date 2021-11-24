@@ -30,13 +30,15 @@ const retrieveQuizByTitle = async (req: Request, res: Response) => {
 
     const userScoreIndex = quiz.scores.findIndex((s) => s.user === username);
 
-    return res
-      .status(200)
-      .send(
-        userScoreIndex !== -1
-          ? { ...quiz.toJSON(), score: quiz.scores[userScoreIndex].score || 0 }
-          : quiz.toJSON(),
-      );
+    return res.status(200).send(
+      userScoreIndex !== -1
+        ? {
+            ...quiz.toJSON(),
+            score: quiz.scores[userScoreIndex].score || 0,
+            totalQuestions: quiz.questions.length,
+          }
+        : quiz.toJSON(),
+    );
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
