@@ -28,10 +28,9 @@ const startQuiz = async (req: Request, res: Response) => {
 
     if (!user) throw Error(`${username} not found in database`);
 
-    // If the user already started the quiz, send back the questions, but don't give them a new score object.
     if (quiz.scores.find((s) => s.user === username)) {
-      console.log(`${username} has already started the quiz ${platform}/${quizTitle}.`);
-      return res.status(200).send(quiz.toJSONWithQuestions());
+      console.error(`${username} has already started the quiz ${platform}/${quizTitle}.`);
+      return res.sendStatus(400);
     }
 
     quiz.scores.push({
