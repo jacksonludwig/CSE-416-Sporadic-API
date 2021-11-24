@@ -34,7 +34,7 @@ const retrieveQuizByTitle = async (req: Request, res: Response) => {
       .status(200)
       .send(
         userScoreIndex !== -1
-          ? { ...quiz.toJSON(), score: quiz.scores[userScoreIndex].score }
+          ? { ...quiz.toJSON(), score: quiz.scores[userScoreIndex].score || 0 }
           : quiz.toJSON(),
       );
   } catch (err) {
