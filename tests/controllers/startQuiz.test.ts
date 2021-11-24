@@ -80,13 +80,13 @@ describe(`start quiz route tests`, () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test(`Should send back 200 if user already started quiz`, async () => {
+  test(`Should send back 400 if user already started quiz`, async () => {
     mockQuiz.scores[0] = { user: mockUser.username, score: 0, timeStarted: new Date() };
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));
     const response = await request(app).post(`/quizzes/${mockPlatform}/${mockQuiz.title}/start`);
 
     expect(validateToken).toHaveBeenCalled();
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(400);
   });
 
   test(`Should send back 403 if user is banned from platform`, async () => {
