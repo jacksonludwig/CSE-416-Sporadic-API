@@ -26,7 +26,17 @@ const retrieveQuizByTitle = async (req: Request, res: Response) => {
 
     const quiz = await QuizModel.retrieveByTitle(platform, quizTitle);
 
-    return quiz ? res.status(200).send(quiz.toJSON()) : res.sendStatus(400);
+    if (!quiz) return res.sendStatus(400);
+
+    const userScoreIndex = quiz.scores.findIndex((s) => s.user === username);
+
+    return res
+      .status(200)
+      .send(
+        userScoreIndex !== -1
+          ? { ...quiz.toJSON(), score: quiz.scores[userScoreIndex].score }
+          : quiz.toJSON(),
+      );
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
