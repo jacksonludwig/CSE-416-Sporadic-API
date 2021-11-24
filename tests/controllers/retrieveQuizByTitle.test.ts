@@ -40,6 +40,17 @@ describe(`get quiz by title/platform route test`, () => {
     expect(JSON.stringify(response.body)).toBe(JSON.stringify(mockQuizModel.toJSON()));
   });
 
+  test(`Should send back quiz with score on success`, async () => {
+    mockQuizModel.scores = [{ user: mockUser.username, score: 1, timeStarted: new Date(1) }];
+    const response = await request(app).get(`/quizzes/somePlatform/${mockQuiz.title}`);
+
+    expect(validateToken).toHaveBeenCalled();
+    expect(response.statusCode).toBe(200);
+    expect(JSON.stringify(response.body)).toBe(
+      JSON.stringify({ ...mockQuizModel.toJSON(), score: 1 }),
+    );
+  });
+
   test(`Should send back 500 if lookup fails`, async () => {
     QuizModel.retrieveByTitle = jest.fn().mockRejectedValueOnce(new Error("mock err"));
     const response = await request(app).get(`/quizzes/somePlatform/${mockQuiz.title}`);
