@@ -34,51 +34,44 @@ const updateQuizVote = async (req: Request, res: Response) => {
 
     const userScore = quiz.scores[userScoreIndex];
 
-    if (vote === Sporadic.Vote.Upvote) {
-      switch (userScore.vote) {
-        case Sporadic.Vote.Upvote:
-          console.error(`${username} already upvoted this quiz`);
-          return res.sendStatus(400);
-        case Sporadic.Vote.Downvote:
-          userScore.vote = Sporadic.Vote.Upvote;
-          quiz.downvotes--;
-          quiz.upvotes++;
-          break;
-        case Sporadic.Vote.None:
-          userScore.vote = Sporadic.Vote.Upvote;
-          quiz.upvotes++;
-          break;
-      }
-    } else if (vote === Sporadic.Vote.Downvote) {
-      switch (userScore.vote) {
-        case Sporadic.Vote.Upvote:
-          userScore.vote = Sporadic.Vote.Downvote;
-          quiz.downvotes++;
-          quiz.upvotes--;
-          break;
-        case Sporadic.Vote.Downvote:
-          console.error(`${username} already downvoted this quiz`);
-          return res.sendStatus(400);
-        case Sporadic.Vote.None:
-          userScore.vote = Sporadic.Vote.Downvote;
-          quiz.downvotes--;
-          break;
-      }
-    } else {
-      switch (userScore.vote) {
+    const setUserScoreVote = (vote: string) => {
+      switch (vote) {
         case Sporadic.Vote.Upvote:
           userScore.vote = Sporadic.Vote.Upvote;
-          quiz.upvotes++;
           break;
         case Sporadic.Vote.Downvote:
           userScore.vote = Sporadic.Vote.Downvote;
-          quiz.downvotes++;
           break;
         case Sporadic.Vote.None:
-          console.error(`${username} already has a neutral vote`);
-          return res.sendStatus(400);
+          userScore.vote = Sporadic.Vote.None;
+          break;
       }
     }
+
+    switch (userScore.vote) {
+      case vote:
+        console.error(`${username} already ${vote}d this quiz`);
+        return res.sendStatus(400);
+      case Sporadic.Vote.Upvote:
+        setUserScoreVote(vote);
+        quiz.upvotes--;
+        if (vote === Sporadic.Vote.Downvote) quiz.downvotes++;
+        break;
+      case Sporadic.Vote.Downvote:
+        setUserScoreVote(vote);
+        quiz.downvotes--;
+        if (vote === Sporadic.Vote.Upvote) quiz.upvotes++;
+        break;
+      case Sporadic.Vote.None:
+        setUserScoreVote(vote);
+        if (vote === Sporadic.Vote.Upvote) quiz.upvotes++;
+        else if (vote === Sporadic.Vote.Downvote) quiz.downvotes++;
+        break;
+      default: 
+        break;
+    }
+
+
 
     await quiz.update();
 
