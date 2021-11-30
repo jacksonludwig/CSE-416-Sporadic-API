@@ -8,6 +8,7 @@ import startQuiz from "../controllers/startQuiz";
 import submitQuiz from "../controllers/submitQuiz";
 import retrieveQuizFeed from "../controllers/retrieveQuizFeed";
 import generateQuizIconSubmissionURL from "../controllers/generateQuizIconSubmissionURL";
+import submitVote from "../controllers/submitVote";
 import { validateToken } from "../middleware/auth";
 
 const quizRouter = express.Router();
@@ -25,5 +26,7 @@ quizRouter.get("/feed", retrieveQuizFeed);
 quizRouter.put("/:platform/:quizTitle/comment", addCommentToQuiz);
 
 quizRouter.delete("/:platform/:quizTitle", deleteQuizByTitle);
+
+quizRouter.patch("/:platform/:quizTitle/:vote", submitVote);
 
 export default quizRouter;

@@ -3,7 +3,7 @@ import Joi from "joi";
 import QuizModel from "../models/Quiz";
 
 const submitVoteSchema = Joi.object({
-  vote: Joi.string().allow("up", "down"),
+  vote: Joi.string().allow("upvote", "downvote"),
 });
 
 const submitVote = async (req: Request, res: Response) => {
@@ -37,13 +37,23 @@ const submitVote = async (req: Request, res: Response) => {
       return res.sendStatus(400);
     }
 
+    if (vote == "upvote")
+      quiz.incrementUpvotes();
+    else if (vote == "downvote")
+      quiz.incrementDownvotes();
+
+    const userScoreIndex = quiz.scores.findIndex((s) => s.user === username);
+
+    quiz.scores[userScoreIndex].hasVoted = true;
+
+    await quiz.update();
+
+    return res.sendStatus(204);
 
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
   }
-
-
 }
 
 export default submitVote;
