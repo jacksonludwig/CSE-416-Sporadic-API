@@ -12,4 +12,10 @@ declare namespace Sporadic {
     Add = "add",
     Remove = "remove",
   }
+
+  export const enum Vote {
+    Upvote = "upvote",
+    Downvote = "downvote",
+    None = "none",
+  }
 }

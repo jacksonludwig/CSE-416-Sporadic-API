@@ -27,6 +27,7 @@ describe(`add comment to quiz by title/platform route test`, () => {
       user: mockUser.username,
       score: 1,
       timeStarted: new Date(),
+      vote: Sporadic.Vote.None,
     });
 
     mockQuizModel.comments = [];

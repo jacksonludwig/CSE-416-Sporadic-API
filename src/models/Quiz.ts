@@ -22,7 +22,7 @@ export type Score = {
   user: string;
   score?: number;
   timeStarted: Date;
-  hasVoted: boolean;
+  vote: Sporadic.Vote;
 };
 
 export type Comment = {
@@ -59,8 +59,6 @@ export type Quiz = {
 export default class QuizModel {
   private platform: Quiz["platform"];
   private timeLimit: Quiz["timeLimit"];
-  private upvotes: Quiz["upvotes"];
-  private downvotes: Quiz["downvotes"];
   private description: Quiz["description"];
   private _id: Quiz["_id"];
   public title: Quiz["title"];
@@ -68,6 +66,8 @@ export default class QuizModel {
   public correctAnswers: Quiz["correctAnswers"];
   public scores: Quiz["scores"];
   public comments: Quiz["comments"];
+  public upvotes: Quiz["upvotes"];
+  public downvotes: Quiz["downvotes"];
 
   constructor(quiz: Quiz) {
     this._id = quiz._id;
@@ -241,14 +241,6 @@ export default class QuizModel {
       skip,
       limit,
     );
-  }
-
-  public incrementUpvotes() {
-    this.upvotes += 1;
-  }
-
-  public incrementDownvotes() {
-    this.downvotes += 1;
   }
 
   /**

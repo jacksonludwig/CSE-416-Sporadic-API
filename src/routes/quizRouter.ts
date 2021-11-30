@@ -8,7 +8,7 @@ import startQuiz from "../controllers/startQuiz";
 import submitQuiz from "../controllers/submitQuiz";
 import retrieveQuizFeed from "../controllers/retrieveQuizFeed";
 import generateQuizIconSubmissionURL from "../controllers/generateQuizIconSubmissionURL";
-import submitVote from "../controllers/submitVote";
+import updateQuizVote from "../controllers/updateQuizVote";
 import { validateToken } from "../middleware/auth";
 
 const quizRouter = express.Router();
@@ -27,6 +27,6 @@ quizRouter.put("/:platform/:quizTitle/comment", addCommentToQuiz);
 
 quizRouter.delete("/:platform/:quizTitle", deleteQuizByTitle);
 
-quizRouter.patch("/:platform/:quizTitle/:vote", submitVote);
+quizRouter.patch("/:platform/:quizTitle/:vote", updateQuizVote);
 
 export default quizRouter;
