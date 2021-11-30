@@ -243,6 +243,14 @@ export default class QuizModel {
     );
   }
 
+  public incrementUpvotes() {
+    this.upvotes += 1;
+  }
+
+  public incrementDownvotes() {
+    this.downvotes += 1;
+  }
+
   /**
    * Update mutable fields of the quiz in the database.
    */
