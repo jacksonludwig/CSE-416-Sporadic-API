@@ -22,6 +22,7 @@ export type Score = {
   user: string;
   score?: number;
   timeStarted: Date;
+  hasVoted: boolean;
 };
 
 export type Comment = {
