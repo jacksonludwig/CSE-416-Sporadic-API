@@ -56,13 +56,13 @@ export default class UserModel {
   private cognitoId: User["cognitoId"];
   private _id: User["_id"];
   private awards: User["awards"];
+  private isGloballyBanned: User["isGloballyBanned"];
   private isGlobalAdmin: User["isGlobalAdmin"];
   private lastLogin: User["lastLogin"];
   public notifications: User["notifications"];
   public friends: User["friends"];
   public subscriptions: User["subscriptions"];
   public aboutSection: User["aboutSection"];
-  public isGloballyBanned: User["isGloballyBanned"];
 
   constructor(user: User) {
     this.email = user.email;

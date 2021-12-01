@@ -33,7 +33,6 @@ describe(`submit quiz route tests`, () => {
 
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
-    jest.spyOn(console, "log").mockImplementationOnce(() => null);
     mockTitle = "mocktitle";
 
     mockStartDate = new Date(2020, 3, 1);
