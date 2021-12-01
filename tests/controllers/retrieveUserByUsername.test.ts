@@ -20,7 +20,7 @@ describe(`get user by username route test`, () => {
 
     mockUserModel = new UserModel(mockUser);
 
-    UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(mockUserModel);
+    UserModel.retrieveUserSortedFriends = jest.fn().mockResolvedValueOnce(mockUserModel);
   });
 
   test(`Should send back user with private data if user matches query on success`, async () => {
@@ -43,7 +43,7 @@ describe(`get user by username route test`, () => {
   });
 
   test(`Should send back 500 if lookup fails`, async () => {
-    UserModel.retrieveByUsername = jest.fn().mockRejectedValueOnce(new Error("mock err"));
+    UserModel.retrieveUserSortedFriends = jest.fn().mockRejectedValueOnce(new Error("mock err"));
     const response = await request(app).get(`/users/${mockUserModel["username"]}`);
 
     expect(validateToken).toHaveBeenCalled();
@@ -51,7 +51,7 @@ describe(`get user by username route test`, () => {
   });
 
   test(`Should send back 400 if no user is returned`, async () => {
-    UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(null);
+    UserModel.retrieveUserSortedFriends = jest.fn().mockResolvedValueOnce(null);
     const response = await request(app).get(`/users/${mockUserModel["username"]}`);
 
     expect(validateToken).toHaveBeenCalled();
