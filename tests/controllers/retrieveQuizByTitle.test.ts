@@ -51,7 +51,7 @@ describe(`get quiz by title/platform route test`, () => {
     expect(JSON.stringify(response.body)).toBe(
       JSON.stringify({
         ...mockQuizModel.toJSON(),
-        score: 1,
+        score: mockQuizModel.scores[0],
         totalQuestions: mockQuizModel.questions.length,
       }),
     );

@@ -34,7 +34,7 @@ const retrieveQuizByTitle = async (req: Request, res: Response) => {
       userScoreIndex !== -1
         ? {
             ...quiz.toJSON(),
-            score: quiz.scores[userScoreIndex].score || 0,
+            score: quiz.scores[userScoreIndex],
             totalQuestions: quiz.questions.length,
           }
         : quiz.toJSON(),
