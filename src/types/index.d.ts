@@ -18,4 +18,9 @@ declare namespace Sporadic {
     Downvote = "downvote",
     None = "none",
   }
+
+  export const enum BanAction {
+    Ban = "ban",
+    Unban = "unban",
+  }
 }
