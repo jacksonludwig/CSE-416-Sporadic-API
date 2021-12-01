@@ -81,7 +81,12 @@ describe(`start quiz route tests`, () => {
   });
 
   test(`Should send back 400 if user already started quiz`, async () => {
-    mockQuiz.scores[0] = { user: mockUser.username, score: 0, timeStarted: new Date() };
+    mockQuiz.scores[0] = {
+      user: mockUser.username,
+      score: 0,
+      timeStarted: new Date(),
+      vote: Sporadic.Vote.None,
+    };
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));
     const response = await request(app).post(`/quizzes/${mockPlatform}/${mockQuiz.title}/start`);
 

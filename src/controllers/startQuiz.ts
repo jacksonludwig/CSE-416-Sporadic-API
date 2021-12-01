@@ -36,6 +36,7 @@ const startQuiz = async (req: Request, res: Response) => {
     quiz.scores.push({
       user: username,
       timeStarted: new Date(),
+      vote: Sporadic.Vote.None,
     });
 
     await quiz.update();

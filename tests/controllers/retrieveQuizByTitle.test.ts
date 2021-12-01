@@ -41,7 +41,9 @@ describe(`get quiz by title/platform route test`, () => {
   });
 
   test(`Should send back quiz with score on success`, async () => {
-    mockQuizModel.scores = [{ user: mockUser.username, score: 1, timeStarted: new Date(1) }];
+    mockQuizModel.scores = [
+      { user: mockUser.username, score: 1, timeStarted: new Date(1), vote: Sporadic.Vote.None },
+    ];
     const response = await request(app).get(`/quizzes/somePlatform/${mockQuiz.title}`);
 
     expect(validateToken).toHaveBeenCalled();

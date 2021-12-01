@@ -52,6 +52,7 @@ describe(`submit quiz route tests`, () => {
     mockQuiz.scores[0] = {
       user: mockUser.username,
       timeStarted: mockStartDate,
+      vote: Sporadic.Vote.None,
     };
 
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));
