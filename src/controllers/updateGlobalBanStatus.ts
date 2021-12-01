@@ -45,16 +45,18 @@ const updateGlobalBanStatus = async (req: Request, res: Response) => {
       return res.sendStatus(400);
     }
 
+    const commandParams = {
+      UserPoolId: process.env.COGNITO_POOL_ID,
+      Username: targetUsername,
+    };
+
     if (action === Sporadic.BanAction.Ban) {
       if (targetUser.isGloballyBanned) {
         console.error(`${targetUsername} is already globally banned`);
         return res.sendStatus(400);
       }
 
-      const disableUserCommand = new AdminDisableUserCommand({
-        UserPoolId: process.env.COGNITO_POOL_ID,
-        Username: targetUsername,
-      });
+      const disableUserCommand = new AdminDisableUserCommand(commandParams);
 
       try {
         await cognitoClient.send(disableUserCommand);
@@ -66,18 +68,13 @@ const updateGlobalBanStatus = async (req: Request, res: Response) => {
           });
         throw err;
       }
-
-      targetUser.isGloballyBanned = true;
     } else {
       if (!targetUser.isGloballyBanned) {
         console.error(`${targetUsername} is not currently banned globally`);
         return res.sendStatus(400);
       }
 
-      const enableUserCommand = new AdminEnableUserCommand({
-        UserPoolId: process.env.COGNITO_POOL_ID,
-        Username: targetUsername,
-      });
+      const enableUserCommand = new AdminEnableUserCommand(commandParams);
 
       try {
         await cognitoClient.send(enableUserCommand);
@@ -89,10 +86,9 @@ const updateGlobalBanStatus = async (req: Request, res: Response) => {
           });
         throw err;
       }
-
-      targetUser.isGloballyBanned = false;
     }
 
+    targetUser.isGloballyBanned = !targetUser.isGloballyBanned;
     await targetUser.update();
 
     return res.sendStatus(204);
