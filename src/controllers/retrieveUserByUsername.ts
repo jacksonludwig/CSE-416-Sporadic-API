@@ -5,8 +5,7 @@ const retrieveByUsername = async (req: Request, res: Response) => {
   const username = req.params.username;
 
   try {
-    const user = await UserModel.retrieveByUsername(username);
-
+    const user = await UserModel.retrieveUserSortedFriends(username);
     if (!user) {
       console.error(`${username} not found in database`);
       return res.sendStatus(400);
