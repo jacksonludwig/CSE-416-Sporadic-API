@@ -173,6 +173,69 @@ export default class UserModel {
     );
   }
 
+  public static async retrieveUserSortedFriends(user: string): Promise<UserModel | null> {
+    const agg = [
+      {
+        $match: {
+          username: `${user}`,
+        },
+      },
+      {
+        $unwind: {
+          path: "$friends",
+        },
+      },
+      {
+        $sort: {
+          friends: 1,
+        },
+      },
+      {
+        $group: {
+          _id: "$_id",
+          username: {
+            $first: "$username",
+          },
+          email: {
+            $first: "$email",
+          },
+          cognitoId: {
+            $first: "$cognitoId",
+          },
+          awards: {
+            $first: "$awards",
+          },
+          isGloballyBanned: {
+            $first: "$isGloballyBanned",
+          },
+          subscriptions: {
+            $first: "$subscriptions",
+          },
+          friends: {
+            $push: "$friends",
+          },
+          notifications: {
+            $first: "$notifications",
+          },
+          lostLogin: {
+            $first: "$lastLogin",
+          },
+          aboutSection: {
+            $first: "$aboutSection",
+          },
+        },
+      },
+    ];
+    let userFormatted = null;
+    
+    await DbClient.aggregate<User>(COLLECTION, agg, { collation: {locale: "en", strength: 2} }, 0, 1).then((response) => {
+      if(response.totalItems == 1){
+        userFormatted = response.items[0];
+      }
+    });
+    return userFormatted ? new UserModel(userFormatted) : null;
+  }
+
   /**
    * Check what permissions the user has in a given platform.
    */
