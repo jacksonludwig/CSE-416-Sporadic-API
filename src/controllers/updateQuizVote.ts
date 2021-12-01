@@ -3,12 +3,26 @@ import Joi from "joi";
 import QuizModel from "../models/Quiz";
 
 const updateQuizVoteSchema = Joi.object({
-  vote: Joi.number().valid(Sporadic.Vote.Upvote, Sporadic.Vote.Downvote, Sporadic.Vote.None),
+  platform: Joi.string()
+    .pattern(/^[\w\-\s]*$/) // alphanumeric and spaces allowed
+    .trim()
+    .min(1)
+    .max(100)
+    .required(),
+  quizTitle: Joi.string()
+    .pattern(/^[\w\-\s]*$/) // alphanumeric and spaces allowed
+    .trim()
+    .min(1)
+    .max(100)
+    .required(),
+  vote: Joi.number()
+    .valid(Sporadic.Vote.Upvote, Sporadic.Vote.Downvote, Sporadic.Vote.None)
+    .required(),
 });
 
 const updateQuizVote = async (req: Request, res: Response) => {
   try {
-    await updateQuizVoteSchema.validateAsync(req.body);
+    await updateQuizVoteSchema.validateAsync(req.params);
   } catch (err) {
     console.error(err);
     return res.sendStatus(400);
@@ -46,7 +60,7 @@ const updateQuizVote = async (req: Request, res: Response) => {
           userScore.vote = Sporadic.Vote.None;
           break;
       }
-    }
+    };
 
     switch (userScore.vote) {
       case vote:
@@ -67,11 +81,9 @@ const updateQuizVote = async (req: Request, res: Response) => {
         if (vote === Sporadic.Vote.Upvote) quiz.upvotes++;
         else if (vote === Sporadic.Vote.Downvote) quiz.downvotes++;
         break;
-      default: 
+      default:
         break;
     }
-
-
 
     await quiz.update();
 
