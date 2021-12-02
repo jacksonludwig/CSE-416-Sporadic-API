@@ -7,8 +7,6 @@ const COLLECTION = "users";
 const PROJECTION = {
   email: 0,
   cognitoId: 0,
-  isGloballyBanned: 0,
-  isGlobalAdmin: 0,
   subscriptions: 0,
   notifications: 0,
 };
@@ -33,6 +31,8 @@ type UserPublicJSON = {
   friends: User["friends"];
   lastLogin: User["lastLogin"];
   aboutSection: User["aboutSection"];
+  isGloballyBanned: User["isGloballyBanned"];
+  isGlobalAdmin: User["isGlobalAdmin"];
 };
 
 export type User = {
@@ -120,6 +120,8 @@ export default class UserModel {
       friends: this.friends,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
+      isGlobalAdmin: this.isGlobalAdmin,
+      isGloballyBanned: this.isGloballyBanned,
     };
   }
 
@@ -227,9 +229,15 @@ export default class UserModel {
       },
     ];
     let userFormatted = null;
-    
-    await DbClient.aggregate<User>(COLLECTION, agg, { collation: {locale: "en", strength: 2} }, 0, 1).then((response) => {
-      if(response.totalItems == 1){
+
+    await DbClient.aggregate<User>(
+      COLLECTION,
+      agg,
+      { collation: { locale: "en", strength: 2 } },
+      0,
+      1,
+    ).then((response) => {
+      if (response.totalItems == 1) {
         userFormatted = response.items[0];
       }
     });
