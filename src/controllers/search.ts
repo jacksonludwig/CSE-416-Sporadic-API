@@ -13,7 +13,7 @@ enum SearchScopes {
 
 const searchSchema = Joi.object({
   scope: Joi.string().valid(SearchScopes.Platforms, SearchScopes.Quizzes, SearchScopes.Users),
-  searchQuery: Joi.string().min(1).max(50).required(),
+  searchQuery: Joi.string().max(50).allow("").required(),
   page: Joi.number().integer().min(1).max(100000),
   amountPerPage: Joi.number().integer().min(1).max(100),
 });
