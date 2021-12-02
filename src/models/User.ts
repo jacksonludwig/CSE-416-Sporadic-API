@@ -227,6 +227,7 @@ export default class UserModel {
           },
           isGlobalAdmin: {
             $first: "$isGlobalAdmin",
+          }
         },
       },
     ];
