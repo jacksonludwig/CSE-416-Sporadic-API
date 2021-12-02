@@ -225,6 +225,8 @@ export default class UserModel {
           aboutSection: {
             $first: "$aboutSection",
           },
+          isGlobalAdmin: {
+            $first: "$isGlobalAdmin",
         },
       },
     ];
