@@ -5,6 +5,7 @@ import createUser from "../controllers/createUser";
 import generateAvatarSubmissionURL from "../controllers/generateAvatarSubmissionURL";
 import retrieveByUsername from "../controllers/retrieveUserByUsername";
 import updateAboutSection from "../controllers/updateAboutSection";
+import updateGlobalBanStatus from "../controllers/updateGlobalBanStatus";
 import updateRelationship from "../controllers/updateRelationship";
 import { validateToken } from "../middleware/auth";
 
@@ -23,5 +24,6 @@ userRouter.get("/:username", validateToken, retrieveByUsername);
 userRouter.put("/updateRelationship", validateToken, updateRelationship);
 
 userRouter.patch("/about", validateToken, updateAboutSection);
+userRouter.patch("/updateGlobalBanStatus", validateToken, updateGlobalBanStatus);
 
 export default userRouter;
