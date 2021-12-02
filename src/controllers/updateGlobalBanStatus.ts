@@ -45,6 +45,11 @@ const updateGlobalBanStatus = async (req: Request, res: Response) => {
       return res.sendStatus(400);
     }
 
+    if (targetUser.getIsGlobalAdmin()) {
+      console.error(`${targetUsername} is a global admin and cannot be banned`);
+      return res.sendStatus(403);
+    }
+
     const commandParams = {
       UserPoolId: process.env.COGNITO_POOL_ID,
       Username: targetUsername,
