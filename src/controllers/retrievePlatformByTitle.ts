@@ -11,7 +11,7 @@ const retrieveByTitle = async (req: Request, res: Response) => {
 
     if (!user) throw Error(`${username} not found in database`);
 
-    const platformModel = await PlatformModel.retrieveByTitle(platformTitle);
+    const platformModel = await PlatformModel.retrieveByTitleWithPinned(platformTitle);
 
     if (!platformModel) {
       console.error(`${platformTitle} does not exist`);

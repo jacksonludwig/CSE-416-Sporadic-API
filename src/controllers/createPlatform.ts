@@ -43,6 +43,7 @@ const createPlatform = async (req: Request, res: Response) => {
       quizzes: [],
       owner: username,
       scores: [],
+      pinnedQuizzes: [],
     });
 
     await platform.save();

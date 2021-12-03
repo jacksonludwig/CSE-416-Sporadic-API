@@ -29,6 +29,7 @@ describe(`subscribe user tests`, () => {
       subscribers: [],
       quizzes: [],
       scores: [],
+      pinnedQuizzes: [],
     };
 
     mockUserModel = new UserModel(mockUser);
