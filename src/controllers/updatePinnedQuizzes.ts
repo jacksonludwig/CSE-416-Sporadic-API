@@ -69,7 +69,6 @@ const updatePinnedQuizzes = async (req: Request, res: Response) => {
         return res.sendStatus(400);
       }
       platform.pinnedQuizzes = (platform.pinnedQuizzes as string[]).filter((m) => m !== targetQuiz);
-      console.log(platform.pinnedQuizzes);
     }
 
     await platform.update();
