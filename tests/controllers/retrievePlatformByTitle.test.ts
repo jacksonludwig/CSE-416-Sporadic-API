@@ -29,7 +29,7 @@ describe(`get platform by title tests`, () => {
 
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(mockQuizModel);
     UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(mockUsermodel);
-    PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(mockPlatformModel);
+    PlatformModel.retrieveByTitleWithPinned = jest.fn().mockResolvedValueOnce(mockPlatformModel);
   });
 
   test(`Should send platform on success`, async () => {
@@ -41,7 +41,9 @@ describe(`get platform by title tests`, () => {
   });
 
   test(`Should send back 500 if lookup fails`, async () => {
-    PlatformModel.retrieveByTitle = jest.fn().mockRejectedValueOnce(new Error("mock err"));
+    PlatformModel.retrieveByTitleWithPinned = jest
+      .fn()
+      .mockRejectedValueOnce(new Error("mock err"));
     const response = await request(app).get(`/platforms/${mockPlatform.title}`);
 
     expect(validateToken).toHaveBeenCalled();
@@ -49,7 +51,7 @@ describe(`get platform by title tests`, () => {
   });
 
   test(`Should send back 400 if no platform is returned`, async () => {
-    PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(null);
+    PlatformModel.retrieveByTitleWithPinned = jest.fn().mockResolvedValueOnce(null);
     const response = await request(app).get(`/platforms/${mockPlatform.title}`);
 
     expect(validateToken).toHaveBeenCalled();
@@ -73,7 +75,9 @@ describe(`get platform by title tests`, () => {
   });
 
   test(`Should send back 500 if lookup of platform fails`, async () => {
-    PlatformModel.retrieveByTitle = jest.fn().mockRejectedValueOnce(new Error("mock err"));
+    PlatformModel.retrieveByTitleWithPinned = jest
+      .fn()
+      .mockRejectedValueOnce(new Error("mock err"));
     const response = await request(app).get(`/platforms/${mockPlatform.title}`);
 
     expect(validateToken).toHaveBeenCalled();

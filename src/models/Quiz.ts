@@ -31,7 +31,7 @@ export type Comment = {
   date: Date;
 };
 
-type QuizJSON = {
+export type QuizJSON = {
   title: Quiz["title"];
   platform: Quiz["platform"];
   timeLimit: Quiz["timeLimit"];

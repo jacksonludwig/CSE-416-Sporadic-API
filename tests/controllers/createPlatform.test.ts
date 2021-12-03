@@ -33,6 +33,7 @@ describe(`create platform test`, () => {
       subscribers: [username],
       quizzes: [],
       scores: [],
+      pinnedQuizzes: [],
     };
 
     mockRequest = {
