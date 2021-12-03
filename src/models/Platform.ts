@@ -170,6 +170,7 @@ export default class PlatformModel {
         moderators: this.moderators,
         quizzes: this.quizzes,
         bannedUsers: this.bannedUsers,
+        pinnedQuizzes: this.pinnedQuizzes,
         scores: this.scores,
       },
     );

@@ -6,6 +6,7 @@ declare namespace Sporadic {
     Subscriber = 2,
     User = 1,
     Banned = 0,
+    GloballyBanned = -1,
   }
 
   export const enum UpdateAction {
