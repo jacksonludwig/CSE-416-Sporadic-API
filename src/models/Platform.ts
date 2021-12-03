@@ -108,7 +108,7 @@ export default class PlatformModel {
         {
           $lookup: {
             from: "quizzes",
-            localField: "quizzes",
+            localField: "pinnedQuizzes",
             foreignField: "title",
             as: "pinnedQuizzes",
           },
