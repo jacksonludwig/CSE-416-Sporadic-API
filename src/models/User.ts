@@ -185,6 +185,7 @@ export default class UserModel {
       {
         $unwind: {
           path: "$friends",
+          preserveNullAndEmptyArrays: true
         },
       },
       {
