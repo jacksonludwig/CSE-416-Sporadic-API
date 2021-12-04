@@ -191,7 +191,6 @@ export default class QuizModel {
 
   /**
    * retrieve quizzes for feed function
-   
    */
   public static async retrieveFeed(
     subscriptions: string[],

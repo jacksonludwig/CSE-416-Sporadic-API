@@ -9,7 +9,6 @@ const retrieveScoresSchema = Joi.object({
 const retrieveScores = async (req: Request, res:Response) => {
   try {
     const platformTitle = req.params.platformTitle;
-    const username = res.locals.authenticatedUser as string;
 
     const platform = await PlatformModel.retrieveByTitle(platformTitle);
     if (!platform) return res.sendStatus(400);

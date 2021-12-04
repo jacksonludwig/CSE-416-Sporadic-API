@@ -3,6 +3,7 @@ import createPlatform from "../controllers/createPlatform";
 import generatePlatformBannerSubmissionURL from "../controllers/generatePlatformBannerSubmissionURL";
 import generatePlatformIconSubmissionURL from "../controllers/generatePlatformIconSubmissionURL";
 import retrieveByTitle from "../controllers/retrievePlatformByTitle";
+import retrieveScores from "../controllers/retrieveScores";
 import subscribeUserToPlatform from "../controllers/subscribeUserToPlatform";
 import unsubscribeUserFromPlatform from "../controllers/unsubscribeUserFromPlatform";
 import updateBannedUsers from "../controllers/updateBannedUsers";
@@ -18,6 +19,7 @@ platformRouter.post("/", createPlatform);
 platformRouter.get("/:platformTitle", retrieveByTitle);
 platformRouter.get("/:platform/set-banner", validateToken, generatePlatformBannerSubmissionURL);
 platformRouter.get("/:platform/set-icon", validateToken, generatePlatformIconSubmissionURL);
+platformRouter.get("/:platform/scores", retrieveScores);
 
 platformRouter.patch("/:platformTitle/subscribe", subscribeUserToPlatform);
 platformRouter.patch("/:platformTitle/unsubscribe", unsubscribeUserFromPlatform);
