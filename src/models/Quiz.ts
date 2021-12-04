@@ -191,7 +191,7 @@ export default class QuizModel {
 
   /**
    * retrieve quizzes for feed function
-   * have find from dbclient in here
+   
    */
   public static async retrieveFeed(
     subscriptions: string[],
