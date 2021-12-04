@@ -4,6 +4,14 @@ import UserModel from "../models/User";
 import { cognitoClient } from "../routes/userRouter";
 import { Request, Response } from "express";
 
+const DEFAULT_SUBSCRIPTIONS = [
+  "videogames",
+  "television",
+  "literature",
+  "geography",
+  "music"
+];
+
 const createUserSchema = Joi.object({
   username: Joi.string().alphanum().min(1).max(40).lowercase().required(),
   password: Joi.string().min(8).max(50).required(),
@@ -67,7 +75,7 @@ const createUser = async (req: Request, res: Response) => {
       isGloballyBanned: false,
       isGlobalAdmin: false,
       awards: [],
-      subscriptions: ["movies", "videogames", "literature", "music", "geography"],
+      subscriptions: DEFAULT_SUBSCRIPTIONS,
       friends: [],
       notifications: [],
     });
