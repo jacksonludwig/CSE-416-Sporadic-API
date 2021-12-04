@@ -7,15 +7,17 @@ const retrieveScoresSchema = Joi.object({
 });
 
 const retrieveScores = async (req: Request, res:Response) => {
+  
+  const {platformTitle} = req.params;
+
+  const platform = await PlatformModel.retrieveByTitle(platformTitle);
+  if (!platform) return res.sendStatus(400);
+
   try {
-    const platformTitle = req.params.platformTitle;
 
-    const platform = await PlatformModel.retrieveByTitle(platformTitle);
-    if (!platform) return res.sendStatus(400);
+    const { scores } = platform
 
-    const scores = platform.scores;
-
-    return res.status(200).send(scores);
+    return res.send(scores);
 
   } catch (err) {
     console.error(err);

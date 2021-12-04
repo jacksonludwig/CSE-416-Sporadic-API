@@ -19,7 +19,7 @@ platformRouter.post("/", createPlatform);
 platformRouter.get("/:platformTitle", retrieveByTitle);
 platformRouter.get("/:platform/set-banner", validateToken, generatePlatformBannerSubmissionURL);
 platformRouter.get("/:platform/set-icon", validateToken, generatePlatformIconSubmissionURL);
-platformRouter.get("/:platform/scores", retrieveScores);
+platformRouter.get("/:platformTitle/scores", retrieveScores);
 
 platformRouter.patch("/:platformTitle/subscribe", subscribeUserToPlatform);
 platformRouter.patch("/:platformTitle/unsubscribe", unsubscribeUserFromPlatform);
