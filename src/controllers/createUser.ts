@@ -9,8 +9,7 @@ const DEFAULT_SUBSCRIPTIONS = [
   "videogames",
   "television",
   "literature",
-  "history",
-  "science",
+  "geography",
 ];
 
 const createUserSchema = Joi.object({
