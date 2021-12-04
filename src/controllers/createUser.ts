@@ -5,11 +5,11 @@ import { cognitoClient } from "../routes/userRouter";
 import { Request, Response } from "express";
 
 const DEFAULT_SUBSCRIPTIONS = [
-  "movies",
   "videogames",
   "television",
   "literature",
   "geography",
+  "music"
 ];
 
 const createUserSchema = Joi.object({
