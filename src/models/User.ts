@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, Document } from "mongodb";
 import DbClient from "../utils/DbClient";
 import PlatformModel from "./Platform";
 
@@ -147,32 +147,37 @@ export default class UserModel {
    */
   public static async searchByUsername(
     searchString: string,
+    filter: { isGloballyBanned?: boolean } = {},
     skip?: number,
     limit?: number,
   ): Promise<{ totalItems: number; items: UserPublicJSON[] }> {
     skip = skip || 0;
     limit = limit || 100;
-    return await DbClient.aggregate(
-      COLLECTION,
-      [
-        {
-          $search: {
-            index: "user_username",
-            wildcard: {
-              query: `*${searchString}*`,
-              allowAnalyzedField: true,
-              path: "username",
-            },
+
+    const query: Document[] = [
+      {
+        $search: {
+          index: "user_username",
+          wildcard: {
+            query: `*${searchString}*`,
+            allowAnalyzedField: true,
+            path: "username",
           },
         },
-        {
-          $project: PROJECTION,
+      },
+      {
+        $project: PROJECTION,
+      },
+    ];
+
+    if (filter.isGloballyBanned)
+      query.push({
+        $match: {
+          isGloballyBanned: true,
         },
-      ],
-      {},
-      skip,
-      limit,
-    );
+      });
+
+    return await DbClient.aggregate(COLLECTION, query, {}, skip, limit);
   }
 
   public static async retrieveUserSortedFriends(user: string): Promise<UserModel | null> {
@@ -185,7 +190,7 @@ export default class UserModel {
       {
         $unwind: {
           path: "$friends",
-          preserveNullAndEmptyArrays: true
+          preserveNullAndEmptyArrays: true,
         },
       },
       {
@@ -228,7 +233,7 @@ export default class UserModel {
           },
           isGlobalAdmin: {
             $first: "$isGlobalAdmin",
-          }
+          },
         },
       },
     ];

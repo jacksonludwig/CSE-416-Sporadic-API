@@ -16,6 +16,7 @@ const searchSchema = Joi.object({
   searchQuery: Joi.string().max(50).allow("").required(),
   page: Joi.number().integer().min(1).max(100000),
   amountPerPage: Joi.number().integer().min(1).max(100),
+  userFilter: Joi.string().valid("globallyBanned"),
 });
 
 const search = async (req: Request, res: Response) => {
@@ -30,6 +31,7 @@ const search = async (req: Request, res: Response) => {
 
   const scope = req.query.scope;
   const searchQuery = req.query.searchQuery as string;
+  const userFilter = req.query.userFilter as string | undefined;
   const { skip, limit } = pagesToSkipAndLimit(
     Number(req.query.page),
     Number(req.query.amountPerPage),
@@ -40,17 +42,22 @@ const search = async (req: Request, res: Response) => {
 
     if (!user) throw Error(`${username} not found in database`);
 
+    const userMatchFilter: { isGloballyBanned?: boolean } = {};
+    if (userFilter === "globallyBanned") userMatchFilter.isGloballyBanned = true;
+
     switch (scope) {
       case SearchScopes.Platforms:
         return res.status(200).send(await PlatformModel.searchByTitle(searchQuery, skip, limit));
       case SearchScopes.Quizzes:
         return res.status(200).send(await QuizModel.searchByTitle(searchQuery, skip, limit));
       case SearchScopes.Users:
-        return res.status(200).send(await UserModel.searchByUsername(searchQuery, skip, limit));
+        return res
+          .status(200)
+          .send(await UserModel.searchByUsername(searchQuery, userMatchFilter, skip, limit));
       default:
         const platforms = await PlatformModel.searchByTitle(searchQuery, skip, limit);
         const quizzes = await QuizModel.searchByTitle(searchQuery, skip, limit);
-        const users = await UserModel.searchByUsername(searchQuery, skip, limit);
+        const users = await UserModel.searchByUsername(searchQuery, userMatchFilter, skip, limit);
 
         return res.status(200).send({ users: users, platforms: platforms, quizzes: quizzes });
     }
