@@ -33,6 +33,7 @@ describe(`submit quiz route tests`, () => {
 
   beforeEach(() => {
     jest.spyOn(console, "error").mockImplementationOnce(() => null);
+    jest.spyOn(console, "log").mockImplementationOnce(() => null);
     mockTitle = "mocktitle";
 
     mockStartDate = new Date(2020, 3, 1);
@@ -52,6 +53,7 @@ describe(`submit quiz route tests`, () => {
     mockQuiz.scores[0] = {
       user: mockUser.username,
       timeStarted: mockStartDate,
+      vote: Sporadic.Vote.None,
     };
 
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));
@@ -70,10 +72,13 @@ describe(`submit quiz route tests`, () => {
 
     expect(validateToken).toHaveBeenCalled();
     expect(response.statusCode).toBe(200);
-    expect(response.body).toStrictEqual({ correctAnswers: [0, 1], totalCorrect: 2 });
+    expect(response.body).toStrictEqual({
+      totalCorrect: 2,
+      submitted: true,
+    });
   });
 
-  test(`Should send back correct answers and amount correct on success with incorrect answers`, async () => {
+  test(`Should send back amount correct on success with incorrect answers`, async () => {
     mockAnswers.answers = [1, 3];
     const response = await request(app)
       .post(`/quizzes/${mockPlatform}/${mockQuiz.title}/submit`)
@@ -81,7 +86,10 @@ describe(`submit quiz route tests`, () => {
 
     expect(validateToken).toHaveBeenCalled();
     expect(response.statusCode).toBe(200);
-    expect(response.body).toStrictEqual({ correctAnswers: [0, 1], totalCorrect: 0 });
+    expect(response.body).toStrictEqual({
+      totalCorrect: 0,
+      submitted: true,
+    });
   });
 
   test(`Should send back 500 if lookup of quiz fails`, async () => {
@@ -104,17 +112,17 @@ describe(`submit quiz route tests`, () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test(`Should send back 400 if user took quiz already`, async () => {
+  test(`Should send back 200 if user took quiz already`, async () => {
     mockQuiz.scores[0].score = 0;
     const response = await request(app)
       .post(`/quizzes/${mockPlatform}/${mockQuiz.title}/submit`)
       .send({ answers: mockAnswers.answers });
 
     expect(validateToken).toHaveBeenCalled();
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(200);
   });
 
-  test(`Should send back 400 if submission period passed`, async () => {
+  test(`Should send back 200 if submission period passed`, async () => {
     mockQuiz.scores[0].timeStarted = new Date(2000, 3, 1);
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));
 
@@ -123,7 +131,7 @@ describe(`submit quiz route tests`, () => {
       .send({ answers: mockAnswers.answers });
 
     expect(validateToken).toHaveBeenCalled();
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(200);
   });
 
   test(`Should send back 400 if user did not start quiz`, async () => {

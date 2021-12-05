@@ -3,7 +3,12 @@ import Joi from "joi";
 import PlatformModel from "../models/Platform";
 
 const createPlatformSchema = Joi.object({
-  title: Joi.string().alphanum().min(3).max(100).required(),
+  title: Joi.string()
+    .pattern(/^[\w\-\s]*$/) // alphanumeric and spaces allowed
+    .trim()
+    .min(1)
+    .max(100)
+    .required(),
   description: Joi.string().min(1).max(500).required(),
 });
 
@@ -14,7 +19,7 @@ export type CreatePlatformPost = {
 
 const createPlatform = async (req: Request, res: Response) => {
   try {
-    await createPlatformSchema.validateAsync(req.body);
+    await createPlatformSchema.validateAsync(req.body, { convert: false });
   } catch (err) {
     console.error(err);
     return res.sendStatus(400);
@@ -38,6 +43,7 @@ const createPlatform = async (req: Request, res: Response) => {
       quizzes: [],
       owner: username,
       scores: [],
+      pinnedQuizzes: [],
     });
 
     await platform.save();

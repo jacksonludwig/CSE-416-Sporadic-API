@@ -34,6 +34,9 @@ const deleteQuizByTitle = async (req: Request, res: Response) => {
     await quiz.delete();
 
     platformObj.quizzes = platformObj.quizzes.filter((q) => q !== quizTitle);
+    platformObj.pinnedQuizzes = (platformObj.pinnedQuizzes as string[]).filter(
+      (q) => q !== quizTitle,
+    );
 
     await platformObj.update();
 

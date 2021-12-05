@@ -3,6 +3,12 @@ import DbClient from "../utils/DbClient";
 
 const COLLECTION = "quizzes";
 
+const PROJECTION = {
+  questions: 0,
+  correctAnswers: 0,
+  scores: 0,
+};
+
 export type QuizFilter = {
   platform?: string;
 };
@@ -16,6 +22,7 @@ export type Score = {
   user: string;
   score?: number;
   timeStarted: Date;
+  vote: Sporadic.Vote;
 };
 
 export type Comment = {
@@ -24,7 +31,7 @@ export type Comment = {
   date: Date;
 };
 
-type QuizJSON = {
+export type QuizJSON = {
   title: Quiz["title"];
   platform: Quiz["platform"];
   timeLimit: Quiz["timeLimit"];
@@ -52,8 +59,6 @@ export type Quiz = {
 export default class QuizModel {
   private platform: Quiz["platform"];
   private timeLimit: Quiz["timeLimit"];
-  private upvotes: Quiz["upvotes"];
-  private downvotes: Quiz["downvotes"];
   private description: Quiz["description"];
   private _id: Quiz["_id"];
   public title: Quiz["title"];
@@ -61,6 +66,8 @@ export default class QuizModel {
   public correctAnswers: Quiz["correctAnswers"];
   public scores: Quiz["scores"];
   public comments: Quiz["comments"];
+  public upvotes: Quiz["upvotes"];
+  public downvotes: Quiz["downvotes"];
 
   constructor(quiz: Quiz) {
     this._id = quiz._id;
@@ -162,39 +169,79 @@ export default class QuizModel {
    *
    * @param filter The fields to filter with
    * @param sortBy The field and direction to sort with
+   * @param skip The amount of results to skip
+   * @param limit The max amount of results to return
    */
   public static async retrieveAll(
     filter: QuizFilter = {},
     sortBy: { field?: string; direction?: SortDirection } = {},
-  ): Promise<{ totalItems: number; items: Quiz[] }> {
+    skip = 0,
+    limit = 100,
+  ): Promise<{ totalItems: number; items: QuizJSON[] }> {
     const quizFilter: QuizFilter = {};
     const findOpts: FindOptions = {};
 
     if (filter.platform) quizFilter.platform = filter.platform.toLowerCase();
 
     findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
+    findOpts.projection = PROJECTION;
 
-    return await DbClient.find<Quiz>(COLLECTION, quizFilter, findOpts);
+    return await DbClient.find<QuizJSON>(COLLECTION, quizFilter, findOpts, skip, limit);
   }
 
   /**
    * retrieve quizzes for feed function
    * have find from dbclient in here
    */
-
   public static async retrieveFeed(
     subscriptions: string[],
     sortBy: { field?: string; direction?: SortDirection } = {},
-  ): Promise<{ totalItems: number; items: Quiz[] }> {
+    skip = 0,
+    limit = 100,
+  ): Promise<{ totalItems: number; items: QuizJSON[] }> {
     const findOpts: FindOptions = {};
     const feedFilter = {
-      platform: {$in: subscriptions}
-    }
-    findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
+      platform: { $in: subscriptions },
+    };
 
-    return await DbClient.find<Quiz>(COLLECTION, feedFilter, findOpts);
+    findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
+    findOpts.projection = PROJECTION;
+
+    return await DbClient.find<QuizJSON>(COLLECTION, feedFilter, findOpts, skip, limit);
   }
 
+  /**
+   * Fuzzy search for quizzes by title
+   */
+  public static async searchByTitle(
+    searchString: string,
+    skip?: number,
+    limit?: number,
+  ): Promise<{ totalItems: number; items: QuizJSON[] }> {
+    skip = skip || 0;
+    limit = limit || 100;
+    return await DbClient.aggregate(
+      COLLECTION,
+      [
+        {
+          $search: {
+            index: "quiz_title",
+            wildcard: {
+              query: `*${searchString}*`,
+              allowAnalyzedField: true,
+              path: "title",
+            },
+          },
+        },
+        {
+          $project: PROJECTION,
+        },
+      ],
+      {},
+      skip,
+      limit,
+    );
+  }
 
   /**
    * Update mutable fields of the quiz in the database.
@@ -215,5 +262,4 @@ export default class QuizModel {
       },
     );
   }
-
 }
