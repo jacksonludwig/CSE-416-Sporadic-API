@@ -62,6 +62,7 @@ export default class PlatformModel {
       quizzes: this.quizzes,
       bannedUsers: this.bannedUsers,
       scores: this.scores,
+      pinnedQuizzes: this.pinnedQuizzes,
     });
   }
 
