@@ -13,9 +13,8 @@ const PROJECTION = {
 
 type Award = {
   title: string;
-  description: string;
   quiz: string;
-  isShowcased: boolean;
+  platform: string;
 };
 
 type Notification = {
@@ -27,7 +26,7 @@ type Notification = {
 type UserPublicJSON = {
   username: User["username"];
   _id: User["_id"];
-  awards: User["awards"];
+  showcasedAwards: User["showcasedAwards"];
   friends: User["friends"];
   lastLogin: User["lastLogin"];
   aboutSection: User["aboutSection"];
@@ -42,6 +41,7 @@ export type User = {
   aboutSection?: string;
   _id?: ObjectId;
   awards: Award[];
+  showcasedAwards: Award[];
   isGloballyBanned: boolean;
   isGlobalAdmin: boolean;
   lastLogin?: Date;
@@ -55,7 +55,6 @@ export default class UserModel {
   private username: User["username"];
   private cognitoId: User["cognitoId"];
   private _id: User["_id"];
-  private awards: User["awards"];
   private isGlobalAdmin: User["isGlobalAdmin"];
   private lastLogin: User["lastLogin"];
   public notifications: User["notifications"];
@@ -63,6 +62,8 @@ export default class UserModel {
   public subscriptions: User["subscriptions"];
   public aboutSection: User["aboutSection"];
   public isGloballyBanned: User["isGloballyBanned"];
+  public awards: User["awards"];
+  public showcasedAwards: User["showcasedAwards"];
 
   constructor(user: User) {
     this.email = user.email;
@@ -77,6 +78,7 @@ export default class UserModel {
     this.friends = user.friends;
     this.notifications = user.notifications;
     this.aboutSection = user.aboutSection;
+    this.showcasedAwards = user.showcasedAwards;
   }
 
   public async save(): Promise<string> {
@@ -92,6 +94,7 @@ export default class UserModel {
       notifications: this.notifications,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
+      showcasedAwards: this.showcasedAwards,
     });
   }
 
@@ -109,6 +112,7 @@ export default class UserModel {
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
       isGlobalAdmin: this.isGlobalAdmin,
+      showcasedAwards: this.showcasedAwards,
     };
   }
 
@@ -116,12 +120,12 @@ export default class UserModel {
     return {
       username: this.username,
       _id: this._id,
-      awards: this.awards,
       friends: this.friends,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
       isGlobalAdmin: this.isGlobalAdmin,
       isGloballyBanned: this.isGloballyBanned,
+      showcasedAwards: this.showcasedAwards,
     };
   }
 
@@ -287,6 +291,7 @@ export default class UserModel {
         notifications: this.notifications,
         lastLogin: this.lastLogin,
         aboutSection: this.aboutSection,
+        showcasedAwards: this.showcasedAwards,
       },
     );
   }

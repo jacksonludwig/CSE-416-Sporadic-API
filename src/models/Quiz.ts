@@ -31,6 +31,11 @@ export type Comment = {
   date: Date;
 };
 
+export type Award = {
+  name: string;
+  threshold: number;
+};
+
 export type QuizJSON = {
   title: Quiz["title"];
   platform: Quiz["platform"];
@@ -39,6 +44,7 @@ export type QuizJSON = {
   downvotes: Quiz["downvotes"];
   description: Quiz["description"];
   comments: Quiz["comments"];
+  award: Quiz["award"];
   _id?: string;
 };
 
@@ -53,6 +59,7 @@ export type Quiz = {
   correctAnswers: number[];
   scores: Score[];
   comments: Comment[];
+  award: Award;
   _id?: ObjectId;
 };
 
@@ -68,6 +75,7 @@ export default class QuizModel {
   public comments: Quiz["comments"];
   public upvotes: Quiz["upvotes"];
   public downvotes: Quiz["downvotes"];
+  public award: Quiz["award"];
 
   constructor(quiz: Quiz) {
     this._id = quiz._id;
@@ -81,6 +89,7 @@ export default class QuizModel {
     this.correctAnswers = quiz.correctAnswers;
     this.scores = quiz.scores;
     this.comments = quiz.comments;
+    this.award = quiz.award;
   }
 
   public async save(): Promise<string> {
@@ -96,6 +105,7 @@ export default class QuizModel {
       correctAnswers: this.correctAnswers,
       scores: this.scores,
       comments: this.comments,
+      award: this.award,
     });
   }
 
@@ -109,6 +119,7 @@ export default class QuizModel {
       description: this.description,
       comments: this.comments,
       _id: this._id?.toString(),
+      award: this.award,
     };
   }
 
@@ -123,6 +134,7 @@ export default class QuizModel {
       comments: this.comments,
       questions: this.questions,
       _id: this._id?.toString(),
+      award: this.award,
     };
   }
 
