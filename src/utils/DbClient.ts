@@ -111,7 +111,7 @@ class DbClient {
       },
     });
 
-    const cursor = await db.collection<T>(collection).aggregate(pipeline, options);
+    const cursor = db.collection<T>(collection).aggregate(pipeline, options);
 
     const result = await cursor.toArray();
 
