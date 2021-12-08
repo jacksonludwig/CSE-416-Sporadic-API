@@ -1,10 +1,5 @@
 import { Request, Response } from "express";
-import Joi from "joi";
 import PlatformModel from "../models/Platform";
-
-const retrieveScoresSchema = Joi.object({
-
-});
 
 const retrieveScores = async (req: Request, res:Response) => {
   
