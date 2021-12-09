@@ -14,6 +14,7 @@ const PROJECTION = {
 type Award = {
   title: string;
   quiz: string;
+  platform: string;
 };
 
 type Notification = {
