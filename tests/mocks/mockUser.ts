@@ -14,6 +14,7 @@ const user: User = {
   friends: [],
   notifications: [],
   awards: [],
+  displayedAwards: [],
 };
 
 export default user;

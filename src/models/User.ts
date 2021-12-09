@@ -13,7 +13,6 @@ const PROJECTION = {
 
 type Award = {
   title: string;
-  description: string;
   quiz: string;
 };
 
