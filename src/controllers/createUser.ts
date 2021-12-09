@@ -76,7 +76,7 @@ const createUser = async (req: Request, res: Response) => {
       isGlobalAdmin: false,
       awards: [],
       subscriptions: DEFAULT_SUBSCRIPTIONS,
-      friends: [],
+      followedUsers: [],
       notifications: [],
     });
 

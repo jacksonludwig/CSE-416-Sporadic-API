@@ -35,7 +35,7 @@ const updateRelationship = async (req: Request, res: Response) => {
       return res.sendStatus(400);
     }
 
-    const userHasFriend = user.friends.includes(targetUsername);
+    const userHasFriend = user.followedUsers.includes(targetUsername);
 
     if (action === Sporadic.UpdateAction.Add) {
       if (userHasFriend) {
@@ -44,12 +44,12 @@ const updateRelationship = async (req: Request, res: Response) => {
       }
 
       targetUser.notifications.push({
-        title: "User added you to their friends list",
+        title: "User added you to their followedUsers list",
         body: `${username} has made you their friend`,
         hasBeenViewed: false,
       });
 
-      user.friends.push(targetUsername);
+      user.followedUsers.push(targetUsername);
     } else {
       if (!userHasFriend) {
         console.error(`${username} does not have ${targetUsername} as friend`);
@@ -57,12 +57,12 @@ const updateRelationship = async (req: Request, res: Response) => {
       }
 
       targetUser.notifications.push({
-        title: "User has removed you from their friends list",
+        title: "User has removed you from their followedUsers list",
         body: `${username} is no longer your friend`,
         hasBeenViewed: false,
       });
 
-      user.friends = user.friends.filter((f) => f !== targetUsername);
+      user.followedUsers = user.followedUsers.filter((f) => f !== targetUsername);
     }
 
     await user.update();

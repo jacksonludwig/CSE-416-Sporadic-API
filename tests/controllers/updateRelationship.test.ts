@@ -109,7 +109,7 @@ describe(`subscribe user tests`, () => {
   });
 
   test(`Should send back 400 if is already friend with target`, async () => {
-    mockUserModel.friends.push(mockTargetUserModel.getUsername());
+    mockUserModel.followedUsers.push(mockTargetUserModel.getUsername());
     UserModel.retrieveByUsername = jest
       .fn()
       .mockResolvedValueOnce(mockUserModel)
@@ -122,7 +122,7 @@ describe(`subscribe user tests`, () => {
   });
 
   test(`Should send back 400 if user is not friend with target and trying to remove`, async () => {
-    mockUserModel.friends = [];
+    mockUserModel.followedUsers = [];
     mockRequest.action = "remove" as Sporadic.UpdateAction;
     const response = await request(app).put(`/users/updateRelationship`).send(mockRequest);
 

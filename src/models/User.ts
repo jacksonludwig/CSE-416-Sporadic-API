@@ -28,7 +28,7 @@ type UserPublicJSON = {
   username: User["username"];
   _id: User["_id"];
   awards: User["awards"];
-  friends: User["friends"];
+  followedUsers: User["followedUsers"];
   lastLogin: User["lastLogin"];
   aboutSection: User["aboutSection"];
   isGloballyBanned: User["isGloballyBanned"];
@@ -46,7 +46,7 @@ export type User = {
   isGlobalAdmin: boolean;
   lastLogin?: Date;
   subscriptions: string[];
-  friends: string[];
+  followedUsers: string[];
   notifications: Notification[];
 };
 
@@ -59,7 +59,7 @@ export default class UserModel {
   private isGlobalAdmin: User["isGlobalAdmin"];
   private lastLogin: User["lastLogin"];
   public notifications: User["notifications"];
-  public friends: User["friends"];
+  public followedUsers: User["followedUsers"];
   public subscriptions: User["subscriptions"];
   public aboutSection: User["aboutSection"];
   public isGloballyBanned: User["isGloballyBanned"];
@@ -74,7 +74,7 @@ export default class UserModel {
     this.isGloballyBanned = user.isGloballyBanned;
     this.isGlobalAdmin = user.isGlobalAdmin;
     this.subscriptions = user.subscriptions;
-    this.friends = user.friends;
+    this.followedUsers = user.followedUsers;
     this.notifications = user.notifications;
     this.aboutSection = user.aboutSection;
   }
@@ -88,7 +88,7 @@ export default class UserModel {
       awards: this.awards,
       isGloballyBanned: this.isGloballyBanned,
       subscriptions: this.subscriptions,
-      friends: this.friends,
+      followedUsers: this.followedUsers,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
@@ -104,7 +104,7 @@ export default class UserModel {
       awards: this.awards,
       isGloballyBanned: this.isGloballyBanned,
       subscriptions: this.subscriptions,
-      friends: this.friends,
+      followedUsers: this.followedUsers,
       notifications: this.notifications,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
@@ -117,7 +117,7 @@ export default class UserModel {
       username: this.username,
       _id: this._id,
       awards: this.awards,
-      friends: this.friends,
+      followedUsers: this.followedUsers,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
       isGlobalAdmin: this.isGlobalAdmin,
@@ -180,7 +180,7 @@ export default class UserModel {
     return await DbClient.aggregate(COLLECTION, query, {}, skip, limit);
   }
 
-  public static async retrieveUserSortedFriends(user: string): Promise<UserModel | null> {
+  public static async retrieveUserSortedFollowedUsers(user: string): Promise<UserModel | null> {
     const agg = [
       {
         $match: {
@@ -189,13 +189,13 @@ export default class UserModel {
       },
       {
         $unwind: {
-          path: "$friends",
+          path: "$followedUsers",
           preserveNullAndEmptyArrays: true,
         },
       },
       {
         $sort: {
-          friends: 1,
+          followedUsers: 1,
         },
       },
       {
@@ -219,8 +219,8 @@ export default class UserModel {
           subscriptions: {
             $first: "$subscriptions",
           },
-          friends: {
-            $push: "$friends",
+          followedUsers: {
+            $push: "$followedUsers",
           },
           notifications: {
             $first: "$notifications",
@@ -283,7 +283,7 @@ export default class UserModel {
         awards: this.awards,
         isGloballyBanned: this.isGloballyBanned,
         subscriptions: this.subscriptions,
-        friends: this.friends,
+        followedUsers: this.followedUsers,
         notifications: this.notifications,
         lastLogin: this.lastLogin,
         aboutSection: this.aboutSection,

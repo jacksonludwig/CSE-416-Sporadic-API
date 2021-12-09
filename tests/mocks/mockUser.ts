@@ -11,7 +11,7 @@ const user: User = {
   lastLogin: new Date(1231231231233),
   aboutSection: "This is some data about me, I am really great at taking quizzes.",
   subscriptions: [],
-  friends: [],
+  followedUsers: [],
   notifications: [],
   awards: [],
 };
