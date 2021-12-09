@@ -24,7 +24,7 @@ const createQuizSchema = Joi.object({
     )
     .required(),
   awardTitle: Joi.string().alphanum().min(1).max(30).required(),
-  awardRequirement: Joi.number().min(1),
+  awardRequirement: Joi.number().min(1).required(),
   correctAnswers: Joi.array().items(Joi.number().min(0).max(50)).required(),
 });
 
