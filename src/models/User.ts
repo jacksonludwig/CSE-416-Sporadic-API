@@ -8,7 +8,6 @@ const PROJECTION = {
   email: 0,
   cognitoId: 0,
   subscriptions: 0,
-  notifications: 0,
 };
 
 type Award = {
@@ -16,12 +15,6 @@ type Award = {
   description: string;
   quiz: string;
   isShowcased: boolean;
-};
-
-type Notification = {
-  title: string;
-  body: string;
-  hasBeenViewed: boolean;
 };
 
 type UserPublicJSON = {
@@ -47,7 +40,6 @@ export type User = {
   lastLogin?: Date;
   subscriptions: string[];
   followedUsers: string[];
-  notifications: Notification[];
 };
 
 export default class UserModel {
@@ -58,7 +50,6 @@ export default class UserModel {
   private awards: User["awards"];
   private isGlobalAdmin: User["isGlobalAdmin"];
   private lastLogin: User["lastLogin"];
-  public notifications: User["notifications"];
   public followedUsers: User["followedUsers"];
   public subscriptions: User["subscriptions"];
   public aboutSection: User["aboutSection"];
@@ -75,7 +66,6 @@ export default class UserModel {
     this.isGlobalAdmin = user.isGlobalAdmin;
     this.subscriptions = user.subscriptions;
     this.followedUsers = user.followedUsers;
-    this.notifications = user.notifications;
     this.aboutSection = user.aboutSection;
   }
 
@@ -89,7 +79,6 @@ export default class UserModel {
       isGloballyBanned: this.isGloballyBanned,
       subscriptions: this.subscriptions,
       followedUsers: this.followedUsers,
-      notifications: this.notifications,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
     });
@@ -105,7 +94,6 @@ export default class UserModel {
       isGloballyBanned: this.isGloballyBanned,
       subscriptions: this.subscriptions,
       followedUsers: this.followedUsers,
-      notifications: this.notifications,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
       isGlobalAdmin: this.isGlobalAdmin,
@@ -222,9 +210,6 @@ export default class UserModel {
           followedUsers: {
             $push: "$followedUsers",
           },
-          notifications: {
-            $first: "$notifications",
-          },
           lostLogin: {
             $first: "$lastLogin",
           },
@@ -284,7 +269,6 @@ export default class UserModel {
         isGloballyBanned: this.isGloballyBanned,
         subscriptions: this.subscriptions,
         followedUsers: this.followedUsers,
-        notifications: this.notifications,
         lastLogin: this.lastLogin,
         aboutSection: this.aboutSection,
       },

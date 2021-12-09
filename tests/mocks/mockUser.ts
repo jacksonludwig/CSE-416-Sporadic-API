@@ -12,7 +12,6 @@ const user: User = {
   aboutSection: "This is some data about me, I am really great at taking quizzes.",
   subscriptions: [],
   followedUsers: [],
-  notifications: [],
   awards: [],
 };
 

@@ -43,12 +43,6 @@ const updateRelationship = async (req: Request, res: Response) => {
         return res.sendStatus(400);
       }
 
-      targetUser.notifications.push({
-        title: "User added you to their followedUsers list",
-        body: `${username} has made you their friend`,
-        hasBeenViewed: false,
-      });
-
       user.followedUsers.push(targetUsername);
     } else {
       if (!userHasFriend) {
@@ -56,17 +50,10 @@ const updateRelationship = async (req: Request, res: Response) => {
         return res.sendStatus(400);
       }
 
-      targetUser.notifications.push({
-        title: "User has removed you from their followedUsers list",
-        body: `${username} is no longer your friend`,
-        hasBeenViewed: false,
-      });
-
       user.followedUsers = user.followedUsers.filter((f) => f !== targetUsername);
     }
 
     await user.update();
-    await targetUser.update();
 
     return res.sendStatus(204);
   } catch (err) {
