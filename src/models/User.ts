@@ -13,9 +13,8 @@ const PROJECTION = {
 
 type Award = {
   title: string;
-  description: string;
   quiz: string;
-  isShowcased: boolean;
+  platform: string;
 };
 
 type Notification = {
@@ -28,6 +27,7 @@ type UserPublicJSON = {
   username: User["username"];
   _id: User["_id"];
   awards: User["awards"];
+  displayedAwards: User["displayedAwards"];
   friends: User["friends"];
   lastLogin: User["lastLogin"];
   aboutSection: User["aboutSection"];
@@ -42,6 +42,7 @@ export type User = {
   aboutSection?: string;
   _id?: ObjectId;
   awards: Award[];
+  displayedAwards: Award[];
   isGloballyBanned: boolean;
   isGlobalAdmin: boolean;
   lastLogin?: Date;
@@ -56,6 +57,7 @@ export default class UserModel {
   private cognitoId: User["cognitoId"];
   private _id: User["_id"];
   private awards: User["awards"];
+  private displayedAwards: User["displayedAwards"];
   private isGlobalAdmin: User["isGlobalAdmin"];
   private lastLogin: User["lastLogin"];
   public notifications: User["notifications"];
@@ -70,6 +72,7 @@ export default class UserModel {
     this.cognitoId = user.cognitoId;
     this._id = user._id;
     this.awards = user.awards;
+    this.displayedAwards = user.displayedAwards;
     this.lastLogin = user.lastLogin;
     this.isGloballyBanned = user.isGloballyBanned;
     this.isGlobalAdmin = user.isGlobalAdmin;
@@ -86,6 +89,7 @@ export default class UserModel {
       cognitoId: this.cognitoId,
       _id: this._id,
       awards: this.awards,
+      displayedAwards: this.displayedAwards,
       isGloballyBanned: this.isGloballyBanned,
       subscriptions: this.subscriptions,
       friends: this.friends,
@@ -102,6 +106,7 @@ export default class UserModel {
       cognitoId: this.cognitoId,
       _id: this._id,
       awards: this.awards,
+      displayedAwards: this.displayedAwards,
       isGloballyBanned: this.isGloballyBanned,
       subscriptions: this.subscriptions,
       friends: this.friends,
@@ -117,6 +122,7 @@ export default class UserModel {
       username: this.username,
       _id: this._id,
       awards: this.awards,
+      displayedAwards: this.displayedAwards,
       friends: this.friends,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
@@ -281,6 +287,7 @@ export default class UserModel {
       { username: this.username },
       {
         awards: this.awards,
+        displayedAwards: this.displayedAwards,
         isGloballyBanned: this.isGloballyBanned,
         subscriptions: this.subscriptions,
         friends: this.friends,

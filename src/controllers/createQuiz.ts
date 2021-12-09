@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Joi from "joi";
+import Joi, { number } from "joi";
 import PlatformModel from "../models/Platform";
 import QuizModel from "../models/Quiz";
 import { Question } from "../models/Quiz";
@@ -23,6 +23,8 @@ const createQuizSchema = Joi.object({
       }).required(),
     )
     .required(),
+  awardTitle: Joi.string().alphanum().min(1).max(30).required(),
+  awardRequirement: Joi.number().min(1).required(),
   correctAnswers: Joi.array().items(Joi.number().min(0).max(50)).required(),
 });
 
@@ -30,6 +32,8 @@ export type CreateQuizPost = {
   quizTitle: string;
   platformTitle: string;
   timeLimit: number;
+  awardTitle: string;
+  awardRequirement: number;
   description: string;
   questions: Question[];
   correctAnswers: number[];
@@ -43,7 +47,7 @@ const createQuiz = async (req: Request, res: Response) => {
     return res.sendStatus(400);
   }
 
-  const { platformTitle, quizTitle, timeLimit, description, questions, correctAnswers } =
+  const { platformTitle, quizTitle, timeLimit, awardTitle, awardRequirement, description, questions, correctAnswers } =
     req.body as CreateQuizPost;
 
   const username = res.locals.authenticatedUser;
@@ -74,6 +78,8 @@ const createQuiz = async (req: Request, res: Response) => {
       title: quizTitle,
       platform: platformTitle,
       timeLimit: timeLimit,
+      awardTitle: awardTitle,
+      awardRequirement: awardRequirement,
       upvotes: 0,
       downvotes: 0,
       description: description,

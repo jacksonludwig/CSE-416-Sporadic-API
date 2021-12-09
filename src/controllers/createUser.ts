@@ -75,6 +75,7 @@ const createUser = async (req: Request, res: Response) => {
       isGloballyBanned: false,
       isGlobalAdmin: false,
       awards: [],
+      displayedAwards: [],
       subscriptions: DEFAULT_SUBSCRIPTIONS,
       friends: [],
       notifications: [],
