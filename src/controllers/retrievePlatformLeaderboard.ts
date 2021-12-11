@@ -41,9 +41,15 @@ const retrievePlatformLeaderboard = async (req: Request, res: Response) => {
       return res.sendStatus(403);
     }
 
-    return res
-      .status(200)
-      .send(await PlatformModel.retrieveLeaderboard(platformTitle, skip, limit));
+    const userScoreIndex = platform.scores
+      .sort((x, y) => x.totalCorrect - y.totalCorrect)
+      .findIndex((s) => s.username === username);
+
+    return res.status(200).send({
+      userScore: userScoreIndex === -1 ? undefined : platform.scores[userScoreIndex],
+      userLeaderboardPosition: userScoreIndex,
+      ...(await PlatformModel.retrieveLeaderboard(platformTitle, skip, limit)),
+    });
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
