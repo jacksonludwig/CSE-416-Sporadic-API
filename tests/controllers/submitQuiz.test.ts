@@ -48,6 +48,8 @@ describe(`submit quiz route tests`, () => {
       username: globalMockuser.username,
       email: "email@email.com",
       cognitoId: "asdkjskdjfas",
+      awards: globalMockuser.awards,
+      displayedAwards: globalMockuser.displayedAwards,
     } as User;
 
     mockQuiz.scores[0] = {
@@ -59,6 +61,7 @@ describe(`submit quiz route tests`, () => {
     QuizModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(new QuizModel(mockQuiz));
     UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
     QuizModel.prototype.update = jest.fn().mockResolvedValueOnce(null);
+    UserModel.prototype.update = jest.fn().mockResolvedValueOnce(null);
     PlatformModel.prototype.update = jest.fn().mockResolvedValueOnce(null);
     PlatformModel.retrieveByTitle = jest
       .fn()
@@ -90,7 +93,7 @@ describe(`submit quiz route tests`, () => {
     expect(response.body).toStrictEqual({
       totalCorrect: 0,
       submitted: true,
-      isAwarded: false
+      isAwarded: false,
     });
   });
 
