@@ -51,7 +51,7 @@ const retrievePlatformLeaderboard = async (req: Request, res: Response) => {
           ? undefined
           : {
               totalCorrect: platform.scores[userScoreIndex].totalCorrect,
-              leaderBoardPosition: userScoreIndex - 1,
+              leaderBoardPosition: userScoreIndex + 1,
             },
       ...(await PlatformModel.retrieveLeaderboard(platformTitle, skip, limit)),
     });
