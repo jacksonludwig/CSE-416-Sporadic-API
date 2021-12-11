@@ -40,11 +40,9 @@ const retrievePlatformLeaderboard = async (req: Request, res: Response) => {
       console.error(`${username} lacks permission to fetch leaderboard for ${platform}`);
       return res.sendStatus(403);
     }
-
-    const userScoreIndex = platform.scores
-      .sort((x, y) => x.totalCorrect - y.totalCorrect)
+    console.log(platform.scores.sort((a, b) => b.totalCorrect - a.totalCorrect));
+    const userScoreIndex = platform.scores.sort((a, b) => b.totalCorrect - a.totalCorrect)
       .findIndex((s) => s.username === username);
-
     return res.status(200).send({
       currentUserData:
         userScoreIndex === -1
