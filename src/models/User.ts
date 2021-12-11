@@ -8,7 +8,6 @@ const PROJECTION = {
   email: 0,
   cognitoId: 0,
   subscriptions: 0,
-  notifications: 0,
 };
 
 type Award = {
@@ -17,18 +16,12 @@ type Award = {
   platform: string;
 };
 
-type Notification = {
-  title: string;
-  body: string;
-  hasBeenViewed: boolean;
-};
-
 type UserPublicJSON = {
   username: User["username"];
   _id: User["_id"];
   awards: User["awards"];
+  followedUsers: User["followedUsers"];
   displayedAwards: User["displayedAwards"];
-  friends: User["friends"];
   lastLogin: User["lastLogin"];
   aboutSection: User["aboutSection"];
   isGloballyBanned: User["isGloballyBanned"];
@@ -47,8 +40,7 @@ export type User = {
   isGlobalAdmin: boolean;
   lastLogin?: Date;
   subscriptions: string[];
-  friends: string[];
-  notifications: Notification[];
+  followedUsers: string[];
 };
 
 export default class UserModel {
@@ -60,8 +52,7 @@ export default class UserModel {
   private displayedAwards: User["displayedAwards"];
   private isGlobalAdmin: User["isGlobalAdmin"];
   private lastLogin: User["lastLogin"];
-  public notifications: User["notifications"];
-  public friends: User["friends"];
+  public followedUsers: User["followedUsers"];
   public subscriptions: User["subscriptions"];
   public aboutSection: User["aboutSection"];
   public isGloballyBanned: User["isGloballyBanned"];
@@ -77,8 +68,7 @@ export default class UserModel {
     this.isGloballyBanned = user.isGloballyBanned;
     this.isGlobalAdmin = user.isGlobalAdmin;
     this.subscriptions = user.subscriptions;
-    this.friends = user.friends;
-    this.notifications = user.notifications;
+    this.followedUsers = user.followedUsers;
     this.aboutSection = user.aboutSection;
   }
 
@@ -92,8 +82,7 @@ export default class UserModel {
       displayedAwards: this.displayedAwards,
       isGloballyBanned: this.isGloballyBanned,
       subscriptions: this.subscriptions,
-      friends: this.friends,
-      notifications: this.notifications,
+      followedUsers: this.followedUsers,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
     });
@@ -109,8 +98,7 @@ export default class UserModel {
       displayedAwards: this.displayedAwards,
       isGloballyBanned: this.isGloballyBanned,
       subscriptions: this.subscriptions,
-      friends: this.friends,
-      notifications: this.notifications,
+      followedUsers: this.followedUsers,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
       isGlobalAdmin: this.isGlobalAdmin,
@@ -122,8 +110,8 @@ export default class UserModel {
       username: this.username,
       _id: this._id,
       awards: this.awards,
+      followedUsers: this.followedUsers,
       displayedAwards: this.displayedAwards,
-      friends: this.friends,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
       isGlobalAdmin: this.isGlobalAdmin,
@@ -186,7 +174,7 @@ export default class UserModel {
     return await DbClient.aggregate(COLLECTION, query, {}, skip, limit);
   }
 
-  public static async retrieveUserSortedFriends(user: string): Promise<UserModel | null> {
+  public static async retrieveUserSortedFollowedUsers(user: string): Promise<UserModel | null> {
     const agg = [
       {
         $match: {
@@ -195,13 +183,13 @@ export default class UserModel {
       },
       {
         $unwind: {
-          path: "$friends",
+          path: "$followedUsers",
           preserveNullAndEmptyArrays: true,
         },
       },
       {
         $sort: {
-          friends: 1,
+          followedUsers: 1,
         },
       },
       {
@@ -225,11 +213,8 @@ export default class UserModel {
           subscriptions: {
             $first: "$subscriptions",
           },
-          friends: {
-            $push: "$friends",
-          },
-          notifications: {
-            $first: "$notifications",
+          followedUsers: {
+            $push: "$followedUsers",
           },
           lostLogin: {
             $first: "$lastLogin",
@@ -290,8 +275,7 @@ export default class UserModel {
         displayedAwards: this.displayedAwards,
         isGloballyBanned: this.isGloballyBanned,
         subscriptions: this.subscriptions,
-        friends: this.friends,
-        notifications: this.notifications,
+        followedUsers: this.followedUsers,
         lastLogin: this.lastLogin,
         aboutSection: this.aboutSection,
       },
