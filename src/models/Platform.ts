@@ -4,6 +4,10 @@ import { QuizJSON } from "./Quiz";
 
 const COLLECTION = "platforms";
 
+const PROJECTION = {
+  scores: 0,
+};
+
 type Score = {
   username: string;
   totalCorrect: number;
@@ -168,6 +172,7 @@ export default class PlatformModel {
             "pinnedQuizzes.scores": 0,
             "pinnedQuizzes.correctAnswers": 0,
             "pinnedQuizzes.questions": 0,
+            ...PROJECTION,
           },
         },
       ],
@@ -199,6 +204,9 @@ export default class PlatformModel {
               path: "title",
             },
           },
+        },
+        {
+          $project: PROJECTION,
         },
       ],
       {},
