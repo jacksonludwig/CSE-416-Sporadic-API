@@ -7,7 +7,7 @@
     "start": "node -r dotenv/config dist/src/index.js",
     "build": "tsc",
     "lint": "eslint --fix src --ext .ts",
-    "test": "jest"
+    "test": "jest --verbose false"
   },
   "repository": {
     "type": "git",
