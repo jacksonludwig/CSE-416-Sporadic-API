@@ -99,7 +99,7 @@ const submitQuiz = async (req: Request, res: Response) => {
       user.awards.push(award);
       isAwarded = true;
     }
-    user.update();
+    await user.update();
     return res.status(200).send({
       totalCorrect: totalCorrect,
       submitted: true,
