@@ -35,6 +35,8 @@ export type QuizJSON = {
   title: Quiz["title"];
   platform: Quiz["platform"];
   timeLimit: Quiz["timeLimit"];
+  awardTitle: Quiz["awardTitle"];
+  awardRequirement: Quiz["awardRequirement"];
   upvotes: Quiz["upvotes"];
   downvotes: Quiz["downvotes"];
   description: Quiz["description"];
@@ -46,6 +48,8 @@ export type Quiz = {
   title: string;
   platform: string;
   timeLimit: number;
+  awardTitle: string;
+  awardRequirement: number;
   upvotes: number;
   downvotes: number;
   description: string;
@@ -59,6 +63,8 @@ export type Quiz = {
 export default class QuizModel {
   private platform: Quiz["platform"];
   private timeLimit: Quiz["timeLimit"];
+  private awardTitle: Quiz["awardTitle"];
+  private awardRequirement: Quiz["awardRequirement"];
   private description: Quiz["description"];
   private _id: Quiz["_id"];
   public title: Quiz["title"];
@@ -74,6 +80,8 @@ export default class QuizModel {
     this.title = quiz.title;
     this.platform = quiz.platform.toLowerCase();
     this.timeLimit = quiz.timeLimit;
+    this.awardTitle = quiz.awardTitle;
+    this.awardRequirement = quiz.awardRequirement;
     this.upvotes = quiz.upvotes;
     this.downvotes = quiz.downvotes;
     this.description = quiz.description;
@@ -89,6 +97,8 @@ export default class QuizModel {
       title: this.title,
       platform: this.platform,
       timeLimit: this.timeLimit,
+      awardTitle: this.awardTitle,
+      awardRequirement: this.awardRequirement,
       upvotes: this.upvotes,
       downvotes: this.downvotes,
       description: this.description,
@@ -104,6 +114,8 @@ export default class QuizModel {
       title: this.title,
       platform: this.platform,
       timeLimit: this.timeLimit,
+      awardTitle: this.awardTitle,
+      awardRequirement: this.awardRequirement,
       upvotes: this.upvotes,
       downvotes: this.downvotes,
       description: this.description,
@@ -117,6 +129,8 @@ export default class QuizModel {
       title: this.title,
       platform: this.platform,
       timeLimit: this.timeLimit,
+      awardTitle: this.awardTitle,
+      awardRequirement: this.awardRequirement,
       upvotes: this.upvotes,
       downvotes: this.downvotes,
       description: this.description,
@@ -252,6 +266,8 @@ export default class QuizModel {
       { title: this.title, platform: this.platform },
       {
         timeLimit: this.timeLimit,
+        awardTitle: this.awardTitle,
+        awardRequirement: this.awardRequirement,
         upvotes: this.upvotes,
         downvotes: this.downvotes,
         description: this.description,

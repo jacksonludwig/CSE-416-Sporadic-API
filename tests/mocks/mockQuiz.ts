@@ -5,6 +5,8 @@ const quiz: Quiz = {
   title: "moviesandstuff",
   platform: "movies",
   timeLimit: 5,
+  awardTitle: "Movies",
+  awardRequirement: 1,
   upvotes: 2,
   downvotes: 3,
   description: "this is a quiz where you get to take movies and stuff",

@@ -12,9 +12,8 @@ const PROJECTION = {
 
 type Award = {
   title: string;
-  description: string;
   quiz: string;
-  isShowcased: boolean;
+  platform: string;
 };
 
 type UserPublicJSON = {
@@ -22,6 +21,7 @@ type UserPublicJSON = {
   _id: User["_id"];
   awards: User["awards"];
   followedUsers: User["followedUsers"];
+  displayedAwards: User["displayedAwards"];
   lastLogin: User["lastLogin"];
   aboutSection: User["aboutSection"];
   isGloballyBanned: User["isGloballyBanned"];
@@ -35,6 +35,7 @@ export type User = {
   aboutSection?: string;
   _id?: ObjectId;
   awards: Award[];
+  displayedAwards: Award[];
   isGloballyBanned: boolean;
   isGlobalAdmin: boolean;
   lastLogin?: Date;
@@ -48,6 +49,7 @@ export default class UserModel {
   private cognitoId: User["cognitoId"];
   private _id: User["_id"];
   private awards: User["awards"];
+  private displayedAwards: User["displayedAwards"];
   private isGlobalAdmin: User["isGlobalAdmin"];
   private lastLogin: User["lastLogin"];
   public followedUsers: User["followedUsers"];
@@ -61,6 +63,7 @@ export default class UserModel {
     this.cognitoId = user.cognitoId;
     this._id = user._id;
     this.awards = user.awards;
+    this.displayedAwards = user.displayedAwards;
     this.lastLogin = user.lastLogin;
     this.isGloballyBanned = user.isGloballyBanned;
     this.isGlobalAdmin = user.isGlobalAdmin;
@@ -76,6 +79,7 @@ export default class UserModel {
       cognitoId: this.cognitoId,
       _id: this._id,
       awards: this.awards,
+      displayedAwards: this.displayedAwards,
       isGloballyBanned: this.isGloballyBanned,
       subscriptions: this.subscriptions,
       followedUsers: this.followedUsers,
@@ -91,6 +95,7 @@ export default class UserModel {
       cognitoId: this.cognitoId,
       _id: this._id,
       awards: this.awards,
+      displayedAwards: this.displayedAwards,
       isGloballyBanned: this.isGloballyBanned,
       subscriptions: this.subscriptions,
       followedUsers: this.followedUsers,
@@ -106,6 +111,7 @@ export default class UserModel {
       _id: this._id,
       awards: this.awards,
       followedUsers: this.followedUsers,
+      displayedAwards: this.displayedAwards,
       lastLogin: this.lastLogin,
       aboutSection: this.aboutSection,
       isGlobalAdmin: this.isGlobalAdmin,
@@ -266,6 +272,7 @@ export default class UserModel {
       { username: this.username },
       {
         awards: this.awards,
+        displayedAwards: this.displayedAwards,
         isGloballyBanned: this.isGloballyBanned,
         subscriptions: this.subscriptions,
         followedUsers: this.followedUsers,

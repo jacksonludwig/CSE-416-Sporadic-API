@@ -13,6 +13,7 @@ const user: User = {
   subscriptions: [],
   followedUsers: [],
   awards: [],
+  displayedAwards: [],
 };
 
 export default user;
