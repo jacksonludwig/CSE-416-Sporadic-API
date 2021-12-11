@@ -3,6 +3,7 @@ import Joi from "joi";
 import PlatformModel from "../models/Platform";
 import QuizModel from "../models/Quiz";
 import UserModel from "../models/User";
+import Award from "../models/User";
 
 const submitQuizSchema = Joi.object({
   // The request will contain an array of numbers which represent the multiple choice answers
@@ -87,13 +88,22 @@ const submitQuiz = async (req: Request, res: Response) => {
     await platformModel.update();
 
     await quiz.update();
+
+    let isAwarded = false;
     if(totalCorrect >= quiz.getAwardRequirement()){
-      
+      const award = {
+        title: quiz.getAwardTitle(),
+        quiz: quizTitle,
+        platform: platform
+      };
+      user.awards.push(award);
+      isAwarded = true;
     }
+    user.update();
     return res.status(200).send({
       totalCorrect: totalCorrect,
       submitted: true,
-      award: true
+      award: isAwarded
     });
   } catch (err) {
     console.error(err);
