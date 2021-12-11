@@ -152,6 +152,10 @@ export default class QuizModel {
     return this.timeLimit;
   }
 
+  public getAwardRequirement(): Quiz["awardRequirement"] {
+    return this.awardRequirement;
+  }
+
   /**
    * Returns quiz with the given title.
    */

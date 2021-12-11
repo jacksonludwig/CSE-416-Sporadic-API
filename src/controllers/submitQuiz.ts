@@ -87,10 +87,13 @@ const submitQuiz = async (req: Request, res: Response) => {
     await platformModel.update();
 
     await quiz.update();
-
+    if(totalCorrect >= quiz.getAwardRequirement()){
+      
+    }
     return res.status(200).send({
       totalCorrect: totalCorrect,
       submitted: true,
+      award: true
     });
   } catch (err) {
     console.error(err);

@@ -10,7 +10,7 @@ const PROJECTION = {
   subscriptions: 0,
 };
 
-type Award = {
+export type Award = {
   title: string;
   quiz: string;
   platform: string;
@@ -26,6 +26,7 @@ type UserPublicJSON = {
   aboutSection: User["aboutSection"];
   isGloballyBanned: User["isGloballyBanned"];
   isGlobalAdmin: User["isGlobalAdmin"];
+  awardCount: number;
 };
 
 export type User = {
@@ -48,8 +49,8 @@ export default class UserModel {
   private username: User["username"];
   private cognitoId: User["cognitoId"];
   private _id: User["_id"];
-  private awards: User["awards"];
-  private displayedAwards: User["displayedAwards"];
+  public awards: User["awards"];
+  public displayedAwards: User["displayedAwards"];
   private isGlobalAdmin: User["isGlobalAdmin"];
   private lastLogin: User["lastLogin"];
   public followedUsers: User["followedUsers"];
@@ -116,6 +117,7 @@ export default class UserModel {
       aboutSection: this.aboutSection,
       isGlobalAdmin: this.isGlobalAdmin,
       isGloballyBanned: this.isGloballyBanned,
+      awardCount: this.awards.length,
     };
   }
 
