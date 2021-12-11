@@ -95,11 +95,10 @@ export default class PlatformModel {
   }
 
   /**
-   * Retrieve the list of users who have completed quizzes in this platform, sorted by score.
+   * Retrieves the list of users and their associated scores, sorted from highest to lowest score.
    */
   public static async retrieveLeaderboard(
     title: string,
-    direction?: "ascending" | "descending",
     skip?: number,
     limit?: number,
   ): Promise<{ totalItems: number; items: Score[] }> {

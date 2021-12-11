@@ -1,25 +1,53 @@
 import { Request, Response } from "express";
+import Joi from "joi";
+import PlatformModel from "../models/Platform";
 import UserModel from "../models/User";
+import pagesToSkipAndLimit from "../utils/Pagination";
 
-const retrieveByUsername = async (req: Request, res: Response) => {
-  const username = req.params.username;
+const retrievePlatformLeaderboardSchema = Joi.object({
+  page: Joi.number().integer().min(1).max(100000),
+  amountPerPage: Joi.number().integer().min(1).max(100),
+});
+
+const retrievePlatformLeaderboard = async (req: Request, res: Response) => {
+  const username = res.locals.authenticatedUser;
+  const { platformTitle } = req.params;
+  const { skip, limit } = pagesToSkipAndLimit(
+    Number(req.query.page),
+    Number(req.query.amountPerPage),
+  );
 
   try {
-    const user = await UserModel.retrieveUserSortedFollowedUsers(username);
-    if (!user) {
-      console.error(`${username} not found in database`);
+    await retrievePlatformLeaderboardSchema.validateAsync(req.query);
+  } catch (err) {
+    console.error(err);
+    return res.sendStatus(400);
+  }
+
+  try {
+    const user = await UserModel.retrieveByUsername(username);
+
+    if (!user) throw Error(`${username} not found in database`);
+
+    const platform = await PlatformModel.retrieveByTitle(platformTitle);
+
+    if (!platform) {
+      console.error(`${platformTitle} not found in database`);
       return res.sendStatus(400);
+    }
+
+    if (user.permissionsOn(platform) < Sporadic.Permissions.User) {
+      console.error(`${username} lacks permission to fetch leaderboard for ${platform}`);
+      return res.sendStatus(403);
     }
 
     return res
       .status(200)
-      .send(
-        username === res.locals.authenticatedUser ? user.toJSONWithPrivateData() : user.toJSON(),
-      );
+      .send(await PlatformModel.retrieveLeaderboard(platformTitle, skip, limit));
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
   }
 };
 
-export default retrieveByUsername;
+export default retrievePlatformLeaderboard;
