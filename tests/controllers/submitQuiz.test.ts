@@ -90,6 +90,7 @@ describe(`submit quiz route tests`, () => {
     expect(response.body).toStrictEqual({
       totalCorrect: 0,
       submitted: true,
+      isAwarded: false
     });
   });
 
