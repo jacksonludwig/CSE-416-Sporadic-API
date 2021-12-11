@@ -47,7 +47,7 @@ const retrievePlatformLeaderboard = async (req: Request, res: Response) => {
 
     return res.status(200).send({
       userScore: userScoreIndex === -1 ? undefined : platform.scores[userScoreIndex],
-      userLeaderboardPosition: userScoreIndex,
+      userLeaderboardPosition: userScoreIndex - 1,
       ...(await PlatformModel.retrieveLeaderboard(platformTitle, skip, limit)),
     });
   } catch (err) {
