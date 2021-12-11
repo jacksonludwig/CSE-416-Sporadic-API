@@ -95,6 +95,56 @@ export default class PlatformModel {
   }
 
   /**
+   * Retrieve the list of users who have completed quizzes in this platform, sorted by score.
+   */
+  public static async retrieveLeaderboard(
+    title: string,
+    direction?: "ascending" | "descending",
+    skip?: number,
+    limit?: number,
+  ): Promise<{ totalItems: number; items: Score[] }> {
+    skip = skip || 0;
+    limit = limit || 100;
+
+    return await DbClient.aggregate(
+      COLLECTION,
+      [
+        {
+          $match: {
+            title: title,
+          },
+        },
+        {
+          $project: {
+            scores: 1,
+          },
+        },
+        {
+          $unwind: {
+            path: "$scores",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $sort: {
+            "scores.totalCorrect": -1,
+          },
+        },
+        {
+          $replaceRoot: {
+            newRoot: {
+              $mergeObjects: ["$scores"],
+            },
+          },
+        },
+      ],
+      {},
+      skip,
+      limit,
+    );
+  }
+
+  /**
    * Returns platform with the given title, with the `pinnedQuizzes` field expanded.
    */
   public static async retrieveByTitleWithPinned(title: string): Promise<PlatformModel | null> {
