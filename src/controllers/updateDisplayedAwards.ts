@@ -3,7 +3,7 @@ import Joi from "joi";
 import UserModel from "../models/User";
 import { Award } from "../models/User";
 
-const updateShowcasedAwardsSchema = Joi.object({
+const updateDisplayedAwardsSchema = Joi.object({
   displayedAwards: Joi.array()
     .items(
       Joi.object({
@@ -24,20 +24,20 @@ const updateShowcasedAwardsSchema = Joi.object({
     .required(),
 });
 
-export type updateShowcasedAwardRequest = {
+export type updateDisplayedAwardRequest = {
   displayedAwards: Award[];
   awards: Award[];
 };
 
-const updateShowcasedAwards = async (req: Request, res: Response) => {
+const updateDisplayedAwards = async (req: Request, res: Response) => {
   try {
-    await updateShowcasedAwardsSchema.validateAsync(req.body);
+    await updateDisplayedAwardsSchema.validateAsync(req.body);
   } catch (err) {
     console.error(err);
     return res.sendStatus(400);
   }
 
-  const { displayedAwards, awards } = req.body as updateShowcasedAwardRequest;
+  const { displayedAwards, awards } = req.body as updateDisplayedAwardRequest;
   const username = res.locals.authenticatedUser;
 
   try {
@@ -75,4 +75,4 @@ const updateShowcasedAwards = async (req: Request, res: Response) => {
   }
 };
 
-export default updateShowcasedAwards;
+export default updateDisplayedAwards;
