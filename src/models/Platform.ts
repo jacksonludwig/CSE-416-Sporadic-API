@@ -226,10 +226,7 @@ export default class PlatformModel {
       COLLECTION,
       { title: { $in: defaultPlatforms } },
       {
-        "subscribers.$[element]": username,
-      },
-      {
-        arrayFilters: [{ element: { $in: defaultPlatforms } }],
+        $push: { subscribers: username },
       },
     );
   }

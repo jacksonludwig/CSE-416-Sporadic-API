@@ -156,9 +156,7 @@ class DbClient {
   ) {
     const db = await this.connect();
 
-    const result = await db
-      .collection<T>(collection)
-      .updateMany(filter, { $set: updates }, options);
+    const result = await db.collection<T>(collection).updateMany(filter, updates, options);
 
     if (!result.acknowledged) throw new Error(`updates could not be written to ${collection}.`);
   }
