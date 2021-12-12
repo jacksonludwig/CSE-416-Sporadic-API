@@ -227,6 +227,12 @@ export default class UserModel {
           isGlobalAdmin: {
             $first: "$isGlobalAdmin",
           },
+          awards: {
+            $first: "$awards",
+          },
+          displayedAwards: {
+            $first: "$displayedAwards",
+          },
         },
       },
     ];
