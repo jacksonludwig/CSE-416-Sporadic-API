@@ -47,12 +47,7 @@ const updateShowcasedAwards = async (req: Request, res: Response) => {
       console.error(`${username} not found in database`);
       return res.sendStatus(400);
     }
-    displayedAwards.forEach((award) => {
-      if (!user.displayedAwards.includes(award) && !user.awards.includes(award)) {
-        console.log("User did not gain these awards!");
-        return res.sendStatus(403);
-      }
-    });
+
     for (let index = 0; index < displayedAwards.length; index++) {
       if (
         !user.displayedAwards.includes(displayedAwards[index]) &&
