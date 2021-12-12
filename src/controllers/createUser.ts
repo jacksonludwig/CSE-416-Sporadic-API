@@ -20,7 +20,7 @@ export type CreateUserPost = {
 
 const createUser = async (req: Request, res: Response) => {
   try {
-    await createUserSchema.validateAsync(req.body);
+    await createUserSchema.validateAsync(req.body, { convert: false });
   } catch (err) {
     console.error(err);
     return res.sendStatus(400);
