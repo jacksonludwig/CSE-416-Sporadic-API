@@ -4,6 +4,10 @@ import { QuizJSON } from "./Quiz";
 
 const COLLECTION = "platforms";
 
+const PROJECTION = {
+  scores: 0,
+};
+
 type Score = {
   username: string;
   totalCorrect: number;
@@ -95,6 +99,55 @@ export default class PlatformModel {
   }
 
   /**
+   * Retrieves the list of users and their associated scores, sorted from highest to lowest score.
+   */
+  public static async retrieveLeaderboard(
+    title: string,
+    skip?: number,
+    limit?: number,
+  ): Promise<{ totalItems: number; items: Score[] }> {
+    skip = skip || 0;
+    limit = limit || 100;
+
+    return await DbClient.aggregate(
+      COLLECTION,
+      [
+        {
+          $match: {
+            title: title,
+          },
+        },
+        {
+          $project: {
+            scores: 1,
+          },
+        },
+        {
+          $unwind: {
+            path: "$scores",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $sort: {
+            "scores.totalCorrect": -1,
+          },
+        },
+        {
+          $replaceRoot: {
+            newRoot: {
+              $mergeObjects: ["$scores"],
+            },
+          },
+        },
+      ],
+      {},
+      skip,
+      limit,
+    );
+  }
+
+  /**
    * Returns platform with the given title, with the `pinnedQuizzes` field expanded.
    */
   public static async retrieveByTitleWithPinned(title: string): Promise<PlatformModel | null> {
@@ -119,6 +172,7 @@ export default class PlatformModel {
             "pinnedQuizzes.scores": 0,
             "pinnedQuizzes.correctAnswers": 0,
             "pinnedQuizzes.questions": 0,
+            ...PROJECTION,
           },
         },
       ],
@@ -150,6 +204,9 @@ export default class PlatformModel {
               path: "title",
             },
           },
+        },
+        {
+          $project: PROJECTION,
         },
       ],
       {},
