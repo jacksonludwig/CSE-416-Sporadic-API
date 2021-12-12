@@ -228,6 +228,9 @@ export default class PlatformModel {
       {
         "subscribers.$[element]": username,
       },
+      {
+        arrayFilters: [{ element: { $in: defaultPlatforms } }],
+      },
     );
   }
 
