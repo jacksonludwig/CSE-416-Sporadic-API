@@ -5,23 +5,23 @@ import { Award } from "../models/User";
 
 const updateShowcasedAwardsSchema = Joi.object({
   displayedAwards: Joi.array()
-  .items(
-    Joi.object({
-      title: Joi.string().min(1).max(100).required(),
-      quiz: Joi.string().min(1).max(100).required(),
-      platform: Joi.string().min(1).max(100).required(),
-    })
-  )
-  .required(),
+    .items(
+      Joi.object({
+        title: Joi.string().min(1).max(100).required(),
+        quiz: Joi.string().min(1).max(100).required(),
+        platform: Joi.string().min(1).max(100).required(),
+      }),
+    )
+    .required(),
   awards: Joi.array()
-  .items(
-    Joi.object({
-      title: Joi.string().min(1).max(100).required(),
-      quiz: Joi.string().min(1).max(100).required(),
-      platform: Joi.string().min(1).max(100).required(),
-    })
-  )
-  .required()
+    .items(
+      Joi.object({
+        title: Joi.string().min(1).max(100).required(),
+        quiz: Joi.string().min(1).max(100).required(),
+        platform: Joi.string().min(1).max(100).required(),
+      }),
+    )
+    .required(),
 });
 
 export type updateShowcasedAwardRequest = {
@@ -47,18 +47,27 @@ const updateShowcasedAwards = async (req: Request, res: Response) => {
       console.error(`${username} not found in database`);
       return res.sendStatus(400);
     }
-    displayedAwards.forEach(award => {
-      if(!user.displayedAwards.includes(award) && !user.awards.includes(award)){
-        console.log('User did not gain these awards!');
+    displayedAwards.forEach((award) => {
+      if (!user.displayedAwards.includes(award) && !user.awards.includes(award)) {
+        console.log("User did not gain these awards!");
         return res.sendStatus(403);
       }
     });
-    awards.forEach(award => {
-      if(!user.displayedAwards.includes(award) && !user.awards.includes(award)){
-        console.log('User did not gain these awards!');
+    for (let index = 0; index < displayedAwards.length; index++) {
+      if (
+        !user.displayedAwards.includes(displayedAwards[index]) &&
+        !user.awards.includes(displayedAwards[index])
+      ) {
+        console.log("User did not gain these awards!");
         return res.sendStatus(403);
       }
-    });
+    }
+    for (let index = 0; index < awards.length; index++) {
+      if (!user.displayedAwards.includes(awards[index]) && !user.awards.includes(awards[index])) {
+        console.log("User did not gain these awards!");
+        return res.sendStatus(403);
+      }
+    }
     user.displayedAwards = displayedAwards;
     user.awards = awards;
 
