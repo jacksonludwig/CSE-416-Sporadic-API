@@ -7,6 +7,7 @@ import retrieveByUsername from "../controllers/retrieveUserByUsername";
 import updateAboutSection from "../controllers/updateAboutSection";
 import updateGlobalBanStatus from "../controllers/updateGlobalBanStatus";
 import updateRelationship from "../controllers/updateRelationship";
+import updateShowcasedAwards from "../controllers/updateShowcasedAwards";
 import { validateToken } from "../middleware/auth";
 
 const userRouter = express.Router();
@@ -22,7 +23,7 @@ userRouter.get("/:username/set-avatar", validateToken, generateAvatarSubmissionU
 userRouter.get("/:username", validateToken, retrieveByUsername);
 
 userRouter.put("/updateRelationship", validateToken, updateRelationship);
-
+userRouter.put("/updateShowcasedAwards", validateToken, updateShowcasedAwards)
 userRouter.patch("/about", validateToken, updateAboutSection);
 userRouter.patch("/updateGlobalBanStatus", validateToken, updateGlobalBanStatus);
 
