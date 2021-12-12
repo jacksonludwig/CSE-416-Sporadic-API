@@ -6,6 +6,7 @@ import {
   Document,
   MatchKeysAndValues,
   AggregateOptions,
+  UpdateOptions,
 } from "mongodb";
 
 class DbClient {
@@ -135,6 +136,29 @@ class DbClient {
     const result = await db
       .collection<T>(collection)
       .updateOne(filter, { $set: updates }, { upsert: false });
+
+    if (!result.acknowledged) throw new Error(`updates could not be written to ${collection}.`);
+  }
+
+  /**
+   * Updates many documents.
+   * Currently does not accept options.
+   *
+   * @param collection The collection to update
+   * @param filter Field(s) to filter by
+   * @param updates Keys and values to update
+   */
+  public async updateMany<T>(
+    collection: string,
+    filter: Filter<T>,
+    updates: MatchKeysAndValues<T>,
+    options: UpdateOptions = {},
+  ) {
+    const db = await this.connect();
+
+    const result = await db
+      .collection<T>(collection)
+      .updateMany(filter, { $set: updates }, options);
 
     if (!result.acknowledged) throw new Error(`updates could not be written to ${collection}.`);
   }
