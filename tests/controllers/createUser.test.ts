@@ -1,6 +1,7 @@
 import request from "supertest";
 import app from "../../src/app";
 import { CreateUserPost } from "../../src/controllers/createUser";
+import PlatformModel from "../../src/models/Platform";
 import UserModel from "../../src/models/User";
 import { cognitoClient } from "../../src/routes/userRouter";
 
@@ -32,6 +33,7 @@ describe(`create user route test`, () => {
     cognitoClient.send = jest.fn().mockResolvedValueOnce(mockSendResponse);
     UserModel.prototype.save = jest.fn().mockResolvedValueOnce(mockObjectId);
     UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(null);
+    PlatformModel.subscribeUserToManyPlatforms = jest.fn().mockResolvedValueOnce(null);
   });
 
   test(`Should send 400 if schema validation fails`, async () => {

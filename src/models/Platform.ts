@@ -216,6 +216,22 @@ export default class PlatformModel {
   }
 
   /**
+   * Add a user as subscriber to many platforms at once
+   */
+  public static async subscribeUserToManyPlatforms(
+    username: string,
+    defaultPlatforms: string[],
+  ): Promise<void> {
+    await DbClient.updateMany<Platform>(
+      COLLECTION,
+      { title: { $in: defaultPlatforms } },
+      {
+        $push: { subscribers: username },
+      },
+    );
+  }
+
+  /**
    * Update mutable fields of the platform in the database.
    */
   public async update(): Promise<void> {

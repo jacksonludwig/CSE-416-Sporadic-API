@@ -3,6 +3,7 @@ import Joi from "joi";
 import UserModel from "../models/User";
 import { cognitoClient } from "../routes/userRouter";
 import { Request, Response } from "express";
+import PlatformModel from "../models/Platform";
 
 const DEFAULT_SUBSCRIPTIONS = ["videogames", "television", "literature", "geography", "music"];
 
@@ -75,6 +76,8 @@ const createUser = async (req: Request, res: Response) => {
     });
 
     await user.save();
+
+    await PlatformModel.subscribeUserToManyPlatforms(username, DEFAULT_SUBSCRIPTIONS);
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
