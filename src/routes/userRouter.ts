@@ -23,7 +23,7 @@ userRouter.get("/:username/set-avatar", validateToken, generateAvatarSubmissionU
 userRouter.get("/:username", validateToken, retrieveByUsername);
 
 userRouter.put("/updateRelationship", validateToken, updateRelationship);
-userRouter.put("/updateShowcasedAwards", validateToken, updateShowcasedAwards)
+userRouter.put("/updateShowcasedAwards", validateToken, updateShowcasedAwards);
 userRouter.patch("/about", validateToken, updateAboutSection);
 userRouter.patch("/updateGlobalBanStatus", validateToken, updateGlobalBanStatus);
 
