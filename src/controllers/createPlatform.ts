@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Joi from "joi";
 import PlatformModel from "../models/Platform";
+import UserModel from "../models/User";
 
 const createPlatformSchema = Joi.object({
   title: Joi.string()
@@ -29,6 +30,10 @@ const createPlatform = async (req: Request, res: Response) => {
   const username = res.locals.authenticatedUser;
 
   try {
+    const user = await UserModel.retrieveByUsername(username);
+
+    if (!user) throw new Error(`${username} is not in database`);
+
     if (await PlatformModel.retrieveByTitle(title)) {
       console.error(`${title} already exists`);
       return res.sendStatus(400);
@@ -46,7 +51,10 @@ const createPlatform = async (req: Request, res: Response) => {
       pinnedQuizzes: [],
     });
 
+    user.subscriptions.push(title);
+
     await platform.save();
+    await user.update();
   } catch (err) {
     console.error(err);
     return res.sendStatus(500);
