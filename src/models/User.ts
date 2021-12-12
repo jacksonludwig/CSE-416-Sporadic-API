@@ -209,6 +209,9 @@ export default class UserModel {
           awards: {
             $first: "$awards",
           },
+          displayedAwards: {
+            $first: "$displayedAwards",
+          },
           isGloballyBanned: {
             $first: "$isGloballyBanned",
           },
