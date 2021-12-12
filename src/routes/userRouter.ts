@@ -9,6 +9,7 @@ import updateGlobalBanStatus from "../controllers/updateGlobalBanStatus";
 import updateRelationship from "../controllers/updateRelationship";
 import updateDisplayedAwards from "../controllers/updateDisplayedAwards";
 import { validateToken } from "../middleware/auth";
+import resendConfirmationEmail from "../controllers/resendConfirmationCode";
 
 const userRouter = express.Router();
 
@@ -18,6 +19,7 @@ export const cognitoClient = new CognitoIdentityProviderClient({
 
 userRouter.post("/", createUser);
 userRouter.post("/:username/confirm", confirmEmail);
+userRouter.post("/:username/resendConfirmationCode", resendConfirmationEmail);
 userRouter.get("/:username/set-avatar", validateToken, generateAvatarSubmissionURL);
 
 userRouter.get("/:username", validateToken, retrieveByUsername);
