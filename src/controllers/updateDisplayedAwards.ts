@@ -50,15 +50,46 @@ const updateDisplayedAwards = async (req: Request, res: Response) => {
 
     for (let index = 0; index < displayedAwards.length; index++) {
       if (
-        !user.displayedAwards.includes(displayedAwards[index]) &&
-        !user.awards.includes(displayedAwards[index])
+        !(
+          user.displayedAwards.find(
+            (award) =>
+              award.platform === displayedAwards[index].platform &&
+              award.quiz === displayedAwards[index].quiz &&
+              award.title === displayedAwards[index].title,
+          ) === undefined
+        ) &&
+        !(
+          user.awards.find(
+            (award) =>
+              award.platform === displayedAwards[index].platform &&
+              award.quiz === displayedAwards[index].quiz &&
+              award.title === displayedAwards[index].title,
+          ) === undefined
+        )
       ) {
         console.log("User did not gain these awards!");
         return res.sendStatus(403);
       }
     }
     for (let index = 0; index < awards.length; index++) {
-      if (!user.displayedAwards.includes(awards[index]) && !user.awards.includes(awards[index])) {
+      if (
+        !(
+          user.displayedAwards.find(
+            (award) =>
+              award.platform === awards[index].platform &&
+              award.quiz === awards[index].quiz &&
+              award.title === awards[index].title,
+          ) === undefined
+        ) &&
+        !(
+          user.awards.find(
+            (award) =>
+              award.platform === awards[index].platform &&
+              award.quiz === awards[index].quiz &&
+              award.title === awards[index].title,
+          ) === undefined
+        )
+      ) {
         console.log("User did not gain these awards!");
         return res.sendStatus(403);
       }
