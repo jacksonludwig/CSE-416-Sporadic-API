@@ -2,6 +2,8 @@ import request from "supertest";
 import app from "../../src/app";
 import { CreatePlatformPost } from "../../src/controllers/createPlatform";
 import PlatformModel, { Platform } from "../../src/models/Platform";
+import UserModel from "../../src/models/User";
+import mockUser from "../mocks/mockUser";
 
 const username = "john1";
 
@@ -43,6 +45,8 @@ describe(`create platform test`, () => {
 
     PlatformModel.retrieveByTitle = jest.fn().mockResolvedValueOnce(null);
     PlatformModel.prototype.save = jest.fn().mockResolvedValueOnce(null);
+    UserModel.prototype.update = jest.fn().mockResolvedValueOnce(null);
+    UserModel.retrieveByUsername = jest.fn().mockResolvedValueOnce(new UserModel(mockUser));
   });
 
   test(`Should create platform on success`, async () => {
