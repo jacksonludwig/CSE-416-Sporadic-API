@@ -40,7 +40,7 @@ export default class PlatformModel {
 
   constructor(platform: Platform) {
     this._id = platform._id;
-    this.title = platform.title.toLowerCase();
+    this.title = platform.title;
     this.owner = platform.owner;
     this.description = platform.description;
     this.subscribers = platform.subscribers;
@@ -89,11 +89,7 @@ export default class PlatformModel {
    * Returns platform with the given title.
    */
   public static async retrieveByTitle(title: string): Promise<PlatformModel | null> {
-    const platform = await DbClient.findOne<Platform>(
-      COLLECTION,
-      { title: title.toLowerCase() },
-      {},
-    );
+    const platform = await DbClient.findOne<Platform>(COLLECTION, { title: title }, {});
 
     return platform ? new PlatformModel(platform) : null;
   }

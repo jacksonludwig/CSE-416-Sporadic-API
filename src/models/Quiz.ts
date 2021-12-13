@@ -78,7 +78,7 @@ export default class QuizModel {
   constructor(quiz: Quiz) {
     this._id = quiz._id;
     this.title = quiz.title;
-    this.platform = quiz.platform.toLowerCase();
+    this.platform = quiz.platform;
     this.timeLimit = quiz.timeLimit;
     this.awardTitle = quiz.awardTitle;
     this.awardRequirement = quiz.awardRequirement;
@@ -169,7 +169,7 @@ export default class QuizModel {
   ): Promise<QuizModel | null> {
     const quiz = await DbClient.findOne<Quiz>(
       COLLECTION,
-      { title: quizTitle, platform: platform.toLowerCase() },
+      { title: quizTitle, platform: platform },
       {},
     );
     return quiz ? new QuizModel(quiz) : null;
@@ -179,11 +179,7 @@ export default class QuizModel {
    * Deletes the quiz from the database.
    */
   public async delete(): Promise<void> {
-    await DbClient.deleteOne<Quiz>(
-      COLLECTION,
-      { title: this.title, platform: this.platform.toLowerCase() },
-      {},
-    );
+    await DbClient.deleteOne<Quiz>(COLLECTION, { title: this.title, platform: this.platform }, {});
   }
 
   /**
@@ -203,7 +199,7 @@ export default class QuizModel {
     const quizFilter: QuizFilter = {};
     const findOpts: FindOptions = {};
 
-    if (filter.platform) quizFilter.platform = filter.platform.toLowerCase();
+    if (filter.platform) quizFilter.platform = filter.platform;
 
     findOpts.sort = [[sortBy.field || "title", sortBy.direction || 1]];
     findOpts.projection = PROJECTION;
