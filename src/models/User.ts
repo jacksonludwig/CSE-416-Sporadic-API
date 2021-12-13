@@ -117,7 +117,7 @@ export default class UserModel {
       aboutSection: this.aboutSection,
       isGlobalAdmin: this.isGlobalAdmin,
       isGloballyBanned: this.isGloballyBanned,
-      awardCount: this.awards.length,
+      awardCount: this.awards.length + this.displayedAwards.length,
     };
   }
 
