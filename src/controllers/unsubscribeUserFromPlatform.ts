@@ -15,6 +15,11 @@ const unsubscribeUserFromPlatform = async (req: Request, res: Response) => {
 
     if (!user) throw Error(`${username} not found in database`);
 
+    if (!user.subscriptions.includes(platformTitle)) {
+      console.error(`${username} is not subbed to ${platformTitle}`);
+      return res.sendStatus(400);
+    }
+
     user.subscriptions = user.subscriptions.filter((p) => p !== platformTitle);
     await user.update();
 

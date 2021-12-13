@@ -15,6 +15,11 @@ const subscribeUserToPlatform = async (req: Request, res: Response) => {
 
     if (!user) throw Error(`${username} not found in database`);
 
+    if (user.subscriptions.includes(platformTitle)) {
+      console.error(`${username} is already subbed to ${platformTitle}`);
+      return res.sendStatus(400);
+    }
+
     user.subscriptions.push(platformTitle);
     await user.update();
 
