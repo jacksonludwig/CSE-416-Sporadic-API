@@ -8,6 +8,12 @@ import mockPlatform from "../mocks/mockPlatform";
 import mockQuiz from "../mocks/mockQuiz";
 import mockUser from "../mocks/mockUser";
 
+jest.mock("@aws-sdk/s3-request-presigner", () => ({
+  getSignedUrl: jest.fn(() => {
+    return "https://exampleurl.com";
+  }),
+}));
+
 jest.mock("../../src/middleware/auth", () => ({
   validateToken: jest.fn((req, res, next) => {
     res.locals.authenticatedUser = mockUser.username;
