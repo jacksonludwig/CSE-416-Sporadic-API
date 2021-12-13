@@ -121,7 +121,7 @@ export default class PlatformModel {
         {
           $unwind: {
             path: "$scores",
-            preserveNullAndEmptyArrays: true,
+            preserveNullAndEmptyArrays: false,
           },
         },
         {
