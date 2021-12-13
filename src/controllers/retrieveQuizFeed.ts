@@ -16,7 +16,7 @@ const dirMap = new Map<string, SortDirection>([
 ]);
 
 const retrieveQuizFeedSchema = Joi.object({
-  sortBy: Joi.string().valid("upvotes", "title", "platform"),
+  sortBy: Joi.string().valid("upvotes", "title", "platform", "_id"),
   sortDirection: Joi.string().valid(SortDirs.Ascending, SortDirs.Descending),
   page: Joi.number().integer().min(1).max(100000),
   amountPerPage: Joi.number().integer().min(1).max(100),
